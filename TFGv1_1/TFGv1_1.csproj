@@ -179,6 +179,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\GreenHouseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\SensorController.cs" />
@@ -186,16 +187,21 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202502102110326_InitialCreate.cs" />
-    <Compile Include="Migrations\202502102110326_InitialCreate.Designer.cs">
-      <DependentUpon>202502102110326_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202502191902574_InitialCreate.cs" />
+    <Compile Include="Migrations\202502191902574_InitialCreate.Designer.cs">
+      <DependentUpon>202502191902574_InitialCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202502121646163_NewModelSensorLog.cs" />
-    <Compile Include="Migrations\202502121646163_NewModelSensorLog.Designer.cs">
-      <DependentUpon>202502121646163_NewModelSensorLog.cs</DependentUpon>
+    <Compile Include="Migrations\202502191947267_UpdateGreenHouseIDToString.cs" />
+    <Compile Include="Migrations\202502191947267_UpdateGreenHouseIDToString.Designer.cs">
+      <DependentUpon>202502191947267_UpdateGreenHouseIDToString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202502192015060_SupuMigration.cs" />
+    <Compile Include="Migrations\202502192015060_SupuMigration.Designer.cs">
+      <DependentUpon>202502192015060_SupuMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\GreenHouse.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Sensor.cs" />
@@ -291,6 +297,11 @@
     <Content Include="Views\SensorLogFile\Edit.cshtml" />
     <Content Include="Views\SensorLogFile\Index.cshtml" />
     <Content Include="Views\SensorLogFile\ViewContent.cshtml" />
+    <Content Include="Views\GreenHouse\Create.cshtml" />
+    <Content Include="Views\GreenHouse\Delete.cshtml" />
+    <Content Include="Views\GreenHouse\Details.cshtml" />
+    <Content Include="Views\GreenHouse\Edit.cshtml" />
+    <Content Include="Views\GreenHouse\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -323,11 +334,14 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202502102110326_InitialCreate.resx">
-      <DependentUpon>202502102110326_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202502191902574_InitialCreate.resx">
+      <DependentUpon>202502191902574_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202502121646163_NewModelSensorLog.resx">
-      <DependentUpon>202502121646163_NewModelSensorLog.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202502191947267_UpdateGreenHouseIDToString.resx">
+      <DependentUpon>202502191947267_UpdateGreenHouseIDToString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202502192015060_SupuMigration.resx">
+      <DependentUpon>202502192015060_SupuMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

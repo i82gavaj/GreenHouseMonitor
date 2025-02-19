@@ -345,28 +345,24 @@
             var topic = message.destinationName;
             var value = parseFloat(message.payloadString);
             
-            // Extraer el topic real (sin el idUser)
-            var topicParts = topic.split('/');
-            var realTopic = topicParts[1]; // El topic después del idUser
-            
-            // Si no existe la gráfica para este topic, inicializarla
-            var sensor = userTopics.find(s => s.topic === realTopic);
-            if (sensor && !sensorData[realTopic]) {
+            // Ya no necesitamos extraer el topic real porque ya viene completo
+            var sensor = userTopics.find(s => s.topic === topic);
+            if (sensor && !sensorData[topic]) {
                 initializeChart(sensor);
             }
             
-            if (!sensorData[realTopic]) {
-                sensorData[realTopic] = [];
+            if (!sensorData[topic]) {
+                sensorData[topic] = [];
             }
             
             // Mantener solo los últimos 15 valores
-            if (sensorData[realTopic].length > 15) {
-                sensorData[realTopic].shift();
+            if (sensorData[topic].length > 15) {
+                sensorData[topic].shift();
             }
-            sensorData[realTopic].push(value);
-            updateChart(realTopic);
+            sensorData[topic].push(value);
+            updateChart(topic);
             updateSensorCount();
-            console.log("Mensaje recibido:", value, "en el topic:", realTopic);
+            console.log("Mensaje recibido:", value, "en el topic:", topic);
         }
 
         function updateChart(topic) {
@@ -395,20 +391,20 @@
         }
 
         document.getElementById('subscribeButton').addEventListener('click', function() {
-                if (client && client.isConnected()) {
-                    userTopics.forEach(sensorInfo => {
-                        var fullTopic = idUser + "/" + sensorInfo.topic;
-                        console.log("Suscrito a:", fullTopic);
-                        client.subscribe(fullTopic);
-                        // Inicializar la gráfica para este sensor
-                        initializeChart(sensorInfo);
-                    });
-                    console.log("Suscripción completada a todos los topics");
-                } else {
-                    console.log("Error: Cliente no conectado al broker");
-                    alert("Error: No hay conexión con el broker");
-                }
-            });
+            if (client && client.isConnected()) {
+                userTopics.forEach(sensorInfo => {
+                    // Ya no necesitamos combinar el userId con el topic
+                    console.log("Suscrito a:", sensorInfo.topic);
+                    client.subscribe(sensorInfo.topic);
+                    // Inicializar la gráfica para este sensor
+                    initializeChart(sensorInfo);
+                });
+                console.log("Suscripción completada a todos los topics");
+            } else {
+                console.log("Error: Cliente no conectado al broker");
+                alert("Error: No hay conexión con el broker");
+            }
+        });
 
         function updateCardsLayout() {
             const graficaContainer = document.getElementById('graficaContainer');

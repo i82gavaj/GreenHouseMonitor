@@ -207,9 +207,11 @@ namespace TFGv1_1.MQTTLogger
 
                     await connection.OpenAsync();
                     
-                    // Consultar sensores directamente con SQL
+                    // Actualizada la consulta para incluir GreenHouse
                     var command = new System.Data.SqlClient.SqlCommand(
-                        "SELECT SensorID, SensorName, Topic, UserID FROM Sensors", 
+                        @"SELECT s.SensorID, s.SensorName, s.Topic, g.UserID, g.GreenHouseID 
+                          FROM Sensors s 
+                          INNER JOIN GreenHouses g ON s.GreenHouseID = g.GreenHouseID", 
                         connection
                     );
 
@@ -225,6 +227,7 @@ namespace TFGv1_1.MQTTLogger
                                 $"  ID: {reader["SensorID"]}\n" +
                                 $"  Nombre: {reader["SensorName"]}\n" +
                                 $"  Topic: {reader["Topic"]}\n" +
+                                $"  GreenHouseID: {reader["GreenHouseID"]}\n" +
                                 $"  UserID: {reader["UserID"]}\n" +
                                 "----------------------------------------\n"
                             );
@@ -242,6 +245,56 @@ namespace TFGv1_1.MQTTLogger
                 PrependToFile(
                     Path.Combine(logDirectory, "database.log"),
                     $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] ERROR: {ex.Message}\n{ex.StackTrace}\n"
+                );
+            }
+        }
+
+        private async Task HandleMessageReceived(MqttApplicationMessageReceivedEventArgs e)
+        {
+            var topic = e.ApplicationMessage.Topic;
+            var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+            
+            try
+            {
+                using (var connection = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    var topicParts = topic.Split('/');
+                    var greenhouseId = int.Parse(topicParts[0]);
+                    var sensorTopic = topicParts[1];
+
+                    var command = new System.Data.SqlClient.SqlCommand(
+                        @"SELECT s.SensorID, s.SensorName, g.UserID, s.Topic 
+                          FROM Sensors s 
+                          INNER JOIN GreenHouses g ON s.GreenHouseID = g.GreenHouseID 
+                          WHERE s.GreenHouseID = @GreenHouseID AND s.Topic LIKE @Topic + '%'",
+                        connection
+                    );
+                    command.Parameters.AddWithValue("@GreenHouseID", greenhouseId);
+                    command.Parameters.AddWithValue("@Topic", sensorTopic);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            var fileName = $"{greenhouseId}_{sensorTopic}.log";
+                            var logPath = Path.Combine(logDirectory, fileName);
+
+                            Directory.CreateDirectory(Path.GetDirectoryName(logPath));
+
+                            PrependToFile(
+                                logPath,
+                                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {payload}\n"
+                            );
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                PrependToFile(
+                    Path.Combine(logDirectory, "error.log"),
+                    $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Error procesando mensaje: {ex.Message}\n"
                 );
             }
         }

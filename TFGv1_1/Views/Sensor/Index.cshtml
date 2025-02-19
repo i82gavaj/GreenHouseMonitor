@@ -37,7 +37,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var sensor in Model.Where(item => item.UserID == User.Identity.GetUserId()))
+                @foreach (var sensor in Model)
                 {
                     <tr>
                         <td>@sensor.SensorName</td>

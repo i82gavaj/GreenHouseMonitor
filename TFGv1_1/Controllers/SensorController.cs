@@ -20,7 +20,10 @@ namespace TFGv1_1.Controllers
         // GET: Sensor
         public ActionResult Index()
         {
-            var sensors = db.Sensors.Include(s => s.User);
+            var userId = User.Identity.GetUserId();
+            var sensors = db.Sensors
+                .Include(s => s.GreenHouse)
+                .Where(s => s.GreenHouse.UserID == userId);
             return View(sensors.ToList());
         }
         
@@ -30,7 +33,7 @@ namespace TFGv1_1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Sensor sensor = db.Sensors.Include(s => s.User).FirstOrDefault(s => s.SensorID == id);
+            Sensor sensor = db.Sensors.Include(s => s.GreenHouse).FirstOrDefault(s => s.SensorID == id);
 
             if (sensor == null)
             {
@@ -48,7 +51,7 @@ namespace TFGv1_1.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             
-            Sensor sensor = db.Sensors.Include(s => s.User).FirstOrDefault(s => s.SensorID == id);
+            Sensor sensor = db.Sensors.Include(s => s.GreenHouse).FirstOrDefault(s => s.SensorID == id);
             
             if (sensor == null)
             {
@@ -60,13 +63,33 @@ namespace TFGv1_1.Controllers
         public ActionResult Graphs()
         {
             var userId = User.Identity.GetUserId();
-            var userSensors = db.Sensors.Where(s => s.UserID == userId).ToList();
+            var userSensors = db.Sensors
+                .Include(s => s.GreenHouse)
+                .Where(s => s.GreenHouse.UserID == userId)
+                .ToList();
             return View(userSensors);
         }
 
         // GET: Sensor/Create
         public ActionResult Create()
         {
+            var userId = User.Identity.GetUserId();
+            var greenhouses = db.GreenHouses
+                .Where(g => g.UserID == userId)
+                .Select(g => new SelectListItem
+                {
+                    Value = g.GreenHouseID.ToString(),
+                    Text = g.Name
+                })
+                .ToList();
+
+            if (!greenhouses.Any())
+            {
+                ModelState.AddModelError("", "Debe crear un invernadero antes de añadir sensores.");
+                return View();
+            }
+
+            ViewBag.GreenHouses = greenhouses;
             ViewBag.SensorTypes = Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
             return View();
         }
@@ -76,38 +99,122 @@ namespace TFGv1_1.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "SensorID,SensorName,SensorType,Units,Topic")] Sensor sensor)
+        public ActionResult Create([Bind(Include = "SensorName,SensorType,Units,Topic,GreenHouseID")] Sensor sensor)
         {
-            if (ModelState.IsValid && ValidateTopic(sensor.Topic, sensor.UserID))
+            IEnumerable<SelectListItem> greenhousesList;
+            try
             {
-                sensor.UserID = User.Identity.GetUserId();
-                db.Sensors.Add(sensor);
-                db.SaveChanges();
+                var userId = User.Identity.GetUserId();
+                
+                if (ModelState.IsValid && ValidateTopic(sensor.Topic))
+                {
+                    var greenhouse = db.GreenHouses.FirstOrDefault(g => g.GreenHouseID == sensor.GreenHouseID && g.UserID == userId);
+                    
+                    if (greenhouse == null)
+                    {
+                        ModelState.AddModelError("GreenHouseID", "Invernadero no válido o no autorizado.");
+                        
+                        // Volver a cargar las listas
+                        greenhousesList = LoadGreenHousesList(userId);
+                        ViewBag.GreenHouses = greenhousesList;
+                        ViewBag.SensorTypes = Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
+                        return View(sensor);
+                    }
 
-                // Crear el archivo de log
-                var sensorLogFile = new SensorLogFile { SensorId = sensor.SensorID };
-                var logFileController = new SensorLogFileController();
-                logFileController.ControllerContext = this.ControllerContext;
-                return logFileController.Create(sensorLogFile);
+                    try
+                    {
+                        // El topic ahora se forma con el ID del invernadero seleccionado
+                        sensor.Topic = $"{sensor.GreenHouseID}/{sensor.Topic}";
+                        
+                        db.Sensors.Add(sensor);
+                        
+                        try
+                        {
+                            db.SaveChanges();
+                        }
+                        catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+                        {
+                            foreach (var validationErrors in ex.EntityValidationErrors)
+                            {
+                                foreach (var validationError in validationErrors.ValidationErrors)
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
+                                    ModelState.AddModelError(validationError.PropertyName, validationError.ErrorMessage);
+                                }
+                            }
+                            
+                            // Volver a cargar las listas
+                            greenhousesList = LoadGreenHousesList(userId);
+                            ViewBag.GreenHouses = greenhousesList;
+                            ViewBag.SensorTypes = Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
+                            return View(sensor);
+                        }
+
+                        var sensorLogFile = new SensorLogFile { SensorId = sensor.SensorID };
+                        var logFileController = new SensorLogFileController();
+                        logFileController.ControllerContext = this.ControllerContext;
+                        return logFileController.Create(sensorLogFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error al guardar el sensor: {ex.ToString()}");
+                        ModelState.AddModelError("", $"Error al guardar el sensor: {ex.Message}");
+                        if (ex.InnerException != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Inner Exception: {ex.InnerException}");
+                        }
+                    }
+                }
+                
+                // Si llegamos aquí, algo falló; volver a cargar las listas
+                greenhousesList = LoadGreenHousesList(userId);
+                ViewBag.GreenHouses = greenhousesList;
+                ViewBag.SensorTypes = Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
+                return View(sensor);
             }
-            
-            return View(sensor);
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error general: {ex.ToString()}");
+                ModelState.AddModelError("", $"Error al crear el sensor: {ex.Message}");
+                
+                // Volver a cargar las listas
+                greenhousesList = LoadGreenHousesList(User.Identity.GetUserId());
+                ViewBag.GreenHouses = greenhousesList;
+                ViewBag.SensorTypes = Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
+                return View(sensor);
+            }
         }
-        private bool ValidateTopic(string Topic,string SensorID)
+        private bool ValidateTopic(string Topic)
         {
             var userId = User.Identity.GetUserId();
-            var existingSensor = db.Sensors.FirstOrDefault(s => s.Topic == Topic && s.UserID == userId);
+            var greenhouse = db.GreenHouses.FirstOrDefault(g => g.UserID == userId);
+            
+            if (greenhouse == null) return false;
+            
+            // Verificar si ya existe un sensor con el mismo topic en este invernadero
+            var fullTopic = $"{greenhouse.GreenHouseID}/{Topic}";
+            var existingSensor = db.Sensors.FirstOrDefault(s => s.Topic == fullTopic && s.GreenHouseID == greenhouse.GreenHouseID);
             
             if (existingSensor != null) 
             {
-                ModelState.AddModelError("Topic", "Este topic ya está en uso.");
+                ModelState.AddModelError("Topic", "Este topic ya está en uso en este invernadero.");
                 return false;
             }
             
             return true;
-            
         }
         
+        private IEnumerable<SelectListItem> LoadGreenHousesList(string userId)
+        {
+            return db.GreenHouses
+                .Where(g => g.UserID == userId)
+                .Select(g => new SelectListItem
+                {
+                    Value = g.GreenHouseID.ToString(),
+                    Text = g.Name
+                })
+                .ToList();
+        }
 
         // GET: Sensor/Edit/5
         public ActionResult Edit(int? id)
@@ -116,12 +223,19 @@ namespace TFGv1_1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Sensor sensor = db.Sensors.Find(id);
+
+            var userId = User.Identity.GetUserId();
+            Sensor sensor = db.Sensors
+                .Include(s => s.GreenHouse)
+                .FirstOrDefault(s => s.SensorID == id && s.GreenHouse.UserID == userId);
+
             if (sensor == null)
             {
                 return HttpNotFound();
             }
+
             ViewBag.SensorTypes = Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
+            ViewBag.Units = Enum.GetValues(typeof(Units)).Cast<Units>().ToList();
             return View(sensor);
         }
 
@@ -130,15 +244,38 @@ namespace TFGv1_1.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "SensorID,SensorName,SensorType,Units,Topic")] Sensor sensor)
+        public ActionResult Edit([Bind(Include = "SensorID,SensorName,SensorType,Units,Topic,GreenHouseID")] Sensor sensor)
         {
-            if (ModelState.IsValid && ValidateTopic(sensor.Topic, sensor.UserID))
+            try
             {
-                db.Entry(sensor).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    var userId = User.Identity.GetUserId();
+                    var originalSensor = db.Sensors
+                        .Include(s => s.GreenHouse)
+                        .FirstOrDefault(s => s.SensorID == sensor.SensorID && s.GreenHouse.UserID == userId);
+
+                    if (originalSensor == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    // Mantener el GreenHouseID original para evitar cambios no autorizados
+                    sensor.GreenHouseID = originalSensor.GreenHouseID;
+
+                    db.Entry(originalSensor).CurrentValues.SetValues(sensor);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al editar el sensor: {ex.ToString()}");
+                ModelState.AddModelError("", $"Error al editar el sensor: {ex.Message}");
+            }
+
             ViewBag.SensorTypes = Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
+            ViewBag.Units = Enum.GetValues(typeof(Units)).Cast<Units>().ToList();
             return View(sensor);
         }
 

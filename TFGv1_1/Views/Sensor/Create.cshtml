@@ -4,63 +4,70 @@
     ViewBag.Title = "Crear Sensor";
 }
 
-<div class="form-section">
-    <div class="form-card">
-        <div class="form-header">
-            <h2 class="form-title text-white">
-                <i class="fas fa-plus-circle me-2"></i>@ViewBag.Title
-            </h2>
-            <p class="form-subtitle text-white">Configuración del nuevo sensor</p>
-        </div>
+<div class="form-container">
+    <h2 class="form-title">@ViewBag.Title</h2>
 
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
             <div class="form-group">
-                @Html.LabelFor(m => m.SensorName, "Nombre del Sensor", new { @class = "form-label" })
-                @Html.TextBoxFor(m => m.SensorName, new { @class = "form-control", placeholder = "Ej: Sensor Temperatura 1" })
-                @Html.ValidationMessageFor(m => m.SensorName, "", new { @class = "text-danger" })
+                @Html.LabelFor(model => model.GreenHouseID, "Invernadero", new { @class = "control-label" })
+                <div class="form-input">
+                    @Html.DropDownListFor(model => model.GreenHouseID, 
+                        (IEnumerable<SelectListItem>)ViewBag.GreenHouses, 
+                        "Seleccione un invernadero", 
+                        new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(model => model.GreenHouseID, "", new { @class = "text-danger" })
+                </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(m => m.SensorType, "Tipo de Sensor", new { @class = "form-label" })
-                <select class="form-control" id="sensorType" name="SensorType" required>
-                    <option value="">Seleccione el tipo de sensor...</option>
-                    <option value="Temperature">Temperatura</option>
-                    <option value="CO2">CO2</option>
-                    <option value="Brightness">Brillo</option>
-                    <option value="Humidity">Humedad</option>
-                </select>
-                @Html.ValidationMessageFor(m => m.SensorType, "", new { @class = "text-danger" })
+                @Html.LabelFor(model => model.SensorName, "Nombre del Sensor", new { @class = "control-label" })
+                <div class="form-input">
+                    @Html.EditorFor(model => model.SensorName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.ValidationMessageFor(model => model.SensorName, "", new { @class = "text-danger" })
+                </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(m => m.Units, "Unidades", new { @class = "form-label" })
-                <select class="form-control" id="units" name="Units" required>
-                    <option value="">Las unidades se establecerán automáticamente...</option>
-                </select>
-                @Html.ValidationMessageFor(m => m.Units, "", new { @class = "text-danger" })
+                @Html.LabelFor(model => model.SensorType, "Tipo de Sensor", new { @class = "control-label" })
+                <div class="form-input">
+                    @Html.DropDownListFor(model => model.SensorType, 
+                        new SelectList(ViewBag.SensorTypes), 
+                        "Seleccione un tipo", 
+                        new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(model => model.SensorType, "", new { @class = "text-danger" })
+                </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(m => m.Topic, "Topic MQTT", new { @class = "form-label" })
-                @Html.TextBoxFor(m => m.Topic, new { @class = "form-control", placeholder = "Ej: temperatura1" })
-                @Html.ValidationMessageFor(m => m.Topic, "", new { @class = "text-danger" })
+                @Html.LabelFor(model => model.Units, "Unidades", new { @class = "control-label" })
+                <div class="form-input">
+                    @Html.EditorFor(model => model.Units, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.ValidationMessageFor(model => model.Units, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Topic, "Topic", new { @class = "control-label" })
+                <div class="form-input">
+                    @Html.EditorFor(model => model.Topic, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.ValidationMessageFor(model => model.Topic, "", new { @class = "text-danger" })
+                </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i>Guardar Sensor
-                </button>
-                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-secondary" })
+                <input type="submit" value="Crear" class="btn btn-primary" />
+                @Html.ActionLink("Volver a la Lista", "Index", null, new { @class = "btn btn-default" })
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>
 
 @section Scripts {
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    <script src="~/Scripts/unidades.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
 }

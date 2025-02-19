@@ -33,12 +33,13 @@ namespace TFGv1_1.Models
         public Units Units { get; set; }
 
         [Required]
-        [StringLength(20)]     
+        [StringLength(120)]     
         public string Topic { get; set; }
 
-        [ForeignKey("User")]
-        public string UserID { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        [Required]
+        [ForeignKey("GreenHouse")]
+        public string GreenHouseID { get; set; }
+        public virtual GreenHouse GreenHouse { get; set; }
 
         // Relación 1:1 con SensorLogFile
         public virtual SensorLogFile LogFile { get; set; }

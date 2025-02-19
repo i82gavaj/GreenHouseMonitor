@@ -26,10 +26,10 @@ namespace TFGv1_1.Models
         [Required]
         [StringLength(50)]
         public string LastName { get; set; }
-        public DateTime BirthDate { get; set; }
-        public virtual ICollection<Sensor> Sensors { get; set; }
-
-       
+        public DateTime BirthDate { get; set; }       
+        
+        // Un usuario puede tener múltiples invernaderos
+        public virtual ICollection<GreenHouse> GreenHouses { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -46,6 +46,7 @@ namespace TFGv1_1.Models
 
         public DbSet<Sensor> Sensors { get; set; }
         public DbSet<SensorLogFile> SensorLogFiles { get; set; }
+        public DbSet<GreenHouse> GreenHouses { get; set; }
         
     }
 }

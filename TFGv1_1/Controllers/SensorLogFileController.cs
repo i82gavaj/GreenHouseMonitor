@@ -55,20 +55,24 @@ namespace TFGv1_1.Controllers
         {
             if (ModelState.IsValid)
             {
-                var sensor = db.Sensors.Find(sensorLogFile.SensorId);
+                var sensor = db.Sensors
+                    .Include(s => s.GreenHouse)
+                    .FirstOrDefault(s => s.SensorID == sensorLogFile.SensorId);
+
                 if (sensor == null)
                 {
                     return HttpNotFound();
                 }
 
-                // Verificar que el usuario actual es dueño del sensor
-                if (sensor.UserID != User.Identity.GetUserId())
+                // Verificar que el usuario actual es dueño del invernadero
+                var userId = User.Identity.GetUserId();
+                if (sensor.GreenHouse.UserID != userId)
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
                 }
 
-                // Generar el nombre del archivo usando UserID y topic del sensor
-                sensorLogFile.FilePath = $"{sensor.UserID}_{sensor.Topic.Replace("/", "_")}.log";
+                // Generar el nombre del archivo usando GreenHouseID y topic del sensor
+                sensorLogFile.FilePath = $"{sensor.GreenHouseID}_{sensor.Topic.Replace("/", "_")}.log";
                 sensorLogFile.CreationDate = DateTime.Now;
 
                 // Crear el archivo físico
@@ -143,15 +147,16 @@ namespace TFGv1_1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            SensorLogFile sensorLogFile = db.SensorLogFiles.Include(s => s.Sensor)
+            SensorLogFile sensorLogFile = db.SensorLogFiles.Include(s => s.Sensor.GreenHouse)
                                                   .FirstOrDefault(s => s.SensorId == id);
             if (sensorLogFile == null)
             {
                 return HttpNotFound();
             }
 
-            // Verificar que el usuario actual es dueño del sensor
-            if (sensorLogFile.Sensor.UserID != User.Identity.GetUserId())
+            // Verificar que el usuario actual es dueño del invernadero
+            var userId = User.Identity.GetUserId();
+            if (sensorLogFile.Sensor.GreenHouse.UserID != userId)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
             }
@@ -176,23 +181,26 @@ namespace TFGv1_1.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            SensorLogFile sensorLogFile = db.SensorLogFiles.Include(s => s.Sensor)
-                                                  .FirstOrDefault(s => s.SensorId == id);
+            SensorLogFile sensorLogFile = db.SensorLogFiles
+                .Include(s => s.Sensor.GreenHouse)
+                .FirstOrDefault(s => s.SensorId == id);
+
             if (sensorLogFile == null)
             {
                 return HttpNotFound();
             }
 
-            // Verificar que el usuario actual es dueño del sensor
-            if (sensorLogFile.Sensor.UserID != User.Identity.GetUserId())
+            // Verificar que el usuario actual es dueño del invernadero
+            var userId = User.Identity.GetUserId();
+            if (sensorLogFile.Sensor.GreenHouse.UserID != userId)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
             }
 
-            // Construir el nombre del archivo con el formato UserID_Topic.log
-            string fileName = $"{sensorLogFile.Sensor.UserID}_{sensorLogFile.Sensor.Topic.Replace("/", "_")}.log";
+            // Construir el nombre del archivo usando GreenHouseID y topic del sensor
+            string fileName = $"{sensorLogFile.Sensor.GreenHouseID}_{sensorLogFile.Sensor.Topic.Replace("/", "_")}.log";
             string fullPath = Path.Combine(Server.MapPath("~/Logs"), fileName);
-            ViewBag.RutaArchivo = fullPath; // Para depuración
+            ViewBag.RutaArchivo = fullPath;
 
             if (!System.IO.File.Exists(fullPath))
             {
