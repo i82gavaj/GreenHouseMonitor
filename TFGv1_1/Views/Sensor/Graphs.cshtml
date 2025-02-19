@@ -1,0 +1,435 @@
+﻿@using Microsoft.AspNet.Identity
+@model IEnumerable<TFGv1_1.Models.Sensor>
+@{
+    ViewBag.Title = "Gráficas de Sensores";
+}
+
+<br>
+    <div class="cards-row full-width">
+        <!-- Sección de Conexión -->
+        <div class="connection-card">
+            <div class="connection-card-content">
+                <div class="card-icon">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <h2>Conexión al Broker</h2>
+                <div class="input-group">
+                    <input type="text" id="connection_broker" placeholder="broker.hivemq.com" class="connection-input" />
+                    <input type="number" id="connection_port" placeholder="8000" class="connection-input" />
+                    <button class="connection-btn connect-btn" onclick="connectClient()">
+                        <i class="fas fa-plug"></i>
+                        Conectar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats Card -->
+        <div class="dashboard-card">
+            <div class="header-content">
+                <h2><i class="fas fa-chart-line me-3"></i>@ViewBag.Title</h2>
+                <p>Monitorización en tiempo real de tus sensores</p>
+            </div>
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <i class="fas fa-microchip"></i>
+                    <div class="stat-info">
+                        <h4>Sensores Activos</h4>
+                        <span id="activeSensors">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-signal"></i>
+                    <div class="stat-info">
+                        <h4>Estado Conexión</h4>
+                        <span id="connectionStatus">Desconectado</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <button id="subscribeButton" class="connection-btn connect-btn">
+                <i class="fas fa-rss"></i>
+                Suscribirse a Topics
+            </button>
+        </div>
+    </div>
+
+    <!-- Graphs Grid -->
+    <div id="graficaContainer" class="grafica-container">
+        <!-- Las gráficas se generarán aquí -->
+    </div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+
+    <script>
+        // Variables para el cliente MQTT
+        var client;
+        var isConnected = false;
+        var sensorData = {};
+        var idUser = '@User.Identity.GetUserId()';
+        var userTopics = [];
+        @foreach (var sensor in Model) {
+            @:userTopics.push({topic: '@sensor.Topic', units: '@sensor.Units'});
+        }
+
+        function connectClient() {
+            var brokerUrl = document.getElementById("connection_broker").value;
+            var brokerPort = document.getElementById("connection_port").value;
+            
+            if (!brokerUrl || !brokerPort) {
+                alert("Por favor, ingrese la información del broker");
+                return;
+            }
+
+            var clientId = "ClienteSensores" + Math.floor(Math.random() * 200001);
+            client = new Paho.MQTT.Client(brokerUrl, Number(brokerPort), clientId);
+
+            client.onConnectionLost = onConnectionLost;
+            client.onMessageArrived = onMessageArrived;
+
+            var connectionOptions = {
+                timeout: 60,
+                keepAliveInterval: 60,
+                onSuccess: onConnect,
+                onFailure: function(message) {
+                    console.log("Error de conexión: " + message.errorMessage);
+                    isConnected = false;
+                    document.getElementById('connectionStatus').textContent = 'Desconectado';
+                },
+                //userName: "mosquitto_user",
+                //password: "clddlmylddlp%lcylP%ts23"
+            };
+
+            client.connect(connectionOptions);
+        }
+
+        function onConnect() {
+            console.log("Conectado al broker");
+            isConnected = true;
+            document.getElementById('connectionStatus').textContent = 'Conectado';
+            updateSensorCount();
+        }
+
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("Conexión perdida:" + responseObject.errorMessage);
+                isConnected = false;
+                document.getElementById('connectionStatus').textContent = 'Desconectado';
+            }
+        }
+
+        function initializeChart(sensor) {
+            var chartId = `chart-${sensor.topic}`;
+            var existingChart = Chart.getChart(chartId); // Verificar si la gráfica ya existe
+
+
+            if (existingChart) {
+                console.log("La gráfica ya existe para el topic:", sensor.topic);
+                return; // Si ya existe, no hacemos nada
+            }
+
+            var wrapper = document.createElement('div');
+            wrapper.className = 'chart-wrapper';
+            var canvas = document.createElement('canvas');
+            canvas.id = chartId;
+            wrapper.appendChild(canvas);
+            document.getElementById('graficaContainer').appendChild(wrapper);
+
+            sensorData[sensor.topic] = [];
+
+            // Comenzar la lógica de creación de la gráfica según las unidades
+            if (sensor.units === "GCelsius") {
+                new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: Array(15).fill(''),
+                        datasets: [{
+                            label: sensor.topic + " (°C)",
+                            data: [],
+                            borderColor: getRandomColor(),
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                min: 0,
+                                max: 60,
+                                ticks: {
+                                    stepSize: 5,
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 100
+                        }
+                    }
+                });
+            } else if (sensor.units === "microgm3") {
+                new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: Array(15).fill(''),
+                        datasets: [{
+                            label: sensor.topic + " (µg/m³)",
+                            data: [],
+                            borderColor: getRandomColor(),
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                min: 200,
+                                max: 3500,
+                                ticks: {
+                                    stepSize: 200,
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 100
+                        }
+                    }
+                });
+            } else if (sensor.units === "gm3") {
+                new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: Array(15).fill(''),
+                        datasets: [{
+                            label: sensor.topic + " (g/m³)",
+                            data: [],
+                            borderColor: getRandomColor(),
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                min: 0,
+                                max: 40,
+                                ticks: {
+                                    stepSize: 5,
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 100
+                        }
+                    }
+                });
+            } else {
+                // Para cualquier otra unidad, se puede establecer un valor por defecto
+                new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: Array(15).fill(''),
+                        datasets: [{
+                            label: sensor.topic + " (Lumen)",
+                            data: [],
+                            borderColor: getRandomColor(),
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                min: 0,
+                                max: 1200,
+                                ticks: {
+                                    stepSize: 40,
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 100
+                        }
+                    }
+                });
+            }
+        }
+
+        function onMessageArrived(message) {
+            var topic = message.destinationName;
+            var value = parseFloat(message.payloadString);
+            
+            // Extraer el topic real (sin el idUser)
+            var topicParts = topic.split('/');
+            var realTopic = topicParts[1]; // El topic después del idUser
+            
+            // Si no existe la gráfica para este topic, inicializarla
+            var sensor = userTopics.find(s => s.topic === realTopic);
+            if (sensor && !sensorData[realTopic]) {
+                initializeChart(sensor);
+            }
+            
+            if (!sensorData[realTopic]) {
+                sensorData[realTopic] = [];
+            }
+            
+            // Mantener solo los últimos 15 valores
+            if (sensorData[realTopic].length > 15) {
+                sensorData[realTopic].shift();
+            }
+            sensorData[realTopic].push(value);
+            updateChart(realTopic);
+            updateSensorCount();
+            console.log("Mensaje recibido:", value, "en el topic:", realTopic);
+        }
+
+        function updateChart(topic) {
+            var chartId = `chart-${topic}`;
+            var chart = Chart.getChart(chartId);
+            if (chart) {
+                chart.data.datasets[0].data = sensorData[topic];
+                chart.update();
+            } else {
+                console.log("No se encontró la gráfica para el topic:", topic);
+            }
+        }
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function updateSensorCount() {
+            const activeSensors = Object.keys(sensorData).length;
+            document.getElementById('activeSensors').textContent = activeSensors;
+        }
+
+        document.getElementById('subscribeButton').addEventListener('click', function() {
+                if (client && client.isConnected()) {
+                    userTopics.forEach(sensorInfo => {
+                        var fullTopic = idUser + "/" + sensorInfo.topic;
+                        console.log("Suscrito a:", fullTopic);
+                        client.subscribe(fullTopic);
+                        // Inicializar la gráfica para este sensor
+                        initializeChart(sensorInfo);
+                    });
+                    console.log("Suscripción completada a todos los topics");
+                } else {
+                    console.log("Error: Cliente no conectado al broker");
+                    alert("Error: No hay conexión con el broker");
+                }
+            });
+
+        function updateCardsLayout() {
+            const graficaContainer = document.getElementById('graficaContainer');
+            const cardsRow = document.querySelector('.cards-row');
+            
+            if (graficaContainer && cardsRow) {
+                if (graficaContainer.children.length === 0) {
+                    cardsRow.classList.add('full-width');
+                } else {
+                    cardsRow.classList.remove('full-width');
+                }
+            }
+        }
+
+        // Ejecutar cuando se carga la página
+        document.addEventListener('DOMContentLoaded', updateCardsLayout);
+        
+        // Ejecutar cuando se añaden o eliminan gráficas
+        const observer = new MutationObserver(updateCardsLayout);
+        observer.observe(document.getElementById('graficaContainer'), {
+            childList: true
+        });
+    </script>
+}

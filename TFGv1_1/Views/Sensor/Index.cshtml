@@ -1,0 +1,59 @@
+﻿@model IEnumerable<TFGv1_1.Models.Sensor>
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Lista de Sensores";
+}
+
+<div class="index-container">
+    <div class="index-header">
+        <h2 class="index-title">
+            <i class="fas fa-microchip me-2"></i>@ViewBag.Title
+        </h2>
+        <div class="index-actions">
+            @Html.ActionLink("Crear Nuevo Sensor", "Create", null, new { @class = "btn btn-primary" })
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="table custom-table">
+            <thead>
+                <tr>
+                    <th>
+                        <i class="fas fa-tag me-2"></i>Nombre
+                    </th>
+                    <th>
+                        <i class="fas fa-microchip me-2"></i>Tipo
+                    </th>
+                    <th>
+                        <i class="fas fa-ruler me-2"></i>Unidades
+                    </th>
+                    <th>
+                        <i class="fas fa-route me-2"></i>Topic
+                    </th>
+                    <th>
+                        <i class="fas fa-cogs me-2"></i>Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sensor in Model.Where(item => item.UserID == User.Identity.GetUserId()))
+                {
+                    <tr>
+                        <td>@sensor.SensorName</td>
+                        <td>@sensor.SensorType</td>
+                        <td>@sensor.Units</td>
+                        <td>@sensor.Topic</td>
+                        <td>
+                            <div class="table-actions">
+                                @Html.ActionLink("Editar", "Edit", new { id = sensor.SensorID }, new { @class = "action-edit" })
+                                @Html.ActionLink("Eliminar", "Delete", new { id = sensor.SensorID }, new { @class = "action-delete" })
+                                @Html.ActionLink("Log", "ViewContent", "SensorLogFile", new { id = sensor.SensorID }, new { @class = "action-log" })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

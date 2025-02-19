@@ -1,0 +1,49 @@
+﻿@model TFGv1_1.Models.SensorLogFile
+
+@{
+    ViewBag.Title = "Visor de Log";
+}
+
+<div class="container">
+    <div class="log-viewer-container">
+        <div class="log-header">
+            <h2 class="text-white">@Model.Sensor.SensorName</h2>
+        </div>
+
+        <div class="log-info">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Tipo de Sensor</dt>
+                        <dd class="col-sm-8">@Model.Sensor.SensorType</dd>
+
+                        <dt class="col-sm-4">Topic</dt>
+                        <dd class="col-sm-8">@Model.Sensor.Topic</dd>
+
+                        <dt class="col-sm-4">Fecha de Creación</dt>
+                        <dd class="col-sm-8">@Model.CreationDate.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="log-content-wrapper">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0 text-primary">Contenido del Log</h5>
+                <small class="text-muted">Última actualización: @DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</small>
+            </div>
+            <pre class="log-content">@ViewBag.LogContent</pre>
+        </div>
+
+        <div class="log-actions">
+            <div class="d-flex gap-2">
+                @Html.ActionLink("Volver a la lista", "Index", "Sensor", null, new { @class = "btn btn-secondary" })
+                <button class="btn btn-primary" onclick="window.location.reload()">
+                    <i class="fas fa-sync-alt me-2"></i>Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

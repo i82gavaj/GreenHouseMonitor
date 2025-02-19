@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Inicio";
+}
+
+<main class="main-container">
+    <section class="home-hero-section text-center py-5 mb-4">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="display-4 mb-3 text-white">Bienvenido a SensorHub</h1>
+                <p class="lead mb-4 text-white">Sistema inteligente de gestión y monitorización de sensores</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="@Url.Action("Register", "Account")" class="btn btn-light btn-lg pulse-button">
+                        <i class="fas fa-user-plus me-2"></i>Comenzar
+                    </a>
+                    <a href="@Url.Action("About", "Home")" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-info-circle me-2"></i>Más información
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Características Principales</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="bi bi-broadcast-pin fa-2x text-white"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Gestión de Sensores</h3>
+                        <p>Administre todos sus sensores desde una única interfaz intuitiva. Configure, monitorice y gestione sus dispositivos de forma sencilla.</p>
+                    </div>
+                    <div class="feature-link-container">
+                        <a href="@Url.Action("Login", "Account")" class="feature-link">
+                            Comenzar a gestionar <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line fa-2x text-white"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Monitorización en Tiempo Real</h3>
+                        <p>Visualice datos en tiempo real, configure alertas y reciba notificaciones instantáneas sobre el estado de sus sensores.</p>
+                    </div>
+                    <div class="feature-link-container">
+                        <a href="#" class="feature-link">
+                            Ver panel de control <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs fa-2x text-white"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Configuración Avanzada</h3>
+                        <p>Personalice la configuración según sus necesidades específicas. Establezca umbrales, configure notificaciones y más.</p>
+                    </div>
+                    <div class="feature-link-container">
+                        <a href="@Url.Action("Index", "Manage")" class="feature-link">
+                            Configurar sistema <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

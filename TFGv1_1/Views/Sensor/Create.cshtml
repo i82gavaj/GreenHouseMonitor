@@ -1,0 +1,66 @@
+﻿@model TFGv1_1.Models.Sensor
+
+@{
+    ViewBag.Title = "Crear Sensor";
+}
+
+<div class="form-section">
+    <div class="form-card">
+        <div class="form-header">
+            <h2 class="form-title text-white">
+                <i class="fas fa-plus-circle me-2"></i>@ViewBag.Title
+            </h2>
+            <p class="form-subtitle text-white">Configuración del nuevo sensor</p>
+        </div>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.SensorName, "Nombre del Sensor", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.SensorName, new { @class = "form-control", placeholder = "Ej: Sensor Temperatura 1" })
+                @Html.ValidationMessageFor(m => m.SensorName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.SensorType, "Tipo de Sensor", new { @class = "form-label" })
+                <select class="form-control" id="sensorType" name="SensorType" required>
+                    <option value="">Seleccione el tipo de sensor...</option>
+                    <option value="Temperature">Temperatura</option>
+                    <option value="CO2">CO2</option>
+                    <option value="Brightness">Brillo</option>
+                    <option value="Humidity">Humedad</option>
+                </select>
+                @Html.ValidationMessageFor(m => m.SensorType, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Units, "Unidades", new { @class = "form-label" })
+                <select class="form-control" id="units" name="Units" required>
+                    <option value="">Las unidades se establecerán automáticamente...</option>
+                </select>
+                @Html.ValidationMessageFor(m => m.Units, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Topic, "Topic MQTT", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.Topic, new { @class = "form-control", placeholder = "Ej: temperatura1" })
+                @Html.ValidationMessageFor(m => m.Topic, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Guardar Sensor
+                </button>
+                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-secondary" })
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/unidades.js"></script>
+}

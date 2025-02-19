@@ -1,0 +1,50 @@
+﻿@model IEnumerable<TFGv1_1.Models.SensorLogFile>
+
+@{
+    ViewBag.Title = "Archivos de Log";
+}
+
+<div class="index-container">
+    <div class="index-header">
+        <h2 class="index-title">
+            <i class="fas fa-file-alt me-2"></i>@ViewBag.Title
+        </h2>
+    </div>
+
+    <div class="table-container">
+        <table class="table custom-table">
+            <thead>
+                <tr>
+                    <th>
+                        <i class="fas fa-microchip me-2"></i>Sensor
+                    </th>
+                    <th>
+                        <i class="fas fa-folder me-2"></i>Ruta del Archivo
+                    </th>
+                    <th>
+                        <i class="far fa-calendar-alt me-2"></i>Fecha de Creación
+                    </th>
+                    <th>
+                        <i class="fas fa-cogs me-2"></i>Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Sensor.SensorName</td>
+                        <td>@item.FilePath</td>
+                        <td>@item.CreationDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>
+                            <div class="table-actions">
+                                @Html.ActionLink("Ver Log", "ViewContent", new { id = item.SensorId }, new { @class = "action-view" })
+                                @Html.ActionLink("Eliminar", "Delete", new { id = item.SensorId }, new { @class = "action-delete" })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

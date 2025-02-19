@@ -1,0 +1,103 @@
+@model TFGv1_1.Models.IndexViewModel
+
+@{
+    ViewBag.Title = "Mi Perfil";
+}
+
+<div class="main-content active">
+    <div class="container-fluid px-4">
+        @if (!string.IsNullOrEmpty(ViewBag.StatusMessage))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>@ViewBag.StatusMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="row g-4">
+            <!-- Tarjeta de Perfil -->
+            <div class="col-md-4">
+                <div class="card profile-card shadow-sm">
+                    <div class="card-body text-center d-flex flex-column">
+                        <div class="profile-image mb-4">
+                            <i class="fas fa-user-circle fa-5x text-success"></i>
+                        </div>
+                        <h5 class="card-title">@Model.LastName</h5>
+                        <p class="text-muted mb-1">@Model.Email</p>
+                        <p class="text-muted mb-4">Usuario desde @DateTime.Now.Year</p>
+                        <div class="d-grid gap-2">
+                            <a href="@Url.Action("ChangePassword")" class="btn btn-success">
+                                <i class="fas fa-key me-1"></i>Cambiar Contrase&ntilde;a
+                            </a>
+                            <a href="@Url.Action("AddPhoneNumber")" class="btn btn-outline-success">
+                                <i class="fas fa-phone me-1"></i>Editar Tel&eacute;fono
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Detallada -->
+            <div class="col-md-8">
+                <div class="card info-card shadow-sm">
+                    <div class="card-header bg-gradient-primary">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informaci&oacute;n Personal</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="profile-info">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Correo Electr&oacute;nico</label>
+                                    <span>@Model.Email</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Apellidos</label>
+                                    <span>@Model.LastName</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Fecha de Nacimiento</label>
+                                    <span>@Model.BirthDate.ToShortDateString()</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Tel&eacute;fono</label>
+                                    <span>@(Model.PhoneNumber ?? "No configurado")</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Seguridad</label>
+                                    <span>@(Model.HasPassword ? HttpUtility.HtmlDecode("Contrase&ntilde;a configurada") : HttpUtility.HtmlDecode("Sin contrase&ntilde;a local"))</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

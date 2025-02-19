@@ -1,0 +1,40 @@
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using TFGv1_1.Models
+@using Microsoft.AspNet.Identity.Owin
+@using Microsoft.Owin
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+</head>
+<body>
+    @if (Request.IsAuthenticated)
+    {
+        var userId = User.Identity.GetUserId();
+        var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        var user = userManager.FindById(userId);
+
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <ul class="navbar-nav navbar-right">
+                <li>
+                    @Html.ActionLink("Hola " + user.LastName + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+                </li>
+                <li>
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link nav-link">Cerrar sesi&oacute;n</button>
+                </li>
+            </ul>
+        }
+    }
+    else
+    {
+        <ul class="navbar-nav navbar-right">
+            <li>@Html.ActionLink("Registrarse", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
+            <li>@Html.ActionLink("Iniciar sesion", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
+        </ul>
+    }
+</body>
+</html>
