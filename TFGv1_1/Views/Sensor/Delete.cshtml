@@ -1,28 +1,25 @@
 ﻿@model TFGv1_1.Models.Sensor
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Eliminar Sensor";
 }
 
-<h2>Delete</h2>
+<h2>@ViewBag.Title</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>¿Está seguro de que desea eliminar este sensor?</h3>
 <div>
-    <h4>Sensor</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.User.LastName)
+            @Html.DisplayNameFor(model => model.GreenHouse.User.LastName)
         </dt>
-
         <dd>
-            @Html.DisplayFor(model => model.User.LastName)
+            @Html.DisplayFor(model => model.GreenHouse.User.LastName)
         </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.SensorName)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.SensorName)
         </dd>
@@ -30,7 +27,6 @@
         <dt>
             @Html.DisplayNameFor(model => model.SensorType)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.SensorType)
         </dd>
@@ -38,19 +34,24 @@
         <dt>
             @Html.DisplayNameFor(model => model.Units)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.Units)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.Topic)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Topic)
+        </dd>
     </dl>
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+        <div class="form-actions">
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+            @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-default" })
         </div>
     }
 </div>

@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using TFGv1_1.Models;
 using System.IO;
 using Microsoft.AspNet.Identity;
+using System.Text;
 
 namespace TFGv1_1.Controllers
 {
@@ -71,19 +72,45 @@ namespace TFGv1_1.Controllers
                     return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
                 }
 
-                // Generar el nombre del archivo usando GreenHouseID y topic del sensor
-                sensorLogFile.FilePath = $"{sensor.GreenHouseID}_{sensor.Topic.Replace("/", "_")}.log";
+                // Obtener el GreenHouseID del topic (primera parte del topic)
+                string greenhouseId = sensor.Topic.Split('/')[0];
+
+                // Crear el directorio base de logs si no existe
+                string baseLogDirectory = Server.MapPath("~/Logs");
+                if (!Directory.Exists(baseLogDirectory))
+                {
+                    Directory.CreateDirectory(baseLogDirectory);
+                }
+
+                // Crear el directorio específico del invernadero usando el ID del topic
+                string greenhouseDirectory = Path.Combine(baseLogDirectory, greenhouseId);
+                if (!Directory.Exists(greenhouseDirectory))
+                {
+                    Directory.CreateDirectory(greenhouseDirectory);
+                }
+
+                // Generar el nombre del archivo usando el topic del sensor
+                string fileName = sensor.Topic.Replace("/", "_") + ".log";
+                sensorLogFile.FilePath = Path.Combine(greenhouseId, fileName);
                 sensorLogFile.CreationDate = DateTime.Now;
 
                 // Crear el archivo físico
-                string logDirectory = Server.MapPath("~/Logs");
-                if (!Directory.Exists(logDirectory))
+                string fullPath = Path.Combine(baseLogDirectory, sensorLogFile.FilePath);
+                if (!System.IO.File.Exists(fullPath))
                 {
-                    Directory.CreateDirectory(logDirectory);
-                }
+                    // Crear el archivo con un mensaje inicial
+                    var initialMessage = new StringBuilder();
+                    initialMessage.AppendLine("════════════════════════════════════════");
+                    initialMessage.AppendLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] ARCHIVO DE LOG CREADO");
+                    initialMessage.AppendLine($"Invernadero: {greenhouseId}");
+                    initialMessage.AppendLine($"Sensor: {sensor.SensorName}");
+                    initialMessage.AppendLine($"Topic: {sensor.Topic}");
+                    initialMessage.AppendLine($"Tipo: {sensor.SensorType}");
+                    initialMessage.AppendLine($"Unidades: {sensor.Units}");
+                    initialMessage.AppendLine("════════════════════════════════════════");
 
-                string fullPath = Path.Combine(logDirectory, sensorLogFile.FilePath);
-                System.IO.File.Create(fullPath).Close();
+                    System.IO.File.WriteAllText(fullPath, initialMessage.ToString());
+                }
 
                 db.SensorLogFiles.Add(sensorLogFile);
                 db.SaveChanges();
@@ -148,7 +175,7 @@ namespace TFGv1_1.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             SensorLogFile sensorLogFile = db.SensorLogFiles.Include(s => s.Sensor.GreenHouse)
-                                                  .FirstOrDefault(s => s.SensorId == id);
+                                                  .FirstOrDefault(s => s.LogFileId == id);
             if (sensorLogFile == null)
             {
                 return HttpNotFound();

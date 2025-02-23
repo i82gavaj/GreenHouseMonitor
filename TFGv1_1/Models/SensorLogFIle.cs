@@ -20,6 +20,8 @@ namespace TFGv1_1.Models
         [Required]
         public DateTime CreationDate { get; set; }
 
+        public int LogFileId { get; set; }  // Añadir esta propiedad si no existe
+
         // Relación 1:1 con Sensor
         public virtual Sensor Sensor { get; set; }
     }

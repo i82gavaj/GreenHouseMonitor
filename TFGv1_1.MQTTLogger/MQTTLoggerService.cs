@@ -21,174 +21,319 @@ namespace TFGv1_1.MQTTLogger
         private IMqttClient mqttClient;
         private string logDirectory;
         private readonly string connectionString;
+        private Dictionary<string, DateTime> lastMessageTimes = new Dictionary<string, DateTime>();
+        private const int INACTIVITY_THRESHOLD_SECONDS = 30; // Tiempo sin mensajes para considerar inactividad
 
         public MQTTLoggerService()
         {
             InitializeComponent();
             this.ServiceName = "MQTTLoggerService";
-            this.logDirectory = @"C:\Users\josem\Desktop\Universidad\Nueva carpeta\TFGv1_1\TFGv1_1\Logs";
-            this.connectionString = @"Data Source=DELPRADO\SQLEXPRESS;Initial Catalog=aspnet-TFGv1_1-202501301107282;Integrated Security=True;TrustServerCertificate=True";
+            
+            // Obtener la ruta del ejecutable del servicio
+            string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string baseDirectory = Path.GetDirectoryName(exePath);
+            
+            // Subir dos niveles para llegar a la raíz del proyecto TFGv1_1
+            string projectRoot = Path.GetFullPath(Path.Combine(baseDirectory, @"..\..\.."));
+            
+            // Configurar la ruta de logs dentro del proyecto TFGv1_1
+            this.logDirectory = Path.Combine(projectRoot, "TFGv1_1", "Logs");
+            
+            // Configurar la cadena de conexión
+            this.connectionString = @"Data Source=DELPRADO\SQLEXPRESS;Initial Catalog=aspnet-TFGv1_1-202501301107285;Integrated Security=True;TrustServerCertificate=True";
         }
 
         protected override void OnStart(string[] args)
         {
-            Directory.CreateDirectory(logDirectory);
-            File.WriteAllText(Path.Combine(logDirectory, "service.log"), "Servicio iniciando...\n");
-            
-            Task.Run(async () => 
+            try 
             {
-                await LogDatabaseStatus();
-                await StartMQTTClient();
-            });
+                if (!Directory.Exists(logDirectory))
+                {
+                    Directory.CreateDirectory(logDirectory);
+                }
+                
+                // Limpiar el diccionario al iniciar el servicio
+                lastMessageTimes.Clear();
+                
+                LogMessage("service.log", "INFO", "Servicio iniciando...");
+                
+                Task.Run(async () => 
+                {
+                    await LogDatabaseStatus();
+                    await StartMQTTClient();
+                });
+            }
+            catch (Exception ex)
+            {
+                using (var eventLog = new System.Diagnostics.EventLog("Application"))
+                {
+                    eventLog.Source = "MQTTLoggerService";
+                    eventLog.WriteEntry($"Error al iniciar el servicio: {ex.Message}", 
+                                      System.Diagnostics.EventLogEntryType.Error);
+                }
+                LogMessage("error.log", "ERROR", "Error al iniciar el servicio", ex);
+            }
         }
 
         protected override void OnStop()
         {
-            if (mqttClient != null && mqttClient.IsConnected)
+            try
             {
-                mqttClient.DisconnectAsync().Wait();
-                File.AppendAllText(Path.Combine(logDirectory, "service.log"), "Servicio detenido\n");
+                if (mqttClient != null && mqttClient.IsConnected)
+                {
+                    var logFiles = Directory.GetFiles(logDirectory, "*.log");
+                    var endSessionMessage = new StringBuilder();
+                    endSessionMessage.Insert(0, "════════════════════════════════════════\n");
+                    endSessionMessage.Insert(0, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] FIN DE SESIÓN\n");
+                    endSessionMessage.Insert(0, "════════════════════════════════════════\n");
+
+                    foreach (var logFile in logFiles)
+                    {
+                        PrependToFile(logFile, endSessionMessage.ToString());
+                    }
+
+                    mqttClient.DisconnectAsync().Wait();
+                    LogMessage("service.log", "INFO", "Servicio detenido correctamente");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage("error.log", "ERROR", "Error al detener el servicio", ex);
             }
         }
 
         private void PrependToFile(string filePath, string content)
         {
+            const int maxRetries = 3;
+            int retryCount = 0;
+            
+            while (retryCount < maxRetries)
+            {
+                try
+                {
+                    string existingContent = "";
+                    if (File.Exists(filePath))
+                    {
+                        existingContent = File.ReadAllText(filePath);
+                    }
+                    // El orden de la concatenación (content + existingContent) asegura que el nuevo contenido
+                    // se añade al principio del archivo, seguido por el contenido existente
+                    File.WriteAllText(filePath, content + existingContent);
+                    return;
+                }
+                catch (IOException) when (retryCount < maxRetries - 1)
+                {
+                    retryCount++;
+                    Task.Delay(100).Wait();
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText(
+                        Path.Combine(logDirectory, "error.log"),
+                        $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Error escribiendo en {filePath}: {ex.Message}\n"
+                    );
+                    break;
+                }
+            }
+        }
+
+        private void LogMessage(string logFile, string type, string message, Exception ex = null)
+        {
+            var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            var logEntry = new StringBuilder();
+            
+            // Construimos el mensaje en orden inverso
+            if (ex != null)
+            {
+                logEntry.Insert(0, "════════════════════════════════════════\n");
+                logEntry.Insert(0, $"  StackTrace: {ex.StackTrace}\n");
+                logEntry.Insert(0, $"  Message: {ex.Message}\n");
+                logEntry.Insert(0, "ERROR DETAILS:\n");
+                logEntry.Insert(0, message + "\n");
+                logEntry.Insert(0, $"[{timestamp}] [{type}]\n");
+                logEntry.Insert(0, "════════════════════════════════════════\n");
+            }
+            else
+            {
+                logEntry.Insert(0, "════════════════════════════════════════\n");
+                logEntry.Insert(0, message + "\n");
+                logEntry.Insert(0, $"[{timestamp}] [{type}]\n");
+                logEntry.Insert(0, "════════════════════════════════════════\n");
+            }
+            
+            PrependToFile(Path.Combine(logDirectory, logFile), logEntry.ToString());
+        }
+
+        private string GetGreenHouseDirectory(string topic)
+        {
             try
             {
-                string existingContent = "";
-                if (File.Exists(filePath))
+                // El topic tiene el formato "GH_ID/sensor_id"
+                var greenhouseId = topic.Split('/')[0];
+                var greenhousePath = Path.Combine(logDirectory, greenhouseId);
+                
+                // Crear el directorio si no existe
+                if (!Directory.Exists(greenhousePath))
                 {
-                    existingContent = File.ReadAllText(filePath);
+                    Directory.CreateDirectory(greenhousePath);
                 }
-                File.WriteAllText(filePath, content + existingContent);
+                
+                return greenhousePath;
+            }
+            catch
+            {
+                // Si hay algún error, usar el directorio de logs por defecto
+                return logDirectory;
+            }
+        }
+
+        private async Task HandleMqttMessage(MqttApplicationMessageReceivedEventArgs e)
+        {
+            try
+            {
+                var topic = e.ApplicationMessage.Topic;
+                var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+                var timestamp = DateTime.Now;
+
+                // Obtener el directorio específico para este greenhouse
+                var greenhouseDirectory = GetGreenHouseDirectory(topic);
+                
+                // Verificar si es el primer mensaje para este topic
+                if (!lastMessageTimes.ContainsKey(topic))
+                {
+                    var startSessionMessage = new StringBuilder();
+                    startSessionMessage.Insert(0, "════════════════════════════════════════\n");
+                    startSessionMessage.Insert(0, $"[{timestamp:yyyy-MM-dd HH:mm:ss.fff}] INICIO DE RECEPCIÓN DE DATOS\n");
+                    startSessionMessage.Insert(0, "════════════════════════════════════════\n");
+                    
+                    var fileName = topic.Replace("/", "_") + ".log";
+                    var logPath = Path.Combine(greenhouseDirectory, fileName);
+                    PrependToFile(logPath, startSessionMessage.ToString());
+                }
+
+                // Actualizar el tiempo del último mensaje
+                lastMessageTimes[topic] = timestamp;
+
+                using (var connection = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    
+                    var command = new System.Data.SqlClient.SqlCommand(
+                        "SELECT s.SensorID, s.SensorName, s.Units, g.UserID, s.Topic " +
+                        "FROM Sensors s " +
+                        "INNER JOIN GreenHouses g ON s.GreenHouseID = g.GreenHouseID " +
+                        "WHERE s.Topic = @Topic",
+                        connection
+                    );
+                    command.Parameters.AddWithValue("@Topic", topic);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            var sensorId = reader["SensorID"].ToString();
+                            var sensorName = reader["SensorName"].ToString();
+                            var units = reader["Units"].ToString();
+
+                            var logEntry = new StringBuilder();
+                            logEntry.Insert(0, "════════════════════════════════════════\n");
+                            logEntry.Insert(0, $"Valor: {payload} {units}\n");
+                            logEntry.Insert(0, $"Sensor: {sensorName}\n");
+                            logEntry.Insert(0, $"Timestamp: {timestamp:yyyy-MM-dd HH:mm:ss.fff}\n");
+                            logEntry.Insert(0, "════════════════════════════════════════\n");
+
+                            var fileName = topic.Replace("/", "_") + ".log";
+                            var logPath = Path.Combine(greenhouseDirectory, fileName);
+                            PrependToFile(logPath, logEntry.ToString());
+                        }
+                    }
+                }
+
+                // Iniciar el temporizador de inactividad
+                StartInactivityTimer(topic);
             }
             catch (Exception ex)
             {
-                File.AppendAllText(
-                    Path.Combine(logDirectory, "error.log"),
-                    $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Error escribiendo en {filePath}: {ex.Message}\n"
-                );
+                LogMessage("error.log", "ERROR", "Error al procesar mensaje MQTT", ex);
             }
+        }
+
+        private void StartInactivityTimer(string topic)
+        {
+            Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(INACTIVITY_THRESHOLD_SECONDS));
+                
+                if (lastMessageTimes.TryGetValue(topic, out DateTime lastTime))
+                {
+                    var timeSinceLastMessage = DateTime.Now - lastTime;
+                    
+                    if (timeSinceLastMessage.TotalSeconds >= INACTIVITY_THRESHOLD_SECONDS)
+                    {
+                        var endSessionMessage = new StringBuilder();
+                        endSessionMessage.Insert(0, "════════════════════════════════════════\n");
+                        endSessionMessage.Insert(0, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] FIN DE RECEPCIÓN DE DATOS\n");
+                        endSessionMessage.Insert(0, $"Último mensaje recibido hace: {timeSinceLastMessage.TotalSeconds:F1} segundos\n");
+                        endSessionMessage.Insert(0, "════════════════════════════════════════\n");
+
+                        var greenhouseDirectory = GetGreenHouseDirectory(topic);
+                        var fileName = topic.Replace("/", "_") + ".log";
+                        var logPath = Path.Combine(greenhouseDirectory, fileName);
+                        PrependToFile(logPath, endSessionMessage.ToString());
+
+                        lastMessageTimes.Remove(topic);
+                    }
+                }
+            });
         }
 
         private async Task StartMQTTClient()
         {
             try
             {
-                var factory = new MqttFactory();
-                mqttClient = factory.CreateMqttClient();
+                var mqttFactory = new MqttFactory();
+                mqttClient = mqttFactory.CreateMqttClient();
 
                 var options = new MqttClientOptionsBuilder()
-                    .WithTcpServer("broker.hivemq.com", 1883) // MQTT broker address and port
-                    .WithCredentials("jose", "jose") // Set username and password
-                    .WithClientId("MQTTLogger")
-                    .WithCleanSession()
+                    .WithTcpServer("broker.hivemq.com", 1883)
+                    .WithClientId($"GreenHouseLogger_{Guid.NewGuid()}")
                     .Build();
 
-                // Configurar el manejador de mensajes antes de conectar
                 mqttClient.UseApplicationMessageReceivedHandler(async e =>
                 {
-                    try 
-                    {
-                        var topic = e.ApplicationMessage.Topic;
-                        var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-                        var timestamp = DateTime.Now;
-
-                        using (var connection = new System.Data.SqlClient.SqlConnection(connectionString))
-                        {
-                            await connection.OpenAsync();
-                            var topicParts = topic.Split('/');
-                            var userId = topicParts[0];
-                            var sensorTopic = topicParts[1];
-
-                            var command = new System.Data.SqlClient.SqlCommand(
-                                "SELECT SensorID, SensorName, UserID, Topic FROM Sensors WHERE UserID = @UserID AND Topic = @Topic",
-                                connection
-                            );
-                            command.Parameters.AddWithValue("@UserID", userId);
-                            command.Parameters.AddWithValue("@Topic", sensorTopic);
-
-                            using (var reader = await command.ExecuteReaderAsync())
-                            {
-                                if (await reader.ReadAsync())
-                                {
-                                    var user = reader["UserID"].ToString();
-                                    var top = reader["Topic"].ToString();
-                                    var sensorId = reader["SensorID"].ToString();
-                                    var sensorName = reader["SensorName"].ToString();
-
-                                    // Crear nombre del archivo usando el topic completo
-                                    var fileName = topic.Replace("/", "_") + ".log";
-                                    var logPath = Path.Combine(logDirectory, fileName);
-
-                                    // Asegurarnos de que el directorio existe
-                                    Directory.CreateDirectory(Path.GetDirectoryName(logPath));
-
-                                    // Crear o escribir en el archivo
-                                    try 
-                                    {
-                                        PrependToFile(
-                                            logPath,
-                                            $"[{timestamp:yyyy-MM-dd HH:mm:ss.fff}] {sensorName} - Valor: {payload}\n"
-                                        );
-
-                                        // Log de depuración
-                                        PrependToFile(
-                                            Path.Combine(logDirectory, "service.log"),
-                                            $"[{timestamp:yyyy-MM-dd HH:mm:ss.fff}] Log creado en: {logPath}\n"
-                                        );
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        PrependToFile(
-                                            Path.Combine(logDirectory, "error.log"),
-                                            $"[{timestamp:yyyy-MM-dd HH:mm:ss.fff}] Error escribiendo en {logPath}: {ex.Message}\n"
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        PrependToFile(
-                            Path.Combine(logDirectory, "error.log"),
-                            $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Error procesando mensaje: {ex.Message}\n{ex.StackTrace}\n"
-                        );
-                    }
+                    await HandleMqttMessage(e);
                 });
 
                 await mqttClient.ConnectAsync(options);
+                LogMessage("service.log", "INFO", "Conectado al broker MQTT");
 
-                // Suscribirse a los topics usando conexión SQL directa
+                // Suscribirse a los topics
                 using (var connection = new System.Data.SqlClient.SqlConnection(connectionString))
                 {
                     await connection.OpenAsync();
                     var command = new System.Data.SqlClient.SqlCommand(
-                        "SELECT UserID, Topic FROM Sensors",
+                        "SELECT COUNT(*) FROM Sensors",
                         connection
                     );
-
+                    
+                    var sensorCount = (int)await command.ExecuteScalarAsync();
+                    
+                    // Suscribirse a todos los topics
+                    command.CommandText = "SELECT Topic FROM Sensors";
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            var topic = $"{reader["UserID"]}/{reader["Topic"]}";
-                            await mqttClient.SubscribeAsync(topic);
-                            PrependToFile(
-                                Path.Combine(logDirectory, "service.log"),
-                                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Suscrito al topic: {topic}\n"
-                            );
+                            await mqttClient.SubscribeAsync(reader["Topic"].ToString());
                         }
                     }
+                    
+                    LogMessage("service.log", "INFO", $"Suscrito a {sensorCount} topics MQTT");
                 }
             }
             catch (Exception ex)
             {
-                PrependToFile(
-                    Path.Combine(logDirectory, "error.log"),
-                    $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Error: {ex.Message}\n{ex.StackTrace}\n"
-                );
+                LogMessage("error.log", "ERROR", "Error en la conexión MQTT", ex);
                 await Task.Delay(5000);
                 await StartMQTTClient();
             }
@@ -200,102 +345,21 @@ namespace TFGv1_1.MQTTLogger
             {
                 using (var connection = new System.Data.SqlClient.SqlConnection(connectionString))
                 {
-                    PrependToFile(
-                        Path.Combine(logDirectory, "database.log"),
-                        $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Intentando acceder a la base de datos...\n"
-                    );
-
+                    LogMessage("service.log", "INFO", "Verificando conexión con la base de datos...");
                     await connection.OpenAsync();
                     
-                    // Actualizada la consulta para incluir GreenHouse
                     var command = new System.Data.SqlClient.SqlCommand(
-                        @"SELECT s.SensorID, s.SensorName, s.Topic, g.UserID, g.GreenHouseID 
-                          FROM Sensors s 
-                          INNER JOIN GreenHouses g ON s.GreenHouseID = g.GreenHouseID", 
+                        "SELECT COUNT(*) FROM Sensors",
                         connection
                     );
-
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        var sensorsCount = 0;
-                        while (await reader.ReadAsync())
-                        {
-                            sensorsCount++;
-                            PrependToFile(
-                                Path.Combine(logDirectory, "database.log"),
-                                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Sensor:\n" +
-                                $"  ID: {reader["SensorID"]}\n" +
-                                $"  Nombre: {reader["SensorName"]}\n" +
-                                $"  Topic: {reader["Topic"]}\n" +
-                                $"  GreenHouseID: {reader["GreenHouseID"]}\n" +
-                                $"  UserID: {reader["UserID"]}\n" +
-                                "----------------------------------------\n"
-                            );
-                        }
-                        
-                        PrependToFile(
-                            Path.Combine(logDirectory, "database.log"),
-                            $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Número total de sensores: {sensorsCount}\n"
-                        );
-                    }
+                    
+                    var sensorCount = (int)await command.ExecuteScalarAsync();
+                    LogMessage("service.log", "INFO", $"Base de datos conectada. {sensorCount} sensores encontrados.");
                 }
             }
             catch (Exception ex)
             {
-                PrependToFile(
-                    Path.Combine(logDirectory, "database.log"),
-                    $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] ERROR: {ex.Message}\n{ex.StackTrace}\n"
-                );
-            }
-        }
-
-        private async Task HandleMessageReceived(MqttApplicationMessageReceivedEventArgs e)
-        {
-            var topic = e.ApplicationMessage.Topic;
-            var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-            
-            try
-            {
-                using (var connection = new System.Data.SqlClient.SqlConnection(connectionString))
-                {
-                    await connection.OpenAsync();
-                    var topicParts = topic.Split('/');
-                    var greenhouseId = int.Parse(topicParts[0]);
-                    var sensorTopic = topicParts[1];
-
-                    var command = new System.Data.SqlClient.SqlCommand(
-                        @"SELECT s.SensorID, s.SensorName, g.UserID, s.Topic 
-                          FROM Sensors s 
-                          INNER JOIN GreenHouses g ON s.GreenHouseID = g.GreenHouseID 
-                          WHERE s.GreenHouseID = @GreenHouseID AND s.Topic LIKE @Topic + '%'",
-                        connection
-                    );
-                    command.Parameters.AddWithValue("@GreenHouseID", greenhouseId);
-                    command.Parameters.AddWithValue("@Topic", sensorTopic);
-
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            var fileName = $"{greenhouseId}_{sensorTopic}.log";
-                            var logPath = Path.Combine(logDirectory, fileName);
-
-                            Directory.CreateDirectory(Path.GetDirectoryName(logPath));
-
-                            PrependToFile(
-                                logPath,
-                                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {payload}\n"
-                            );
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                PrependToFile(
-                    Path.Combine(logDirectory, "error.log"),
-                    $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] Error procesando mensaje: {ex.Message}\n"
-                );
+                LogMessage("error.log", "ERROR", "Error al conectar con la base de datos", ex);
             }
         }
     }

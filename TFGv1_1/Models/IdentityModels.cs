@@ -44,9 +44,26 @@ namespace TFGv1_1.Models
             return new ApplicationDbContext();
         }
 
+        public DbSet<GreenHouse> GreenHouses { get; set; }
         public DbSet<Sensor> Sensors { get; set; }
         public DbSet<SensorLogFile> SensorLogFiles { get; set; }
-        public DbSet<GreenHouse> GreenHouses { get; set; }
-        
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Configuración de la relación Sensor - SensorLogFile
+            modelBuilder.Entity<Sensor>()
+                .HasOptional(s => s.SensorLogFile)
+                .WithRequired(l => l.Sensor)
+                .WillCascadeOnDelete(true);
+
+            // Configuración de la relación GreenHouse - Sensor
+            modelBuilder.Entity<GreenHouse>()
+                .HasMany(g => g.Sensors)
+                .WithRequired(s => s.GreenHouse)
+                .HasForeignKey(s => s.GreenHouseID)
+                .WillCascadeOnDelete(true);
+        }
     }
 }

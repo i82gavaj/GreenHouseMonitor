@@ -199,6 +199,10 @@
     <Compile Include="Migrations\202502192015060_SupuMigration.Designer.cs">
       <DependentUpon>202502192015060_SupuMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202502231303173_ActualizacionIdentityModels.cs" />
+    <Compile Include="Migrations\202502231303173_ActualizacionIdentityModels.Designer.cs">
+      <DependentUpon>202502231303173_ActualizacionIdentityModels.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GreenHouse.cs" />
@@ -342,6 +346,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202502192015060_SupuMigration.resx">
       <DependentUpon>202502192015060_SupuMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202502231303173_ActualizacionIdentityModels.resx">
+      <DependentUpon>202502231303173_ActualizacionIdentityModels.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

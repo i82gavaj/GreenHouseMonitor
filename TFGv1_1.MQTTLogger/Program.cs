@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TFGv1_1.MQTTLogger
 {
-    internal static class Program
+    static class Program
     {
         /// <summary>
         /// Punto de entrada principal para la aplicación.

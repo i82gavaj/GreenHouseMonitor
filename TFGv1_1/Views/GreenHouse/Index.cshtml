@@ -1,57 +1,52 @@
 ﻿@model IEnumerable<TFGv1_1.Models.GreenHouse>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Lista de Invernaderos";
 }
-
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.User.LastName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Location)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Area)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.User.LastName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Location)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Area)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.GreenHouseID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.GreenHouseID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.GreenHouseID })
-        </td>
-    </tr>
-}
-
+<div class="index-container">
+    <div class="index-header">
+        <h2 class="index-title">
+            <i class="fas fa-file-alt me-2"></i>@ViewBag.Title
+        </h2>
+         @Html.ActionLink("Crear Nuevo Invernadero", "Create", null, new { @class = "btn btn-primary" })
+    </div>
+    <table class="table table-responsive table-hover">
+    <thead class="table-dark">
+            <tr>
+                <th><i class="fas fa-tag me-2"></i>Nombre</th>
+                <th><i class="fas fa-map-marker-alt me-2"></i>Ubicación</th>
+                <th><i class="fas fa-ruler-combined me-2"></i>Área</th>
+                <th><i class="fas fa-microchip me-2"></i>Sensores</th>
+                <th class="text-end"><i class="fas fa-cogs me-2"></i>Acciones</th>
+            </tr>
+    </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Location</td>
+                    <td>@item.Area m²</td>
+                    <td>@item.Sensors.Count dispositivos</td>
+                    <td class="text-end">
+                        <div class="table-actions">
+                            <a href="@Url.Action("Edit", new { id = item.GreenHouseID })" class="btn btn-sm btn-info" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="@Url.Action("Delete", new { id = item.GreenHouseID })" class="btn btn-sm btn-danger" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+    </tbody>
 </table>
+    
+</div>
+
+
+
+
+    
+

@@ -187,18 +187,26 @@ namespace TFGv1_1.Controllers
         private bool ValidateTopic(string Topic)
         {
             var userId = User.Identity.GetUserId();
-            var greenhouse = db.GreenHouses.FirstOrDefault(g => g.UserID == userId);
             
-            if (greenhouse == null) return false;
+            // Obtener todos los invernaderos del usuario
+            var greenhouses = db.GreenHouses
+                .Where(g => g.UserID == userId)
+                .ToList();
             
-            // Verificar si ya existe un sensor con el mismo topic en este invernadero
-            var fullTopic = $"{greenhouse.GreenHouseID}/{Topic}";
-            var existingSensor = db.Sensors.FirstOrDefault(s => s.Topic == fullTopic && s.GreenHouseID == greenhouse.GreenHouseID);
+            if (!greenhouses.Any()) return false;
             
-            if (existingSensor != null) 
+            // Verificar si ya existe un sensor con el mismo topic en cualquiera de los invernaderos del usuario
+            foreach (var greenhouse in greenhouses)
             {
-                ModelState.AddModelError("Topic", "Este topic ya está en uso en este invernadero.");
-                return false;
+                var fullTopic = $"{greenhouse.GreenHouseID}/{Topic}";
+                var existingSensor = db.Sensors
+                    .FirstOrDefault(s => s.Topic == fullTopic && s.GreenHouseID == greenhouse.GreenHouseID);
+                
+                if (existingSensor != null) 
+                {
+                    ModelState.AddModelError("Topic", "Este topic ya está en uso en uno de tus invernaderos.");
+                    return false;
+                }
             }
             
             return true;
@@ -287,7 +295,11 @@ namespace TFGv1_1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Sensor sensor = db.Sensors.Find(id);
+            
+            Sensor sensor = db.Sensors
+                .Include(s => s.GreenHouse.User)
+                .FirstOrDefault(s => s.SensorID == id);
+            
             if (sensor == null)
             {
                 return HttpNotFound();
@@ -300,17 +312,35 @@ namespace TFGv1_1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Sensor sensor = db.Sensors.Find(id);
-            if (sensor != null)
-            {
-                // Eliminar el archivo de log
-                var logFileController = new SensorLogFileController();
-                logFileController.ControllerContext = this.ControllerContext;
-                logFileController.Delete(id);
+            Sensor sensor = db.Sensors
+                .Include(s => s.SensorLogFile)  // Incluir el LogFile relacionado
+                .Include(s => s.GreenHouse)     // Incluir el GreenHouse relacionado
+                .FirstOrDefault(s => s.SensorID == id);
 
-                db.Sensors.Remove(sensor);
-                db.SaveChanges();
+            if (sensor == null)
+            {
+                return HttpNotFound();
             }
+
+            // Verificar que el usuario actual es dueño del invernadero
+            var userId = User.Identity.GetUserId();
+            if (sensor.GreenHouse.UserID != userId)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+
+            // Eliminar el archivo físico si existe
+            if (sensor.SensorLogFile != null)
+            {
+                string fullPath = Path.Combine(Server.MapPath("~/Logs"), sensor.SensorLogFile.FilePath);
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+            }
+
+            db.Sensors.Remove(sensor);
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 

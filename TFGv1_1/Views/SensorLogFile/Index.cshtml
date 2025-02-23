@@ -11,40 +11,72 @@
         </h2>
     </div>
 
-    <div class="table-container">
-        <table class="table custom-table">
-            <thead>
+    <table class="table table-responsive custom-table">
+        <thead>
+            <tr>
+                <th><i class="fas fa-microchip me-2"></i>Sensor</th>
+                <th><i class="fas fa-folder me-2"></i>Ruta</th>
+                <th><i class="far fa-calendar-alt me-2"></i>Fecha</th>
+                <th class="text-end"><i class="fas fa-cogs me-2"></i>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
                 <tr>
-                    <th>
-                        <i class="fas fa-microchip me-2"></i>Sensor
-                    </th>
-                    <th>
-                        <i class="fas fa-folder me-2"></i>Ruta del Archivo
-                    </th>
-                    <th>
-                        <i class="far fa-calendar-alt me-2"></i>Fecha de Creación
-                    </th>
-                    <th>
-                        <i class="fas fa-cogs me-2"></i>Acciones
-                    </th>
+                    <td class="truncate-text" data-full-text="@item.Sensor.SensorName">@item.Sensor.SensorName</td>
+                    <td class="truncate-text" data-full-text="@item.FilePath">
+                        @Path.GetFileName(item.FilePath)
+                    </td>
+                    <td>@item.CreationDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-end">
+                        <div class="table-actions">
+                            <a href="@Url.Action("ViewContent", new { id = item.SensorId })" class="btn btn-sm btn-primary" title="Ver">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="@Url.Action("Delete", new { id = item.LogFileId })" class="btn btn-sm btn-danger" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.Sensor.SensorName</td>
-                        <td>@item.FilePath</td>
-                        <td>@item.CreationDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                        <td>
-                            <div class="table-actions">
-                                @Html.ActionLink("Ver Log", "ViewContent", new { id = item.SensorId }, new { @class = "action-view" })
-                                @Html.ActionLink("Eliminar", "Delete", new { id = item.SensorId }, new { @class = "action-delete" })
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
 </div>
+
+<!-- Modal para texto completo -->
+<div class="text-modal" id="textModal">
+    <span class="text-modal-close">&times;</span>
+    <div class="text-modal-content"></div>
+</div>
+<div class="modal-backdrop"></div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const truncatedElements = document.querySelectorAll('.truncate-text');
+            const modal = document.getElementById('textModal');
+            const modalContent = modal.querySelector('.text-modal-content');
+            const modalBackdrop = document.querySelector('.modal-backdrop');
+            const closeBtn = modal.querySelector('.text-modal-close');
+
+            truncatedElements.forEach(element => {
+                element.addEventListener('click', function() {
+                    const fullText = this.getAttribute('data-full-text');
+                    modalContent.textContent = fullText;
+                    modal.style.display = 'block';
+                    modalBackdrop.style.display = 'block';
+                });
+            });
+
+            function closeModal() {
+                modal.style.display = 'none';
+                modalBackdrop.style.display = 'none';
+            }
+
+            closeBtn.addEventListener('click', closeModal);
+            modalBackdrop.addEventListener('click', closeModal);
+        });
+    </script>
+}

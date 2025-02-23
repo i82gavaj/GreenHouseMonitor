@@ -2655,3 +2655,198 @@ Los parámetros afectados son:
    logtoconsole = 
    assemblypath = C:\Users\josem\Desktop\Universidad\Nueva carpeta\TFGv1_1\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
    logfile = C:\Users\josem\Desktop\Universidad\Nueva carpeta\TFGv1_1\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Desinstalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Quitando el origen de EventLog MQTTLoggerService.
+Se está quitando el servicio MQTTLoggerService del sistema...
+El servicio MQTTLoggerService se ha quitado correctamente del sistema.
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Desinstalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Quitando el origen de EventLog MQTTLoggerService.
+Se está quitando el servicio MQTTLoggerService del sistema...
+El servicio MQTTLoggerService se ha quitado correctamente del sistema.
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Desinstalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Quitando el origen de EventLog MQTTLoggerService.
+Se está quitando el servicio MQTTLoggerService del sistema...
+El servicio MQTTLoggerService se ha quitado correctamente del sistema.
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Desinstalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Quitando el origen de EventLog MQTTLoggerService.
+Se está quitando el servicio MQTTLoggerService del sistema...
+El servicio MQTTLoggerService se ha quitado correctamente del sistema.
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Desinstalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Quitando el origen de EventLog MQTTLoggerService.
+Se está quitando el servicio MQTTLoggerService del sistema...
+El servicio MQTTLoggerService se ha quitado correctamente del sistema.
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Desinstalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Quitando el origen de EventLog MQTTLoggerService.
+Se está quitando el servicio MQTTLoggerService del sistema...
+El servicio MQTTLoggerService se ha quitado correctamente del sistema.
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Desinstalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Quitando el origen de EventLog MQTTLoggerService.
+Excepción durante la desinstalación del instalador System.Diagnostics.EventLogInstaller.
+System.Security.SecurityException: Acceso denegado al Registro solicitado.
+Excepción al desinstalar. Esta excepción se pasará por alto y continuará el proceso de desinstalación. Sin embargo, puede que la aplicación no esté completamente desinstalada hasta que finalice la desinstalación.
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Desinstalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Quitando el origen de EventLog MQTTLoggerService.
+Se está quitando el servicio MQTTLoggerService del sistema...
+El servicio MQTTLoggerService se ha quitado correctamente del sistema.
+Instalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Instalando el servicio MQTTLoggerService...
+El servicio MQTTLoggerService se ha instalado correctamente.
+Creando el origen de EventLog MQTTLoggerService en el registro Application...
+Confirmando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog

@@ -19,7 +19,7 @@ namespace TFGv1_1.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private object db;
+        //private object db;
 
         public AccountController()
         {

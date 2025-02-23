@@ -123,13 +123,15 @@
 
         function initializeChart(sensor) {
             var chartId = `chart-${sensor.topic}`;
-            var existingChart = Chart.getChart(chartId); // Verificar si la gráfica ya existe
-
+            var existingChart = Chart.getChart(chartId);
 
             if (existingChart) {
                 console.log("La gráfica ya existe para el topic:", sensor.topic);
-                return; // Si ya existe, no hacemos nada
+                return;
             }
+
+            // Extraer el topic después de la barra
+            var displayTopic = sensor.topic.split('/').slice(1).join('/');
 
             var wrapper = document.createElement('div');
             wrapper.className = 'chart-wrapper';
@@ -147,7 +149,7 @@
                     data: {
                         labels: Array(15).fill(''),
                         datasets: [{
-                            label: sensor.topic + " (°C)",
+                            label: displayTopic + " (°C)",
                             data: [],
                             borderColor: getRandomColor(),
                             tension: 0.4
@@ -344,8 +346,7 @@
         function onMessageArrived(message) {
             var topic = message.destinationName;
             var value = parseFloat(message.payloadString);
-            
-            // Ya no necesitamos extraer el topic real porque ya viene completo
+        
             var sensor = userTopics.find(s => s.topic === topic);
             if (sensor && !sensorData[topic]) {
                 initializeChart(sensor);

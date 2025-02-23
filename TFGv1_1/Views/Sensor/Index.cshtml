@@ -10,50 +10,80 @@
         <h2 class="index-title">
             <i class="fas fa-microchip me-2"></i>@ViewBag.Title
         </h2>
-        <div class="index-actions">
-            @Html.ActionLink("Crear Nuevo Sensor", "Create", null, new { @class = "btn btn-primary" })
-        </div>
+        @Html.ActionLink("Crear Nuevo Sensor", "Create", null, new { @class = "btn btn-primary" })
     </div>
 
-    <div class="table-container">
-        <table class="table custom-table">
-            <thead>
+    <table class="table table-responsive custom-table">
+        <thead>
+            <tr>
+                <th><i class="fas fa-tag me-2"></i>Nombre</th>
+                <th><i class="fas fa-thermometer-half me-2"></i>Tipo</th>
+                <th><i class="fas fa-ruler me-2"></i>Unidades</th>
+                <th><i class="fas fa-broadcast-tower me-2"></i>Topic</th>
+                <th><i class="fas fa-cogs me-2"></i>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sensor in Model)
+            {
                 <tr>
-                    <th>
-                        <i class="fas fa-tag me-2"></i>Nombre
-                    </th>
-                    <th>
-                        <i class="fas fa-microchip me-2"></i>Tipo
-                    </th>
-                    <th>
-                        <i class="fas fa-ruler me-2"></i>Unidades
-                    </th>
-                    <th>
-                        <i class="fas fa-route me-2"></i>Topic
-                    </th>
-                    <th>
-                        <i class="fas fa-cogs me-2"></i>Acciones
-                    </th>
+                    <td class="truncate-text" data-full-text="@sensor.SensorName">@sensor.SensorName</td>
+                    <td class="truncate-text" data-full-text="@sensor.SensorType">@sensor.SensorType</td>
+                    <td class="truncate-text" data-full-text="@sensor.Units">@sensor.Units</td>
+                    <td class="truncate-text" data-full-text="@sensor.Topic">
+                        @(sensor.Topic.Length > 30 ? sensor.Topic.Substring(0, 27) + "..." : sensor.Topic)
+                    </td>
+                    <td class="text-end">
+                        <div class="table-actions">
+                            <a href="@Url.Action("Edit", new { id = sensor.SensorID })" class="btn btn-sm btn-info" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="@Url.Action("Delete", new { id = sensor.SensorID })" class="btn btn-sm btn-danger" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                            <a href="@Url.Action("ViewContent", "SensorLogFile", new { id = sensor.SensorID })" class="btn btn-sm btn-success" title="Log">
+                                <i class="fas fa-file-alt"></i>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var sensor in Model)
-                {
-                    <tr>
-                        <td>@sensor.SensorName</td>
-                        <td>@sensor.SensorType</td>
-                        <td>@sensor.Units</td>
-                        <td>@sensor.Topic</td>
-                        <td>
-                            <div class="table-actions">
-                                @Html.ActionLink("Editar", "Edit", new { id = sensor.SensorID }, new { @class = "action-edit" })
-                                @Html.ActionLink("Eliminar", "Delete", new { id = sensor.SensorID }, new { @class = "action-delete" })
-                                @Html.ActionLink("Log", "ViewContent", "SensorLogFile", new { id = sensor.SensorID }, new { @class = "action-log" })
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
 </div>
+
+<!-- Modal para texto completo -->
+<div class="text-modal" id="textModal">
+    <span class="text-modal-close">&times;</span>
+    <div class="text-modal-content"></div>
+</div>
+<div class="modal-backdrop"></div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const truncatedElements = document.querySelectorAll('.truncate-text');
+            const modal = document.getElementById('textModal');
+            const modalContent = modal.querySelector('.text-modal-content');
+            const modalBackdrop = document.querySelector('.modal-backdrop');
+            const closeBtn = modal.querySelector('.text-modal-close');
+
+            truncatedElements.forEach(element => {
+                element.addEventListener('click', function() {
+                    const fullText = this.getAttribute('data-full-text');
+                    modalContent.textContent = fullText;
+                    modal.style.display = 'block';
+                    modalBackdrop.style.display = 'block';
+                });
+            });
+
+            function closeModal() {
+                modal.style.display = 'none';
+                modalBackdrop.style.display = 'none';
+            }
+
+            closeBtn.addEventListener('click', closeModal);
+            modalBackdrop.addEventListener('click', closeModal);
+        });
+    </script>
+}
