@@ -42,6 +42,6 @@ namespace TFGv1_1.Models
         public virtual GreenHouse GreenHouse { get; set; }
 
         // Relación 1:1 con SensorLogFile
-        public virtual SensorLogFile SensorLogFile { get; set; }
+        public virtual SensorLogFile LogFile { get; set; }
     }
 }

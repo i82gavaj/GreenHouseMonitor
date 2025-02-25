@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - SensorHub</title>
+    <title>@ViewBag.Title - SMGreen</title>
     <link rel="stylesheet" href="~/Content/Site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
@@ -12,7 +12,13 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    @if (Request.IsAuthenticated)
+    @{
+        bool isLoginOrRegister = (ViewContext.RouteData.Values["Controller"].ToString() == "Account" && 
+                                 (ViewContext.RouteData.Values["Action"].ToString() == "Login" || 
+                                  ViewContext.RouteData.Values["Action"].ToString() == "Register"));
+    }
+
+    @if (Request.IsAuthenticated && !isLoginOrRegister)
     {
         <!-- Botón Toggle -->
         <button class="toggle-btn" id="toggleBtn">
@@ -42,13 +48,13 @@
                 <li>
                     <a href="@Url.Action("Index", "SensorLogFile")">
                         <i class="bi bi-file-earmark-medical"></i>
-                        <span>Logs</span>
+                        <span>Ficheros de registro</span>
                     </a>
                 </li>
                 <li>
                     <a href="@Url.Action("Index", "GreenHouse")">
-                        <i class="bi bi-file-earmark-medical"></i>
-                        <span>Invernadero</span>
+                        <i class="bi bi-flower3"></i>
+                        <span>invernaderos</span>
                     </a>
                 </li>
                 <li>
@@ -61,61 +67,80 @@
         </div>
     }
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a href="@Url.Action("Index", "Home")" class="navbar-brand">
-                <i class="fas fa-microchip me-2"></i>SensorHub
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        @if (Request.IsAuthenticated)
-                        {
-                            <a href="@Url.Action("Index", "Account")" class="nav-link">
-                                <i class="fas fa-tachometer me-1"></i>Inicio
-                            </a>
-
-                        }
-                        else
-                        {
-                            <a href="@Url.Action("Index", "Home")" class="nav-link">
-                                <i class="fas fa-home me-1"></i>Inicio
-                            </a>
-                        }
-
-                    </li>
-                    <li class="nav-item">
-                        <a href="@Url.Action("About", "Home")" class="nav-link">
-                            <i class="fas fa-info-circle me-1"></i>Acerca de
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="@Url.Action("Contact", "Home")" class="nav-link">
-                            <i class="fas fa-envelope me-1"></i>Contacto
-                        </a>
-                    </li>
-     
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </nav>
-
-    <div class="container body-content @(Request.IsAuthenticated ? "with-sidebar" : "")">
-        @RenderBody()
-        <footer class="bg-dark text-white text-center py-3">
+    @if (!isLoginOrRegister)
+    {
+        <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
-                <p class="mb-0">© 2023 SensorHub. Todos los derechos reservados.</p>
-                <p>
-                    <a href="@Url.Action("Privacy", "Home")" class="text-white">Política de Privacidad</a> |
-                    <a href="@Url.Action("Contact", "Home")" class="text-white">Contacto</a>
-                </p>
+                <a href="@Url.Action("Index", "Home")" class="navbar-brand">
+                    <i class="fas fa-leaf me-2"></i>SMGreen
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            @if (Request.IsAuthenticated)
+                            {
+                                <a href="@Url.Action("Index", "Account")" class="nav-link">
+                                    <i class="fas fa-tachometer me-1"></i>Inicio
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Index", "Home")" class="nav-link">
+                                    <i class="fas fa-home me-1"></i>Inicio
+                                </a>
+                            }
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Contact", "Home")" class="nav-link">
+                                <i class="fas fa-envelope me-1"></i>Contacto
+                            </a>
+                        </li>
+                    </ul>
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>
+        </nav>
+    }
+
+    <div class="container body-content @(Request.IsAuthenticated && !isLoginOrRegister ? "with-sidebar" : "")">
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+    </div>
+    
+    @if (!isLoginOrRegister)
+    {
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h5><i class="fas fa-leaf me-2 text-white"></i>SMGreen</h5>
+                        <p class="text-white">Sistema de monitorización inteligente para invernaderos</p>
+                    </div>
+                    <div class="footer-section">
+                        <h5><i class="fas fa-link me-2"></i>Enlaces Rápidos</h5>
+                        <ul>
+                            <li><a href="@Url.Action("Index", "Home")"><i class="fas fa-home me-2"></i>Inicio</a></li>
+                            <li><a href="@Url.Action("Index", "GreenHouse")"><i class="fas fa-warehouse me-2"></i>Invernaderos</a></li>
+                            <li><a href="@Url.Action("Index", "Sensor")"><i class="fas fa-microchip me-2"></i>Sensores</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h5><i class="fas fa-envelope me-2"></i>Contacto</h5>
+                        <p class="text-white"><i class="fas fa-envelope me-2"></i>soporte@smgreen.com</p>
+                        <div class="social-links">
+                            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </footer>
-    </div>
+    }
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

@@ -2,10 +2,17 @@
     ViewBag.Title = "Confirmar correo electrónico";
 }
 <main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <div>
-        <p>
-            Gracias por confirmar su correo electrónico. @Html.ActionLink("Haga clic aquí para iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+    <div class="confirm-email-container">
+        <i class="fas fa-check-circle confirm-email-icon"></i>
+        <h2 id="title" class="confirm-email-title">@ViewBag.Title</h2>
+        <p class="confirm-email-message">
+            Gracias por confirmar su correo electrónico. 
         </p>
+        @Html.ActionLink("Haga clic aquí para iniciar sesión", "Login", "Account", 
+            routeValues: null, 
+            htmlAttributes: new { 
+                @class = "confirm-email-link",
+                id = "loginLink" 
+            })
     </div>
 </main>

@@ -313,7 +313,7 @@ namespace TFGv1_1.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Sensor sensor = db.Sensors
-                .Include(s => s.SensorLogFile)  // Incluir el LogFile relacionado
+                .Include(s => s.LogFile)  // Incluir el LogFile relacionado
                 .Include(s => s.GreenHouse)     // Incluir el GreenHouse relacionado
                 .FirstOrDefault(s => s.SensorID == id);
 
@@ -330,9 +330,9 @@ namespace TFGv1_1.Controllers
             }
 
             // Eliminar el archivo físico si existe
-            if (sensor.SensorLogFile != null)
+            if (sensor.LogFile != null)
             {
-                string fullPath = Path.Combine(Server.MapPath("~/Logs"), sensor.SensorLogFile.FilePath);
+                string fullPath = Path.Combine(Server.MapPath("~/Logs"), sensor.LogFile.FilePath);
                 if (System.IO.File.Exists(fullPath))
                 {
                     System.IO.File.Delete(fullPath);

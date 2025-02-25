@@ -46,7 +46,7 @@ namespace TFGv1_1.Controllers
             var greenhouse = new GreenHouse 
             { 
                 UserID = userId,
-                GreenHouseID = $"GH_{DateTime.Now.Ticks}_{Guid.NewGuid().ToString().Substring(0, 8)}"
+                GreenHouseID = $"GH_{Guid.NewGuid().ToString().Substring(0, 8)}"
             };
             return View(greenhouse);
         }
@@ -60,58 +60,36 @@ namespace TFGv1_1.Controllers
         {
             try
             {
-                // Añadir logging para ver si los datos llegan correctamente
-                System.Diagnostics.Debug.WriteLine($"Datos recibidos: Name={greenHouse.Name}, Location={greenHouse.Location}, Area={greenHouse.Area}, GreenHouseID={greenHouse.GreenHouseID}, UserID={greenHouse.UserID}");
-
-                if (!ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                    // Loguear los errores de validación
-                    foreach (var modelState in ModelState.Values)
+                    // Verificar si el usuario ya tiene un invernadero con el mismo nombre
+                    var existingGreenhouse = db.GreenHouses
+                        .FirstOrDefault(g => g.UserID == greenHouse.UserID && g.Name == greenHouse.Name);
+                        
+                    if (existingGreenhouse != null)
                     {
-                        foreach (var error in modelState.Errors)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Error de validación: {error.ErrorMessage}");
-                        }
+                        ModelState.AddModelError("Name", "Ya tienes un invernadero con este nombre");
+                        return View(greenHouse);
                     }
-                    return View(greenHouse);
-                }
 
-                // Verificar si el usuario ya tiene un invernadero con el mismo nombre
-                var existingGreenhouse = db.GreenHouses
-                    .FirstOrDefault(g => g.UserID == greenHouse.UserID && g.Name == greenHouse.Name);
-                    
-                if (existingGreenhouse != null)
-                {
-                    ModelState.AddModelError("Name", "Ya tienes un invernadero con este nombre");
-                    return View(greenHouse);
-                }
-
-                try
-                {
                     db.GreenHouses.Add(greenHouse);
-                    System.Diagnostics.Debug.WriteLine("Invernadero añadido al contexto");
-                    
                     db.SaveChanges();
-                    System.Diagnostics.Debug.WriteLine("Cambios guardados en la base de datos");
-                    
-                    TempData["SuccessMessage"] = "Invernadero creado correctamente";
                     return RedirectToAction("Index");
                 }
-                catch (Exception ex)
+
+                // Si llegamos aquí, algo falló
+                foreach (var modelStateKey in ModelState.Keys)
                 {
-                    // Loguear el error completo
-                    System.Diagnostics.Debug.WriteLine($"Error completo: {ex.ToString()}");
-                    ModelState.AddModelError("", $"Error al guardar en la base de datos: {ex.Message}");
-                    if (ex.InnerException != null)
+                    var modelStateVal = ModelState[modelStateKey];
+                    foreach (var error in modelStateVal.Errors)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Inner Exception: {ex.InnerException}");
+                        System.Diagnostics.Debug.WriteLine($"Key: {modelStateKey}, Error: {error.ErrorMessage}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error general: {ex.ToString()}");
-                ModelState.AddModelError("", $"Error al crear el invernadero: {ex.Message}");
+                ModelState.AddModelError("", "Ha ocurrido un error al crear el invernadero: " + ex.Message);
             }
 
             return View(greenHouse);

@@ -3,68 +3,96 @@
     ViewBag.Title = "Registrarse";
 }
 
-<main class="main-container">
-    <h2 class="mb-4">@ViewBag.Title</h2>
-
-    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-3">Crear una nueva cuenta</h4>
-                <hr />
-                @Html.ValidationSummary("", new { @class = "text-danger" })
-                
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
-                    </div>
+<main>
+    <div class="login-container">
+        <div class="login-split-container">
+            <div class="login-image">
+                <img src="@Url.Content("~/Content/Images/Invernadero.jpg")" alt="Invernadero" />
+                <div class="image-overlay">
+                    <h1>SensorHub</h1>
+                    <p>Únete a nuestra plataforma de gestión inteligente de invernaderos</p>
                 </div>
+            </div>
 
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            <div class="login-form-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <i class="fas fa-user-plus fa-3x mb-3"></i>
+                        <h2>@ViewBag.Title</h2>
+                        <p>Crea tu cuenta para comenzar</p>
                     </div>
-                </div>
 
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
-                    </div>
-                </div>
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "login-form", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
 
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                    </div>
-                </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", placeholder = "Nombre completo" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                        </div>
 
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-                    </div>
-                </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Correo electrónico" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
 
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(m => m.BirthDate, new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.BirthDate, new { @class = "form-control", type = "date" })
-                    </div>
-                </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Teléfono" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                        </div>
 
-                <div class="form-group row">
-                    <div class="offset-md-2 col-md-10">
-                        <button type="submit" class="btn btn-outline-dark">Registrarse</button>
-                    </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-icon">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmar contraseña" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-login">
+                                <i class="fas fa-user-plus me-2"></i>Registrarse
+                            </button>
+                        </div>
+
+                        <div class="login-footer">
+                            <p>
+                                ¿Ya tienes una cuenta? @Html.ActionLink("Inicia sesión aquí", "Login", null, new { @class = "register-link" })
+                            </p>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
-    }
+    </div>
 </main>
 
 @section Scripts {

@@ -54,7 +54,7 @@ namespace TFGv1_1.Models
 
             // Configuración de la relación Sensor - SensorLogFile
             modelBuilder.Entity<Sensor>()
-                .HasOptional(s => s.SensorLogFile)
+                .HasOptional(s => s.LogFile)
                 .WithRequired(l => l.Sensor)
                 .WillCascadeOnDelete(true);
 
