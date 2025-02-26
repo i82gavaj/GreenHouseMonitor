@@ -2850,3 +2850,11 @@ Los parámetros afectados son:
    logtoconsole = 
    assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
    logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Desinstalando ensamblado 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe'.
+Los parámetros afectados son:
+   logtoconsole = 
+   assemblypath = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.exe
+   logfile = C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\TFGv1_1.MQTTLogger.InstallLog
+Quitando el origen de EventLog MQTTLoggerService.
+Se está quitando el servicio MQTTLoggerService del sistema...
+El servicio MQTTLoggerService se ha quitado correctamente del sistema.

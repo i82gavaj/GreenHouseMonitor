@@ -1,0 +1,140 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\TFG_Test.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj",
+        "projectName": "TFGv1_1.MQTTLogger",
+        "projectPath": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj",
+        "frameworks": {
+          "net481": {
+            "projectReferences": {
+              "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\TFGv1_1.csproj": {
+                "projectPath": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\TFGv1_1.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net481": {}
+      }
+    },
+    "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\TFGv1_1.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\TFGv1_1.csproj",
+        "projectName": "TFGv1_1",
+        "projectPath": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\TFGv1_1.csproj",
+        "frameworks": {
+          "net481": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net481": {}
+      }
+    },
+    "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\TFG_Test.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\TFG_Test.csproj",
+        "projectName": "TFG_Test",
+        "projectPath": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\TFG_Test.csproj",
+        "packagesPath": "C:\\Users\\josem\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\josem\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net481"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net481": {
+            "targetAlias": "net481",
+            "projectReferences": {
+              "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj": {
+                "projectPath": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj"
+              },
+              "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\TFGv1_1.csproj": {
+                "projectPath": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\TFGv1_1.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net481": {
+          "targetAlias": "net481",
+          "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
+            "Microsoft.AspNet.Identity.Core": {
+              "target": "Package",
+              "version": "[2.2.4, )"
+            },
+            "Microsoft.AspNet.Identity.EntityFramework": {
+              "target": "Package",
+              "version": "[2.2.4, )"
+            },
+            "Microsoft.AspNet.Mvc": {
+              "target": "Package",
+              "version": "[5.2.9, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.14.0, )"
+            },
+            "NUnit.Analyzers": {
+              "target": "Package",
+              "version": "[3.9.0, )"
+            },
+            "NUnit3TestAdapter": {
+              "target": "Package",
+              "version": "[4.5.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

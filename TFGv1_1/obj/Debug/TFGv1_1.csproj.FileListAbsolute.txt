@@ -1003,9 +1003,9 @@ C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.c
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.Migrations.InitialCreate.resources
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.Migrations.UpdateGreenHouseIDToString.resources
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.Migrations.SupuMigration.resources
+C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.Migrations.ActualizacionIdentityModels.resources
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.csproj.GenerateResource.cache
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.csproj.CoreCompileInputs.cache
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.csproj.Up2Date
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.dll
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.pdb
-C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.Migrations.ActualizacionIdentityModels.resources

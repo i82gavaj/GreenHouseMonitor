@@ -3,7 +3,31 @@
   "WorkspaceRootPath": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|c:\\users\\josem\\desktop\\universidad\\greenhousemonitor\\tfgv1_1\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{ECB1B605-8086-4CE0-AE69-4DD85E907F8B}|TFG_Test\\TFG_Test.csproj|c:\\users\\josem\\desktop\\universidad\\greenhousemonitor\\tfg_test\\unittest1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECB1B605-8086-4CE0-AE69-4DD85E907F8B}|TFG_Test\\TFG_Test.csproj|solutionrelative:tfg_test\\unittest1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|solutionrelative:tfgv1_1\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1\\controllers\\greenhousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|solutionrelative:tfgv1_1\\controllers\\greenhousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\obj\\Debug\\net481\\TFG_Test.GlobalUsings.g.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:TFG_Test\\obj\\Debug\\net481\\TFG_Test.GlobalUsings.g.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D71652C-12B5-4B84-A4C6-2A0136666C9A}|TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1.mqttlogger\\mqttloggerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D71652C-12B5-4B84-A4C6-2A0136666C9A}|TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj|solutionrelative:tfgv1_1.mqttlogger\\mqttloggerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECB1B605-8086-4CE0-AE69-4DD85E907F8B}|TFG_Test\\TFG_Test.csproj|c:\\users\\josem\\desktop\\universidad\\greenhousemonitor\\tfg_test\\tfg_test.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{ECB1B605-8086-4CE0-AE69-4DD85E907F8B}|TFG_Test\\TFG_Test.csproj|solutionrelative:tfg_test\\tfg_test.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|solutionrelative:tfgv1_1\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
@@ -15,16 +39,8 @@
       "RelativeMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|solutionrelative:tfgv1_1\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1\\controllers\\greenhousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|solutionrelative:tfgv1_1\\controllers\\greenhousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1\\views\\greenhouse\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|solutionrelative:tfgv1_1\\views\\greenhouse\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|solutionrelative:tfgv1_1\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1\\models\\identitymodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -41,10 +57,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{3D71652C-12B5-4B84-A4C6-2A0136666C9A}|TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1.mqttlogger\\projectinstaller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3D71652C-12B5-4B84-A4C6-2A0136666C9A}|TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj|solutionrelative:tfgv1_1.mqttlogger\\projectinstaller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3D71652C-12B5-4B84-A4C6-2A0136666C9A}|TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1.mqttlogger\\mqttloggerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D71652C-12B5-4B84-A4C6-2A0136666C9A}|TFGv1_1.MQTTLogger\\TFGv1_1.MQTTLogger.csproj|solutionrelative:tfgv1_1.mqttlogger\\mqttloggerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{24E67909-475E-4EB7-91F4-F507DA46874D}|TFGv1_1\\TFGv1_1.csproj|C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\tfgv1_1\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -122,31 +134,45 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "UnitTest1.cs",
+              "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\UnitTest1.cs",
+              "RelativeDocumentMoniker": "TFG_Test\\UnitTest1.cs",
+              "ToolTip": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\UnitTest1.cs",
+              "RelativeToolTip": "TFG_Test\\UnitTest1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-26T16:30:37.936Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "TFGv1_1\\Views\\Account\\Login.cshtml",
               "ToolTip": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Views\\Account\\Login.cshtml",
               "RelativeToolTip": "TFGv1_1\\Views\\Account\\Login.cshtml",
-              "ViewState": "AgIAACMAAAAAAAAAAAAiwCcAAAAwAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAiwDEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-02-24T18:53:23.273Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "GreenHouseController.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Controllers\\GreenHouseController.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Controllers\\GreenHouseController.cs",
               "ToolTip": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Controllers\\GreenHouseController.cs",
               "RelativeToolTip": "TFGv1_1\\Controllers\\GreenHouseController.cs",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAwwDgAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAwwDoAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-19T19:26:17.253Z"
+              "WhenOpened": "2025-02-19T19:26:17.253Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "202502191902574_InitialCreate.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Migrations\\202502191902574_InitialCreate.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Migrations\\202502191902574_InitialCreate.cs",
@@ -154,11 +180,12 @@
               "RelativeToolTip": "TFGv1_1\\Migrations\\202502191902574_InitialCreate.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-19T19:03:02.425Z"
+              "WhenOpened": "2025-02-19T19:03:02.425Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 4,
               "Title": "MQTTLoggerService.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1.MQTTLogger\\MQTTLoggerService.cs",
               "RelativeDocumentMoniker": "TFGv1_1.MQTTLogger\\MQTTLoggerService.cs",
@@ -166,23 +193,51 @@
               "RelativeToolTip": "TFGv1_1.MQTTLogger\\MQTTLoggerService.cs",
               "ViewState": "AgIAAIwAAAAAAAAAAAAIwC0BAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-19T17:58:30.854Z"
+              "WhenOpened": "2025-02-19T17:58:30.854Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "SensorController.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Controllers\\SensorController.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Controllers\\SensorController.cs",
               "ToolTip": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Controllers\\SensorController.cs",
               "RelativeToolTip": "TFGv1_1\\Controllers\\SensorController.cs",
-              "ViewState": "AgIAAF4AAAAAAAAAAAApwGYAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAABIBAAAAAAAAAAAIwBcBAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-19T17:08:09.359Z"
+              "WhenOpened": "2025-02-19T17:08:09.359Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
+              "Title": "TFG_Test",
+              "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\TFG_Test.csproj",
+              "RelativeDocumentMoniker": "TFG_Test\\TFG_Test.csproj",
+              "ToolTip": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\TFG_Test.csproj",
+              "RelativeToolTip": "TFG_Test\\TFG_Test.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-02-26T17:26:19.182Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TFG_Test.GlobalUsings.g.cs",
+              "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\obj\\Debug\\net481\\TFG_Test.GlobalUsings.g.cs",
+              "RelativeDocumentMoniker": "TFG_Test\\obj\\Debug\\net481\\TFG_Test.GlobalUsings.g.cs",
+              "ToolTip": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFG_Test\\obj\\Debug\\net481\\TFG_Test.GlobalUsings.g.cs",
+              "RelativeToolTip": "TFG_Test\\obj\\Debug\\net481\\TFG_Test.GlobalUsings.g.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-26T17:35:21.231Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "IdentityModels.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Models\\IdentityModels.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Models\\IdentityModels.cs",
@@ -190,11 +245,12 @@
               "RelativeToolTip": "TFGv1_1\\Models\\IdentityModels.cs",
               "ViewState": "AgIAACoAAAAAAAAAAAAawDcAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-19T16:48:50.442Z"
+              "WhenOpened": "2025-02-19T16:48:50.442Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 9,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Views\\GreenHouse\\Create.cshtml",
               "RelativeDocumentMoniker": "TFGv1_1\\Views\\GreenHouse\\Create.cshtml",
@@ -202,11 +258,12 @@
               "RelativeToolTip": "TFGv1_1\\Views\\GreenHouse\\Create.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-19T18:20:05.432Z"
+              "WhenOpened": "2025-02-19T18:20:05.432Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "TFGv1_1\\Views\\Shared\\_Layout.cshtml",
@@ -214,11 +271,12 @@
               "RelativeToolTip": "TFGv1_1\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAFsAAAAAAAAAAAAAAHMAAABMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-19T17:34:57.746Z"
+              "WhenOpened": "2025-02-19T17:34:57.746Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 7,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Views\\Account\\Index.cshtml",
               "RelativeDocumentMoniker": "TFGv1_1\\Views\\Account\\Index.cshtml",
@@ -226,11 +284,12 @@
               "RelativeToolTip": "TFGv1_1\\Views\\Account\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-19T17:33:04.417Z"
+              "WhenOpened": "2025-02-19T17:33:04.417Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "202502192015060_SupuMigration.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Migrations\\202502192015060_SupuMigration.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Migrations\\202502192015060_SupuMigration.cs",
@@ -238,11 +297,12 @@
               "RelativeToolTip": "TFGv1_1\\Migrations\\202502192015060_SupuMigration.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-19T20:15:11.947Z"
+              "WhenOpened": "2025-02-19T20:15:11.947Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "ProjectInstaller.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1.MQTTLogger\\ProjectInstaller.cs",
               "RelativeDocumentMoniker": "TFGv1_1.MQTTLogger\\ProjectInstaller.cs",
@@ -250,11 +310,12 @@
               "RelativeToolTip": "TFGv1_1.MQTTLogger\\ProjectInstaller.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T16:50:34.319Z"
+              "WhenOpened": "2025-02-20T16:50:34.319Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 11,
               "Title": "202502231303173_ActualizacionIdentityModels.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Migrations\\202502231303173_ActualizacionIdentityModels.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Migrations\\202502231303173_ActualizacionIdentityModels.cs",
@@ -262,11 +323,12 @@
               "RelativeToolTip": "TFGv1_1\\Migrations\\202502231303173_ActualizacionIdentityModels.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-23T13:03:23.316Z"
+              "WhenOpened": "2025-02-23T13:03:23.316Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "SensorLogFileController.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Controllers\\SensorLogFileController.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Controllers\\SensorLogFileController.cs",
@@ -274,11 +336,12 @@
               "RelativeToolTip": "TFGv1_1\\Controllers\\SensorLogFileController.cs",
               "ViewState": "AgIAAEgAAAAAAAAAAAAYwGIAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-19T17:09:51.049Z"
+              "WhenOpened": "2025-02-19T17:09:51.049Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Controllers\\AccountController.cs",
@@ -286,11 +349,12 @@
               "RelativeToolTip": "TFGv1_1\\Controllers\\AccountController.cs",
               "ViewState": "AgIAABcAAAAAAAAAAEBUwBoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T16:38:03.279Z"
+              "WhenOpened": "2025-02-20T16:38:03.279Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 22,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Views\\GreenHouse\\Index.cshtml",
               "RelativeDocumentMoniker": "TFGv1_1\\Views\\GreenHouse\\Index.cshtml",
@@ -298,11 +362,12 @@
               "RelativeToolTip": "TFGv1_1\\Views\\GreenHouse\\Index.cshtml",
               "ViewState": "AgIAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-19T17:32:45.27Z"
+              "WhenOpened": "2025-02-19T17:32:45.27Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "GreenHouse.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Models\\GreenHouse.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Models\\GreenHouse.cs",
@@ -310,11 +375,12 @@
               "RelativeToolTip": "TFGv1_1\\Models\\GreenHouse.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAgwBcAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-19T16:50:48.133Z"
+              "WhenOpened": "2025-02-19T16:50:48.133Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 23,
               "Title": "dbo.GreenHouses.sql",
               "DocumentMoniker": "ViewDataWindow_MSSQL__/DELPRADO_SQLEXPRESS/aspnet_TFGv1_1_202501301107283/True/SqlTable/dbo.GreenHouses.sql",
               "ToolTip": "ViewDataWindow_MSSQL__/DELPRADO_SQLEXPRESS/aspnet_TFGv1_1_202501301107283/True/SqlTable/dbo.GreenHouses.sql",
@@ -323,7 +389,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Web.config",
               "RelativeDocumentMoniker": "TFGv1_1\\Web.config",
@@ -336,7 +402,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "Delete.cshtml",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Views\\SensorLogFile\\Delete.cshtml",
               "RelativeDocumentMoniker": "TFGv1_1\\Views\\SensorLogFile\\Delete.cshtml",
@@ -348,18 +414,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 20,
               "Title": "MQTTLoggerService.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1.MQTTLogger\\MQTTLoggerService.cs",
               "RelativeDocumentMoniker": "TFGv1_1.MQTTLogger\\MQTTLoggerService.cs",
               "ToolTip": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1.MQTTLogger\\MQTTLoggerService.cs [Dise\u00F1o]",
               "RelativeToolTip": "TFGv1_1.MQTTLogger\\MQTTLoggerService.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-19T17:58:29.19Z"
+              "WhenOpened": "2025-02-19T17:58:29.19Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 21,
               "Title": "AccountViewModels.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Models\\AccountViewModels.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Models\\AccountViewModels.cs",
@@ -371,7 +438,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 25,
               "Title": "Sensor.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Models\\Sensor.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Models\\Sensor.cs",
@@ -383,7 +450,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 26,
               "Title": "SensorLogFile.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Models\\SensorLogFIle.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Models\\SensorLogFIle.cs",
@@ -395,7 +462,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 28,
               "Title": "Startup.Auth.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\App_Start\\Startup.Auth.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\App_Start\\Startup.Auth.cs",
@@ -407,7 +474,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 27,
               "Title": "IdentityConfig.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\App_Start\\IdentityConfig.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\App_Start\\IdentityConfig.cs",
@@ -419,7 +486,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 29,
               "Title": "RouteConfig.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\App_Start\\RouteConfig.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\App_Start\\RouteConfig.cs",
@@ -431,7 +498,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 24,
               "Title": "Configuration.cs",
               "DocumentMoniker": "C:\\Users\\josem\\Desktop\\Universidad\\GreenHouseMonitor\\TFGv1_1\\Migrations\\Configuration.cs",
               "RelativeDocumentMoniker": "TFGv1_1\\Migrations\\Configuration.cs",

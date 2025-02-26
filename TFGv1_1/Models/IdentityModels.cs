@@ -44,9 +44,9 @@ namespace TFGv1_1.Models
             return new ApplicationDbContext();
         }
 
-        public DbSet<GreenHouse> GreenHouses { get; set; }
-        public DbSet<Sensor> Sensors { get; set; }
-        public DbSet<SensorLogFile> SensorLogFiles { get; set; }
+        public virtual DbSet<GreenHouse> GreenHouses { get; set; }
+        public virtual DbSet<Sensor> Sensors { get; set; }
+        public virtual DbSet<SensorLogFile> SensorLogFiles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
