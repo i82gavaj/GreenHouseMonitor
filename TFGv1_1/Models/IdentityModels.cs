@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using TFGv1_1.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace TFGv1_1.Models
 {
@@ -30,6 +31,44 @@ namespace TFGv1_1.Models
         
         // Un usuario puede tener múltiples invernaderos
         public virtual ICollection<GreenHouse> GreenHouses { get; set; }
+
+        public string Name { get; set; }
+        public string Surname { get; set; }
+
+        public new string UserName
+        {
+            get => base.UserName;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException("El nombre de usuario no puede estar vacío");
+                base.UserName = value;
+            }
+        }
+
+        public new string Email
+        {
+            get => base.Email;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException("El email no puede estar vacío");
+                if (!value.Contains("@") || !value.Contains("."))
+                    throw new ArgumentException("El formato del email no es válido");
+                base.Email = value;
+            }
+        }
+
+        public new string PhoneNumber
+        {
+            get => base.PhoneNumber;
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && !value.All(char.IsDigit))
+                    throw new ArgumentException("El número de teléfono solo puede contener dígitos");
+                base.PhoneNumber = value;
+            }
+        }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
