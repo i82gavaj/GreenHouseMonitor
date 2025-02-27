@@ -1009,3 +1009,4 @@ C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.c
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.csproj.Up2Date
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.dll
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.pdb
+C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\obj\Debug\TFGv1_1.Migrations.CambiosUser.resources
