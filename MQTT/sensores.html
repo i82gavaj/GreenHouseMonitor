@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Sensores Industriales</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #e67e22;
+            text-transform: uppercase;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #bdc3c7;
+        }
+
+        .sensor-container {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        /* Estilos del input de número de sensores y botón */
+        #numSensors, #startButton {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+        }
+
+        #numSensors {
+            width: 100%;
+            max-width: 200px;
+            background-color: #34495e;
+            color: #ecf0f1;
+            text-align: center;
+        }
+
+        #startButton {
+            cursor: pointer;
+            background-color: #e67e22;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+
+        #startButton:hover {
+            background-color: #d35400;
+        }
+
+        /* Estilos de los sensores */
+        .sensor {
+            background-color: #34495e;
+            border: 1px solid #7f8c8d;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .sensor label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #ecf0f1;
+            font-weight: bold;
+        }
+
+        .sensor input[type="text"] {
+            width: 80%;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border: 2px solid #7f8c8d;
+            border-radius: 5px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Simulación de Sensores Industriales</h2>
+    
+    <label for="numSensors">Número de sensores:</label>
+    <input type="number" id="numSensors" min="1" placeholder="Ingrese cantidad de sensores" />
+    <button id="startButton">Iniciar</button>
+    
+    <div id="sensorContainer" class="sensor-container"></div>
+
+    <script>
+        document.getElementById("startButton").onclick = function() {
+            const numSensors = parseInt(document.getElementById("numSensors").value);
+            const sensorContainer = document.getElementById("sensorContainer");
+            
+            if (isNaN(numSensors) || numSensors <= 0) {
+                alert("Por favor, ingrese un número válido de sensores.");
+                return;
+            }
+
+            // Limpiar contenedor de sensores si ya existen
+            sensorContainer.innerHTML = "";
+
+            // Crear los cuadros de texto para cada sensor
+            for (let i = 1; i <= numSensors; i++) {
+                const sensorDiv = document.createElement("div");
+                sensorDiv.className = "sensor";
+                sensorDiv.innerHTML = `<label>Sensor ${i}</label><input type="text" id="sensor_${i}" value="-" readonly />`;
+                sensorContainer.appendChild(sensorDiv);
+            }
+
+            // Iniciar la actualización de valores de los sensores
+            setInterval(updateSensorValues, 2000);
+
+            // Ahora que los sensores están creados, conectamos y suscribimos al broker
+            client.connect(connectionOptions);
+        };
+
+        // Función para actualizar los valores de los sensores
+        function updateSensorValues() {
+            const numSensors = parseInt(document.getElementById("numSensors").value);
+
+            for (let i = 1; i <= numSensors; i++) {
+                const sensorInput = document.getElementById(`sensor_${i}`);
+                const currentValue = parseFloat(sensorInput.value) || getRandomValue(); // Valor inicial
+
+                // Generar un nuevo valor dentro del rango ±3 del valor actual
+                const newValue = Math.min(50, Math.max(19, currentValue + getRandomDeviation()));
+                sensorInput.value = newValue.toFixed(1); // Redondear a un decimal
+            }
+        }
+
+        // Función para obtener un valor aleatorio inicial entre 19 y 50
+        function getRandomValue() {
+            return Math.floor(Math.random() * (50 - 19 + 1)) + 19;
+        }
+
+        // Función para obtener una desviación aleatoria entre -3 y +3
+        function getRandomDeviation() {
+            return Math.random() * 6 - 3; // Valor entre -3 y +3
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript">
+        //Variables locales
+        var brokerUrl = "broker.hivemq.com";
+        var brokerPort = 8000;
+        var clientId="PruebaSensores"+Math.floor(Math.random()*100001);
+        var sensorTopic = "PruebaSensores";
+        var userName = "mosquitto_user";
+        var password = "clddlmylddlp%lcylP%ts23";
+
+        //Creamos una instancia del cliente
+        client = new Paho.MQTT.Client(brokerUrl, Number(brokerPort), clientId);
+
+        //Seteamos los handleds y opciones de conexión
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        var connectionOptions = {
+            timeout: 60,
+            keepAliveInterval: 60,
+            onSuccess: onConnect,
+            userName: userName,
+            password: password
+        };
+
+        //Conectamos el cliente
+        //client.connect(connectionOptions);
+
+        //Función que se ejecuta cuando el cliente conecta
+        function onConnect() {
+            console.log("Conectado al broker");
+            client.subscribe(sensorTopic + "/#");
+        }
+
+        //Función que se ejecuta cuando el cliente pierde la conexión
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+            }
+        }
+
+        //Función que se ejecuta cuando llega un mensaje al broker
+        function onMessageArrived(message) {
+            var sensorTopic = message.destinationName.split("/");
+            var sensorName = sensorTopic[1];
+            var sensorValue = message.payloadString;
+            var sensorInput = document.getElementById(`sensor_${sensorName}`);
+
+            //if (sensorInput) { // Verifica si el elemento existe
+            //    sensorInput.value = sensorValue;
+            //    console.log("Mensaje recibido:", sensorValue, "en el topic:", sensorName);
+            //} else {
+            //    console.log("Error: Sensor no encontrado en el DOM. Asegúrate de que los sensores están creados.");
+            //}
+        }
+        //Listeners de los controles de la web (página cargada)
+        $(document).ready(function() {
+            $("#btnSend").click(function() {
+                var chatUser = $("#userName").val();
+                if (chatUser == "") {
+                    chatUser = clientId;
+                }
+                var testSms = $("#textMessage").val();
+                if (testSms === ""){
+                    return;
+                }
+                //Enviamos el mensaje al broker
+                message = new Paho.MQTT.Message($("#textMessage").val());
+                message.qos = 2;
+                message.destinationName = chatTopic + "/" + chatUser;
+                client.send(message);
+
+                //Limpiamos el input
+                $("#textMessage").val("");
+
+            });
+            //funcion que envia los datos de los sensores cada 5 segundos
+            setInterval(function() {
+                var numSensors = parseInt(document.getElementById("numSensors").value);
+                for (let i = 1; i <= numSensors; i++) {
+                    var sensorInput = document.getElementById(`sensor_${i}`);
+                    var sensorValue = sensorInput.value;
+                    message = new Paho.MQTT.Message(sensorValue);
+                    message.qos = 2;
+                    message.destinationName = sensorTopic + "/sensor_" + i;
+                    console.log("Enviando mensaje:", sensorValue, "en el topic:", message.destinationName);
+                    client.send(message);
+                }
+            }, 5000);
+
+
+        });
+
+        
+
+    </script>
+</body>
+</html>

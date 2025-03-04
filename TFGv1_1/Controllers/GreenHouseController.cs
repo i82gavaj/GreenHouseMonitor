@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using TFGv1_1.Models;
 using Microsoft.AspNet.Identity;
+using System.IO;
 
 namespace TFGv1_1.Controllers
 {
@@ -164,9 +165,51 @@ namespace TFGv1_1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            GreenHouse greenHouse = db.GreenHouses.Find(id);
+            // Cargar el invernadero con sus sensores
+            GreenHouse greenHouse = db.GreenHouses
+                .Include(g => g.Sensors)
+                .FirstOrDefault(g => g.GreenHouseID == id);
+
+            if (greenHouse == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Verificar que el usuario actual es dueño del invernadero
+            var userId = User.Identity.GetUserId();
+            if (greenHouse.UserID != userId)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+
+            // Eliminar cada sensor y sus logs asociados
+            foreach (var sensor in greenHouse.Sensors.ToList())
+            {
+                // Cargar el archivo de log asociado al sensor
+                var sensorLogFile = db.SensorLogFiles
+                    .FirstOrDefault(l => l.SensorId == sensor.SensorID);
+
+                // Eliminar el archivo físico si existe
+                if (sensorLogFile != null)
+                {
+                    string fullPath = Path.Combine(Server.MapPath("~/Logs"), sensorLogFile.FilePath);
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+
+                    // Eliminar el registro del archivo de log
+                    db.SensorLogFiles.Remove(sensorLogFile);
+                }
+
+                // Eliminar el sensor
+                db.Sensors.Remove(sensor);
+            }
+
+            // Eliminar el invernadero
             db.GreenHouses.Remove(greenHouse);
             db.SaveChanges();
+            
             return RedirectToAction("Index");
         }
 

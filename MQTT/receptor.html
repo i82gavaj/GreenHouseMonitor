@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente MQTT Sensores</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #e67e22;
+            text-transform: uppercase;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .sensor-container {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .sensor-box {
+            background-color: #34495e;
+            border: 1px solid #7f8c8d;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .sensor-box label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #ecf0f1;
+            font-weight: bold;
+        }
+
+        .sensor-box .sensor-value {
+            font-size: 20px;
+            color: #ecf0f1;
+        }
+
+        .grafica-container {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 20px;
+        }
+
+        #subscribeForm {
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #subscribeForm input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        #subscribeForm button {
+            padding: 10px 20px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #subscribeForm button:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+    <h2>Cliente MQTT Sensores</h2>
+
+    <div id="subscribeForm">
+        <label for="topics">Ingresa los topics (separados por comas):</label>
+        <input type="text" id="topics" placeholder="Ej: sensor/temperature, sensor/humidity">
+        <button onclick="subscribeToTopics()">Suscribirse</button>
+    </div>
+
+    <div id="sensorContainer" class="sensor-container"></div>
+
+    <div id="graficaContainer" class="grafica-container">
+        <!-- Las gráficas se generarán aquí -->
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+
+    <script>
+        // Variables locales
+        var brokerUrl = "broker.hivemq.com";
+        var brokerPort = 8000;
+        var clientId = "ClienteSensores" + Math.floor(Math.random() * 100001);
+        var userName = "mosquitto_user";
+        var password = "clddlmylddlp%lcylP%ts23";
+
+        // Creamos una instancia del cliente MQTT
+        var client = new Paho.MQTT.Client(brokerUrl, Number(brokerPort), clientId);
+
+        // Seteamos los handlers y opciones de conexión
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        var connectionOptions = {
+            timeout: 60,
+            keepAliveInterval: 60,
+            onSuccess: onConnect,
+            userName: userName,
+            password: password
+        };
+
+        // Array para almacenar los datos de los sensores
+        var sensorData = {};
+
+        // Conectar al broker MQTT
+        client.connect(connectionOptions);
+
+        // Función que se ejecuta cuando el cliente conecta
+        function onConnect() {
+            console.log("Conectado al broker");
+        }
+
+        // Función que se ejecuta cuando el cliente pierde la conexión
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+            }
+        }
+
+        // Función que se ejecuta cuando llega un mensaje al broker
+        function onMessageArrived(message) {
+            var sensorTopicParts = message.destinationName.split("/");
+            var sensorName = sensorTopicParts[1]; // Sensor identificador (por ejemplo, sensor_1)
+            var sensorValue = parseFloat(message.payloadString);
+
+            // Almacenamos el valor del sensor en el array sensorData
+            if (!sensorData[sensorName]) {
+                sensorData[sensorName] = [];
+            }
+            // Añadimos el nuevo valor al array
+            sensorData[sensorName].push(sensorValue);
+
+            // Aseguramos que solo haya los últimos 6 valores
+            if (sensorData[sensorName].length > 6) {
+                sensorData[sensorName].shift(); // Eliminamos el valor más antiguo si hay más de 6
+            }
+
+            // Actualizamos la interfaz de usuario
+            updateSensorUI(sensorName);
+            updateGraph(sensorName);
+        }
+
+        // Función para crear o actualizar las cajas de los sensores
+        function updateSensorUI(sensorName) {
+            // Verificar si ya existe una caja para este sensor
+            var sensorBox = document.getElementById(sensorName);
+            if (!sensorBox) {
+                // Crear nueva caja para el sensor si no existe
+                sensorBox = document.createElement("div");
+                sensorBox.id = sensorName;
+                sensorBox.className = "sensor-box";
+                sensorBox.innerHTML = `<label>${sensorName}</label><div class="sensor-value">Esperando datos...</div>`;
+                document.getElementById("sensorContainer").appendChild(sensorBox);
+            }
+
+            // Actualizar el valor en la caja
+            var sensorValues = sensorData[sensorName];
+            var sensorValueElement = sensorBox.querySelector(".sensor-value");
+
+            // Imprimir los últimos 6 valores en la caja
+            var displayValues = sensorValues.join(", ");
+            sensorValueElement.textContent = displayValues;
+        }
+
+        // Función para crear o actualizar la gráfica
+        function updateGraph(sensorName) {
+            var canvas = document.getElementById(sensorName + "-graph");
+            if (!canvas) {
+                // Crear nuevo canvas para la gráfica si no existe
+                canvas = document.createElement("canvas");
+                canvas.id = sensorName + "-graph";
+                document.getElementById("graficaContainer").appendChild(canvas);
+            }
+
+            var ctx = canvas.getContext('2d');
+            var chartData = {
+                labels: Array(sensorData[sensorName].length).fill(''),
+                datasets: [{
+                    label: sensorName,
+                    data: sensorData[sensorName],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            };
+
+            var chartOptions = {
+                responsive: true,
+                scales: {
+                    y: {
+                        min: 0, // El valor mínimo del eje Y
+                        max: 60, // El valor máximo del eje Y
+                        beginAtZero: true // Asegura que el eje Y comienza desde 0
+                    }
+                }
+            };
+
+            // Si ya existe la gráfica, la actualizamos
+            if (canvas.chart) {
+                canvas.chart.data = chartData;
+                canvas.chart.update();
+            } else {
+                // Crear la gráfica si no existe
+                canvas.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: chartData,
+                    options: chartOptions
+                });
+            }
+        }
+
+        // Función para suscribirse a los topics
+        function subscribeToTopics() {
+            var topics = document.getElementById("topics").value;
+            var topicsArray = topics.split(",").map(topic => topic.trim()); // Separamos los topics por comas y eliminamos espacios extras
+
+            topicsArray.forEach(topic => {
+                console.log(`Suscribiéndome a: ${topic}`);
+                client.subscribe(topic); // Suscribir a cada topic
+            });
+
+            // Ocultar el formulario de suscripción después de suscribirse
+            document.getElementById("subscribeForm").style.display = "none";
+        }
+    </script>
+</body>
+</html>

@@ -29,10 +29,10 @@
 
         <div class="log-content-wrapper">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0 text-primary">Contenido del Log</h5>
-                <small class="text-muted">Última actualización: @DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</small>
+                <h5 class="mb-0 text-black">Contenido del Log</h5>
+                <small class="text-muted">Última actualización: <span id="lastUpdate">@DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</span></small>
             </div>
-            <pre class="log-content">@ViewBag.LogContent</pre>
+            <pre id="logContent" class="log-content">@ViewBag.LogContent</pre>
         </div>
 
         <div class="log-actions">
@@ -45,5 +45,21 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function updateLogContent() {
+            $.get('@Url.Action("GetLogContent", "SensorLogFile", new { id = Model.SensorId })', function(data) {
+                $('#logContent').html(data);
+                $('#lastUpdate').text(new Date().toLocaleString());
+            });
+        }
+
+        // Actualizar cada 3 segundos
+        $(document).ready(function() {
+            setInterval(updateLogContent, 3000);
+        });
+    </script>
+}
 
 

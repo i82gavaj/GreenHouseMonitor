@@ -40,7 +40,7 @@ namespace TFGv1_1.MQTTLogger
             this.logDirectory = Path.Combine(projectRoot, "TFGv1_1", "Logs");
             
             // Configurar la cadena de conexión
-            this.connectionString = @"Data Source=DELPRADO\SQLEXPRESS;Initial Catalog=aspnet-TFGv1_1-202501301107285;Integrated Security=True;TrustServerCertificate=True";
+            this.connectionString = @"Data Source=DELPRADO\SQLEXPRESS;Initial Catalog=aspnet-TFGv1_1-202501301107286;Integrated Security=True;TrustServerCertificate=True";
         }
 
         protected override void OnStart(string[] args)

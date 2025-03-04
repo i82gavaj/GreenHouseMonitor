@@ -3,38 +3,75 @@
 @using TFGv1_1.Models
 @using Microsoft.AspNet.Identity.Owin
 @using Microsoft.Owin
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta charset="utf-8" />
-</head>
-<body>
-    @if (Request.IsAuthenticated)
+
+@if (Request.IsAuthenticated)
+{
+    try
     {
         var userId = User.Identity.GetUserId();
-        var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-        var user = userManager.FindById(userId);
-
-        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        var userName = User.Identity.Name; // Obtener el nombre de usuario directamente de la identidad
+        
+        // Intentar obtener el usuario de la base de datos de forma segura
+        ApplicationUser user = null;
+        try
         {
-            @Html.AntiForgeryToken()
-
-            <ul class="navbar-nav navbar-right">
-                <li>
-                    @Html.ActionLink("Hola " + user.LastName + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
-                </li>
-                <li>
-                    <button type="submit" class="btn btn-link navbar-btn navbar-link nav-link">Cerrar sesi&oacute;n</button>
-                </li>
-            </ul>
+            // Obtener el contexto OWIN de forma segura
+            var owinContext = Request.GetOwinContext();
+            if (owinContext != null)
+            {
+                var userManager = owinContext.GetUserManager<ApplicationUserManager>();
+                if (userManager != null && !string.IsNullOrEmpty(userId))
+                {
+                    user = userManager.FindById(userId);
+                }
+            }
         }
-    }
-    else
-    {
+        catch (Exception)
+        {
+            // Ignorar errores al obtener el usuario
+        }
+
         <ul class="navbar-nav navbar-right">
-            <li>@Html.ActionLink("Registrarse", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
-            <li>@Html.ActionLink("Iniciar sesion", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
+            <li>
+                @if (user != null)
+                {
+                    @Html.ActionLink("Hola " + user.UserName + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+                }
+                else
+                {
+                    @Html.ActionLink("Hola " + userName + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+                }
+            </li>
+            <li>
+                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link nav-link">Cerrar sesi&oacute;n</button>
+                }
+            </li>
         </ul>
     }
-</body>
-</html>
+    catch (Exception)
+    {
+        // En caso de cualquier error, mostrar un enlace genérico
+        <ul class="navbar-nav navbar-right">
+            <li>
+                @Html.ActionLink("Mi Cuenta", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", @class = "nav-link" })
+            </li>
+            <li>
+                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link nav-link">Cerrar sesi&oacute;n</button>
+                }
+            </li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="navbar-nav navbar-right">
+        <li>@Html.ActionLink("Registrarse", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Iniciar sesion", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })</li>
+    </ul>
+}

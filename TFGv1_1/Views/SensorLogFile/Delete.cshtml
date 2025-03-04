@@ -1,48 +1,83 @@
 ﻿@model TFGv1_1.Models.SensorLogFile
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Eliminar Archivo de Log";
 }
 
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>SensorLogFile</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Sensor.SensorName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Sensor.SensorName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.FilePath)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.FilePath)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreationDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreationDate)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+<div class="container mt-4">
+    <div class="card border-danger shadow">
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Eliminar Archivo de Log</h2>
         </div>
-    }
+        <div class="card-body">
+            <div class="alert alert-warning delete-warning">
+                <h4 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>¿Está seguro que desea eliminar este archivo de log?</h4>
+                <p>Esta acción no se puede deshacer y eliminará permanentemente todos los datos de registro del sensor.</p>
+            </div>
+            
+            <div class="details-card mb-4">
+                <div class="details-header bg-light">
+                    <h5 class="mb-0">Detalles del Archivo de Log</h5>
+                </div>
+                <div class="details-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-item mb-3">
+                                <div class="info-icon">
+                                    <i class="fas fa-microchip"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label class="fw-bold">@Html.DisplayNameFor(model => model.Sensor.SensorName):</label>
+                                    <span>@Html.DisplayFor(model => model.Sensor.SensorName)</span>
+                                </div>
+                            </div>
+                            <div class="info-item mb-3">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label class="fw-bold">@Html.DisplayNameFor(model => model.CreationDate):</label>
+                                    <span>@Html.DisplayFor(model => model.CreationDate)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item mb-3">
+                                <div class="info-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label class="fw-bold">@Html.DisplayNameFor(model => model.FilePath):</label>
+                                    <span>@Html.DisplayFor(model => model.FilePath)</span>
+                                </div>
+                            </div>
+                            <div class="info-item mb-3">
+                                <div class="info-icon">
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label class="fw-bold">Invernadero:</label>
+                                    <span>@Html.DisplayFor(model => model.Sensor.GreenHouse.Name)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @using (Html.BeginForm()) {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions d-flex justify-content-between mt-4">
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Volver a la lista
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-2"></i>Eliminar Archivo de Log
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+

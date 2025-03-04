@@ -187,25 +187,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202502191902574_InitialCreate.cs" />
-    <Compile Include="Migrations\202502191902574_InitialCreate.Designer.cs">
-      <DependentUpon>202502191902574_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202502191947267_UpdateGreenHouseIDToString.cs" />
-    <Compile Include="Migrations\202502191947267_UpdateGreenHouseIDToString.Designer.cs">
-      <DependentUpon>202502191947267_UpdateGreenHouseIDToString.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202502192015060_SupuMigration.cs" />
-    <Compile Include="Migrations\202502192015060_SupuMigration.Designer.cs">
-      <DependentUpon>202502192015060_SupuMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202502231303173_ActualizacionIdentityModels.cs" />
-    <Compile Include="Migrations\202502231303173_ActualizacionIdentityModels.Designer.cs">
-      <DependentUpon>202502231303173_ActualizacionIdentityModels.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202502271909209_CambiosUser.cs" />
-    <Compile Include="Migrations\202502271909209_CambiosUser.Designer.cs">
-      <DependentUpon>202502271909209_CambiosUser.cs</DependentUpon>
+    <Compile Include="Migrations\202503041636534_IntialCreate.cs" />
+    <Compile Include="Migrations\202503041636534_IntialCreate.Designer.cs">
+      <DependentUpon>202503041636534_IntialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -342,20 +326,8 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202502191902574_InitialCreate.resx">
-      <DependentUpon>202502191902574_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202502191947267_UpdateGreenHouseIDToString.resx">
-      <DependentUpon>202502191947267_UpdateGreenHouseIDToString.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202502192015060_SupuMigration.resx">
-      <DependentUpon>202502192015060_SupuMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202502231303173_ActualizacionIdentityModels.resx">
-      <DependentUpon>202502231303173_ActualizacionIdentityModels.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202502271909209_CambiosUser.resx">
-      <DependentUpon>202502271909209_CambiosUser.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202503041636534_IntialCreate.resx">
+      <DependentUpon>202503041636534_IntialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

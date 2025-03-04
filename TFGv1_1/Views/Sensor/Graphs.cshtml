@@ -21,6 +21,12 @@
                         Conectar
                     </button>
                 </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="useSecureConnection" checked>
+                    <label class="form-check-label" for="useSecureConnection">
+                        Usar conexión segura (wss://)
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -75,9 +81,31 @@
             @:userTopics.push({topic: '@sensor.Topic', units: '@sensor.Units'});
         }
 
+        // Detectar automáticamente si estamos en HTTPS
+        var isSecureContext = window.location.protocol === 'https:';
+        
+        // Establecer el checkbox según el protocolo actual
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('useSecureConnection').checked = isSecureContext;
+            
+            // Si estamos en HTTPS, mostrar una advertencia si el usuario intenta desactivar la conexión segura
+            if (isSecureContext) {
+                document.getElementById('useSecureConnection').addEventListener('change', function(e) {
+                    if (!this.checked) {
+                        var confirm = window.confirm("ADVERTENCIA: Desactivar la conexión segura en un sitio HTTPS puede causar que el navegador bloque la conexión. ¿Desea continuar?");
+                        if (!confirm) {
+                            e.preventDefault();
+                            this.checked = true;
+                        }
+                    }
+                });
+            }
+        });
+
         function connectClient() {
             var brokerUrl = document.getElementById("connection_broker").value;
             var brokerPort = document.getElementById("connection_port").value;
+            var useSecure = document.getElementById("useSecureConnection").checked;
             
             if (!brokerUrl || !brokerPort) {
                 alert("Por favor, ingrese la información del broker");
@@ -85,6 +113,8 @@
             }
 
             var clientId = "ClienteSensores" + Math.floor(Math.random() * 200001);
+            
+            // Usar el protocolo adecuado según la configuración
             client = new Paho.MQTT.Client(brokerUrl, Number(brokerPort), clientId);
 
             client.onConnectionLost = onConnectionLost;
@@ -96,14 +126,20 @@
                 onSuccess: onConnect,
                 onFailure: function(message) {
                     console.log("Error de conexión: " + message.errorMessage);
+                    alert("Error de conexión: " + message.errorMessage);
                     isConnected = false;
                     document.getElementById('connectionStatus').textContent = 'Desconectado';
                 },
-                //userName: "mosquitto_user",
-                //password: "clddlmylddlp%lcylP%ts23"
+                useSSL: useSecure
             };
 
-            client.connect(connectionOptions);
+            try {
+                client.connect(connectionOptions);
+                console.log("Intentando conectar usando " + (useSecure ? "WSS (seguro)" : "WS (no seguro)"));
+            } catch (error) {
+                console.error("Error al intentar conectar:", error);
+                alert("Error al intentar conectar: " + error.message);
+            }
         }
 
         function onConnect() {
@@ -116,6 +152,7 @@
         function onConnectionLost(responseObject) {
             if (responseObject.errorCode !== 0) {
                 console.log("Conexión perdida:" + responseObject.errorMessage);
+                alert("Conexión perdida: " + responseObject.errorMessage);
                 isConnected = false;
                 document.getElementById('connectionStatus').textContent = 'Desconectado';
             }
@@ -198,7 +235,7 @@
                     data: {
                         labels: Array(15).fill(''),
                         datasets: [{
-                            label: sensor.topic + " (µg/m³)",
+                            label: displayTopic + " (µg/m³)",
                             data: [],
                             borderColor: getRandomColor(),
                             tension: 0.4
@@ -247,7 +284,7 @@
                     data: {
                         labels: Array(15).fill(''),
                         datasets: [{
-                            label: sensor.topic + " (g/m³)",
+                            label: displayTopic + " (g/m³)",
                             data: [],
                             borderColor: getRandomColor(),
                             tension: 0.4
@@ -297,7 +334,7 @@
                     data: {
                         labels: Array(15).fill(''),
                         datasets: [{
-                            label: sensor.topic + " (Lumen)",
+                            label: displayTopic + " (Lumen)",
                             data: [],
                             borderColor: getRandomColor(),
                             tension: 0.4

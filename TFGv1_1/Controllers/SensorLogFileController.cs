@@ -21,8 +21,17 @@ namespace TFGv1_1.Controllers
         // GET: SensorLogFile
         public ActionResult Index()
         {
-            var sensorLogFiles = db.SensorLogFiles.Include(s => s.Sensor);
-            return View(sensorLogFiles.ToList());
+            // Obtener el ID del usuario actual
+            var userId = User.Identity.GetUserId();
+            
+            // Filtrar los logs de sensores para mostrar solo los que pertenecen a los invernaderos del usuario
+            var sensorLogFiles = db.SensorLogFiles
+                .Include(s => s.Sensor)
+                .Include(s => s.Sensor.GreenHouse)
+                .Where(s => s.Sensor.GreenHouse.UserID == userId)
+                .ToList();
+                
+            return View(sensorLogFiles);
         }
 
         // GET: SensorLogFile/Details/5
@@ -32,11 +41,24 @@ namespace TFGv1_1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SensorLogFile sensorLogFile = db.SensorLogFiles.Find(id);
+            
+            SensorLogFile sensorLogFile = db.SensorLogFiles
+                .Include(s => s.Sensor)
+                .Include(s => s.Sensor.GreenHouse)
+                .FirstOrDefault(s => s.SensorId == id);
+                
             if (sensorLogFile == null)
             {
                 return HttpNotFound();
             }
+            
+            // Verificar que el usuario actual es dueño del invernadero
+            var userId = User.Identity.GetUserId();
+            if (sensorLogFile.Sensor.GreenHouse.UserID != userId)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+            
             return View(sensorLogFile);
         }
 
@@ -128,11 +150,24 @@ namespace TFGv1_1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SensorLogFile sensorLogFile = db.SensorLogFiles.Find(id);
+            
+            SensorLogFile sensorLogFile = db.SensorLogFiles
+                .Include(s => s.Sensor)
+                .Include(s => s.Sensor.GreenHouse)
+                .FirstOrDefault(s => s.SensorId == id);
+                
             if (sensorLogFile == null)
             {
                 return HttpNotFound();
             }
+            
+            // Verificar que el usuario actual es dueño del invernadero
+            var userId = User.Identity.GetUserId();
+            if (sensorLogFile.Sensor.GreenHouse.UserID != userId)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+            
             ViewBag.SensorId = new SelectList(db.Sensors, "SensorID", "SensorName", sensorLogFile.SensorId);
             return View(sensorLogFile);
         }
@@ -146,6 +181,22 @@ namespace TFGv1_1.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Verificar que el usuario actual es dueño del invernadero
+                var userId = User.Identity.GetUserId();
+                var sensor = db.Sensors
+                    .Include(s => s.GreenHouse)
+                    .FirstOrDefault(s => s.SensorID == sensorLogFile.SensorId);
+                
+                if (sensor == null)
+                {
+                    return HttpNotFound();
+                }
+                
+                if (sensor.GreenHouse.UserID != userId)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+                }
+                
                 db.Entry(sensorLogFile).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -161,11 +212,24 @@ namespace TFGv1_1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SensorLogFile sensorLogFile = db.SensorLogFiles.Find(id);
+            
+            SensorLogFile sensorLogFile = db.SensorLogFiles
+                .Include(s => s.Sensor)
+                .Include(s => s.Sensor.GreenHouse)
+                .FirstOrDefault(s => s.SensorId == id);
+                
             if (sensorLogFile == null)
             {
                 return HttpNotFound();
             }
+            
+            // Verificar que el usuario actual es dueño del invernadero
+            var userId = User.Identity.GetUserId();
+            if (sensorLogFile.Sensor.GreenHouse.UserID != userId)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+            
             return View(sensorLogFile);
         }
 
@@ -224,9 +288,12 @@ namespace TFGv1_1.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
             }
 
-            // Construir el nombre del archivo usando GreenHouseID y topic del sensor
-            string fileName = $"{sensorLogFile.Sensor.GreenHouseID}_{sensorLogFile.Sensor.Topic.Replace("/", "_")}.log";
-            string fullPath = Path.Combine(Server.MapPath("~/Logs"), fileName);
+            // Construir la ruta del archivo usando la estructura de carpetas correcta
+            string baseDirectory = Server.MapPath("~/Logs");
+            string greenhouseId = sensorLogFile.Sensor.GreenHouseID;
+            string logFileName = $"{greenhouseId}_{sensorLogFile.Sensor.Topic.Split('/')[1]}.log";
+            string fullPath = Path.Combine(baseDirectory, greenhouseId, logFileName);
+            
             ViewBag.RutaArchivo = fullPath;
 
             if (!System.IO.File.Exists(fullPath))
@@ -246,6 +313,51 @@ namespace TFGv1_1.Controllers
             }
 
             return View(sensorLogFile);
+        }
+
+        // GET: SensorLogFile/GetLogContent/5
+        public ActionResult GetLogContent(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            SensorLogFile sensorLogFile = db.SensorLogFiles
+                .Include(s => s.Sensor.GreenHouse)
+                .FirstOrDefault(s => s.SensorId == id);
+
+            if (sensorLogFile == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Verificar que el usuario actual es dueño del invernadero
+            var userId = User.Identity.GetUserId();
+            if (sensorLogFile.Sensor.GreenHouse.UserID != userId)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+
+            string baseDirectory = Server.MapPath("~/Logs");
+            string greenhouseId = sensorLogFile.Sensor.GreenHouseID;
+            string logFileName = $"{greenhouseId}_{sensorLogFile.Sensor.Topic.Split('/')[1]}.log";
+            string fullPath = Path.Combine(baseDirectory, greenhouseId, logFileName);
+
+            if (!System.IO.File.Exists(fullPath))
+            {
+                return Content("El archivo de log está vacío o no existe.");
+            }
+
+            try 
+            {
+                string content = System.IO.File.ReadAllText(fullPath);
+                return Content(content);
+            }
+            catch (Exception ex)
+            {
+                return Content($"Error al leer el archivo: {ex.Message}");
+            }
         }
 
         protected override void Dispose(bool disposing)
