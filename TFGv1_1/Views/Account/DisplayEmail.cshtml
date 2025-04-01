@@ -1,11 +1,20 @@
 ﻿@{
-    ViewBag.Title = "DEMO purpose Email Link";
+    ViewBag.Title = "Confirmación de Email";
 }
-<h2>@ViewBag.Title.</h2>
-<p class="text-info">
-    Please check your email and confirm your email address.
-</p>
-<p class="text-danger">
-    For DEMO only: You can click this link to confirm the email: <a href="@ViewBag.Link">link</a>
-    Please change this code to register an email service in IdentityConfig to send an email.
-</p>
+
+<div class="confirm-email-container">
+    <div class="confirm-email-icon">
+        <i class="fas fa-envelope-open-text fa-4x"></i>
+    </div>
+    <h2 class="confirm-email-title">@ViewBag.Title</h2>
+    <p class="confirm-email-message">
+        Por favor, revise su bandeja de entrada y confirme su dirección de email para completar su registro.
+    </p>
+    
+    <div class="mt-4">
+        <p>¿No recibió el email? Revise su carpeta de spam o solicite un nuevo enlace de confirmación.</p>
+        <button onclick="location.href='@Url.Action("Index", "Home")'" class="btn btn-primary">
+            <i class="fas fa-home"></i> Volver al inicio
+        </button>
+    </div>
+</div>
