@@ -1,55 +1,167 @@
 ﻿@model TFGv1_1.Models.Sensor
+@using TFGv1_1.Models
 
 @{
     ViewBag.Title = "Editar Sensor";
+    
+    // Preparar las listas de selección
+    var sensorTypesList = new List<SelectListItem>();
+    if (ViewBag.SensorTypes != null)
+    {
+        foreach (var type in (IEnumerable<SensorType>)ViewBag.SensorTypes)
+        {
+            sensorTypesList.Add(new SelectListItem 
+            { 
+                Value = type.ToString(), 
+                Text = type.ToString() + " " + GetSensorIcon(type)
+            });
+        }
+    }
+    else
+    {
+        // Si no hay tipos de sensor, usar los valores por defecto del enum
+        foreach (var type in Enum.GetValues(typeof(SensorType)).Cast<SensorType>())
+        {
+            sensorTypesList.Add(new SelectListItem 
+            { 
+                Value = type.ToString(), 
+                Text = type.ToString() + " " + GetSensorIcon(type)
+            });
+        }
+    }
 }
 
-<div class="form-section">
-    <div class="form-card">
-        <div class="form-header">
-            <h2 class="form-title text-white">
-                <i class="fas fa-edit me-2"></i>@ViewBag.Title
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.SensorID)
+    @Html.HiddenFor(model => model.GreenHouseID)
+    
+    <div class="index-container">
+        <div class="index-header">
+            <h2 class="index-title">
+                <i class="fas fa-microchip me-2"></i>@ViewBag.Title
             </h2>
-            <p class="form-subtitle text-white">Modificar la configuración del sensor @Model.SensorName</p>
         </div>
 
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.SensorID)
-            @Html.HiddenFor(model => model.GreenHouseID)
+        <div class="card">
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.SensorName, "Nombre del Sensor", new { @class = "form-label" })
-                @Html.EditorFor(model => model.SensorName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.SensorName, "", new { @class = "text-danger" })
-            </div>
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.SensorName, "Nombre del Sensor", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.SensorName, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: Sensor Temperatura 1" } })
+                        @Html.ValidationMessageFor(model => model.SensorName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.SensorType, "Tipo de Sensor", new { @class = "form-label" })
-                @Html.EditorFor(model => model.SensorType, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.SensorType, "", new { @class = "text-danger" })
-            </div>
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.SensorType, "Tipo de Sensor", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.SensorType, 
+                            new SelectList(sensorTypesList, "Value", "Text"),
+                            "Seleccione un tipo", 
+                            new { @class = "form-select", id = "sensorType" })
+                        @Html.ValidationMessageFor(model => model.SensorType, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.Units, "Unidades", new { @class = "form-label" })
-                @Html.EditorFor(model => model.Units, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Units, "", new { @class = "text-danger" })
-            </div>
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.Units, "Unidades", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.Units, 
+                            new SelectList(new List<SelectListItem>()), 
+                            "Seleccione una unidad", 
+                            new { @class = "form-select", id = "units" })
+                        @Html.ValidationMessageFor(model => model.Units, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.Topic, "Topic MQTT", new { @class = "form-label" })
-                @Html.EditorFor(model => model.Topic, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Topic, "", new { @class = "text-danger" })
-            </div>
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.Topic, "Topic MQTT", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Topic, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: temperatura/sala1" } })
+                        @Html.ValidationMessageFor(model => model.Topic, "", new { @class = "text-danger" })
+                        <small class="form-text text-muted">El topic debe ser único para cada sensor en el invernadero.</small>
+                    </div>
+                </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i>Guardar Cambios
-                </button>
-                @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-secondary" })
+                <div class="form-group row">
+                    <div class="offset-md-2 col-md-10">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-save me-2"></i>Guardar
+                        </button>
+                        @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-secondary" })
+                    </div>
+                </div>
             </div>
-        }
+        </div>
     </div>
-</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function() {
+            function updateUnits() {
+                var sensorType = $('#sensorType').val();
+                var unitsSelect = $('#units');
+                unitsSelect.empty();
+                unitsSelect.append($('<option>', {
+                    value: '',
+                    text: 'Seleccione una unidad'
+                }));
+
+                switch(sensorType) {
+                    case 'Temperature':
+                        unitsSelect.append($('<option>', {
+                            value: 'GCelsius',
+                            text: '°C - Grados Celsius'
+                        }));
+                        break;
+                    case 'Brightness':
+                        unitsSelect.append($('<option>', {
+                            value: 'Lumen',
+                            text: 'lm - Lumen'
+                        }));
+                        break;
+                    case 'CO2':
+                        unitsSelect.append($('<option>', {
+                            value: 'microgm3',
+                            text: 'µg/m³ - Microgramos por metro cúbico'
+                        }));
+                        break;
+                    case 'Humidity':
+                        unitsSelect.append($('<option>', {
+                            value: 'gm3',
+                            text: 'g/m³ - Gramos por metro cúbico'
+                        }));
+                        break;
+                }
+            }
+
+            $('#sensorType').change(updateUnits);
+            updateUnits();
+        });
+    </script>
+}
+
+@functions {
+    public string GetSensorIcon(object sensorType)
+    {
+        switch (sensorType.ToString())
+        {
+            case "Temperature":
+                return "🌡️";
+            case "Humidity":
+                return "💧";
+            case "Brightness":
+                return "☀️";
+            case "CO2":
+                return "🌫️";
+            default:
+                return "📊";
+        }
+    }
+}

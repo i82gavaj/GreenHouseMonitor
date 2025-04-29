@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFGv1_1", "TFGv1_1\TFGv1_1.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFGv1_1.MQTTLogger", "TFGv1_1.MQTTLogger\TFGv1_1.MQTTLogger.csproj", "{3D71652C-12B5-4B84-A4C6-2A0136666C9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFG_Test", "TFG_Test\TFG_Test.csproj", "{ECB1B605-8086-4CE0-AE69-4DD85E907F8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TFG_Test", "TFG_Test\TFG_Test.csproj", "{ECB1B605-8086-4CE0-AE69-4DD85E907F8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,58 +10,65 @@
     @Html.HiddenFor(model => model.GreenHouseID)
     @Html.HiddenFor(model => model.UserID)
     
-    <div class="index-container">
-        <div class="index-header">
-            <h2 class="index-title">
-                <i class="fas fa-leaf me-2"></i>@ViewBag.Title
-            </h2>
-        </div>
+    <div class="form-section">
+        <div class="form-card">
+            <div class="form-header">
+                <h2 class="form-title">
+                    <i class="fas fa-leaf me-2"></i>@ViewBag.Title
+                </h2>
+                <p class="form-subtitle">Complete los datos del nuevo invernadero</p>
+            </div>
 
-        <div class="card">
-            <div class="card-body">
+            <div class="form-content">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(model => model.Name, "Nombre", new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: Invernadero Principal" } })
-                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <i class="fas fa-signature"></i>
+                        </span>
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Nombre del invernadero" } })
                     </div>
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                 </div>
 
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(model => model.Description, "Descripción", new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = "3", placeholder = "Ej: Invernadero para cultivo de tomates y pimientos" })
-                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                        <small class="form-text text-muted">La descripción es opcional y puede tener hasta 200 caracteres</small>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <i class="fas fa-align-left"></i>
+                        </span>
+                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = "3", placeholder = "Descripción del invernadero" })
                     </div>
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    <small class="form-text text-muted">La descripción es opcional y puede tener hasta 200 caracteres</small>
                 </div>
 
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(model => model.Location, "Ubicación", new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Location, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: Patio Trasero" } })
-                        @Html.ValidationMessageFor(model => model.Location, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </span>
+                        @Html.EditorFor(model => model.Location, new { htmlAttributes = new { @class = "form-control", placeholder = "Ubicación del invernadero" } })
                     </div>
+                    @Html.ValidationMessageFor(model => model.Location, "", new { @class = "text-danger" })
                 </div>
 
-                <div class="form-group row mb-3">
-                    @Html.LabelFor(model => model.Area, "Área (m²)", new { @class = "col-md-2 col-form-label" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Area, new { htmlAttributes = new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "Ej: 25.5" } })
-                        @Html.ValidationMessageFor(model => model.Area, "", new { @class = "text-danger" })
-                        <small class="form-text text-muted">Ingrese el área en metros cuadrados</small>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <i class="fas fa-ruler-combined"></i>
+                        </span>
+                        @Html.EditorFor(model => model.Area, new { htmlAttributes = new { @class = "form-control", type = "number", step = "0.01", min = "0", placeholder = "Área en metros cuadrados" } })
                     </div>
+                    @Html.ValidationMessageFor(model => model.Area, "", new { @class = "text-danger" })
+                    <small class="form-text text-muted">Ingrese el área en metros cuadrados</small>
                 </div>
 
-                <div class="form-group row">
-                    <div class="offset-md-2 col-md-10">
-                        <button type="submit" class="btn btn-primary me-2">
-                            <i class="fas fa-save me-2"></i>Crear
-                        </button>
-                        @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-secondary" })
-                    </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Crear Invernadero
+                    </button>
+                    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-secondary" })
                 </div>
             </div>
         </div>

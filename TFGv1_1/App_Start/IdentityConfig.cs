@@ -29,16 +29,87 @@ namespace TFGv1_1
             try
             {
                 var client = new SendGridClient("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");
-                var from = new EmailAddress("nonreply@gmail.com", "Example User");
+                var from = new EmailAddress("nonreply@gmail.com", "GreenHouse Monitor");
                 var subject = message.Subject;
-                var to = new EmailAddress(message.Destination, "Example User");
-                var plainTextContent = message.Body;
-                var htmlContent = message.Body;
-                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+                var to = new EmailAddress(message.Destination);
+                
+                var htmlContent = $@"
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body {{
+                            font-family: Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #333;
+                            max-width: 600px;
+                            margin: 0 auto;
+                            padding: 20px;
+                        }}
+                        .container {{
+                            background-color: #f9f9f9;
+                            border-radius: 8px;
+                            padding: 20px;
+                            margin: 20px 0;
+                        }}
+                        .header {{
+                            background-color: #4CAF50;
+                            color: white;
+                            padding: 15px;
+                            text-align: center;
+                            border-radius: 8px 8px 0 0;
+                        }}
+                        .content {{
+                            padding: 20px;
+                            background-color: white;
+                            border-radius: 0 0 8px 8px;
+                            text-align: center;
+                        }}
+                        .button {{
+                            display: inline-block;
+                            padding: 12px 24px;
+                            background-color: #4CAF50;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 4px;
+                            margin: 20px 0;
+                            font-weight: bold;
+                            border: none;
+                            cursor: pointer;
+                        }}
+                        .button:hover {{
+                            background-color: #45a049;
+                        }}
+                        .footer {{
+                            text-align: center;
+                            font-size: 12px;
+                            color: #666;
+                            margin-top: 20px;
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>GreenHouse Monitor</h2>
+                        </div>
+                        <div class='content'>
+                            <p>Por favor, confirma tu cuenta haciendo clic en el siguiente botón:</p>
+                            <a href='{message.Body}' class='button'>Confirmar Cuenta</a>
+                            <p style='margin-top: 20px;'>Si no has solicitado esta confirmación, puedes ignorar este correo.</p>
+                        </div>
+                    </div>
+                    <div class='footer'>
+                        <p>Este es un correo automático, por favor no responda a este mensaje.</p>
+                    </div>
+                </body>
+                </html>";
+
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, $"Por favor, confirma tu cuenta visitando este enlace: {message.Body}", htmlContent);
                 var response = await client.SendEmailAsync(msg);
             }
             catch (Exception ex) {
-                    var msgerror = ex.Message;
+                var msgerror = ex.Message;
             }
         }
 

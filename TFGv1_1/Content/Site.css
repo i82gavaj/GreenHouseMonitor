@@ -69,20 +69,19 @@ body {
     transition: all 0.3s ease;
     z-index: 1000;
     box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
 }
 
 .sidebar.active {
     left: 0;
-}
-
-.sidebar:not(.active) {
-    transform: translateX(-250px);
+    box-shadow: 4px 0 20px rgba(0,0,0,0.2);
 }
 
 .sidebar-header {
     padding: 20px 25px;
     margin-bottom: 20px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
 }
 
 .sidebar-header h3 {
@@ -90,6 +89,7 @@ body {
     font-size: 24px;
     font-weight: 600;
     margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .sidebar-menu {
@@ -99,6 +99,7 @@ body {
 
 .sidebar-menu li {
     margin: 8px 0;
+    padding: 0 15px;
 }
 
 .sidebar-menu li a {
@@ -108,19 +109,85 @@ body {
     color: rgba(255,255,255,0.8);
     text-decoration: none;
     transition: all 0.3s ease;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-menu li a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
 }
 
 .sidebar-menu li a:hover {
     background: rgba(255,255,255,0.1);
     color: white;
     padding-left: 30px;
+    transform: translateX(5px);
+}
+
+.sidebar-menu li a:hover::before {
+    transform: translateX(0);
 }
 
 .sidebar-menu li a i {
-    margin-right: 10px;
+    margin-right: 15px;
     font-size: 18px;
     width: 25px;
     text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-menu li a:hover i {
+    transform: scale(1.2);
+}
+
+/* Efecto de onda al hacer clic */
+.sidebar-menu li a:active::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    to {
+        transform: translate(-50%, -50%) scale(20);
+        opacity: 0;
+    }
+}
+
+/* Indicador de elemento activo */
+.sidebar-menu li a.active {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-weight: 500;
+}
+
+.sidebar-menu li a.active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background: white;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
 /* Barra superior */
@@ -1029,12 +1096,12 @@ footer {
 .feature-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .feature-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 #modes_menu div {

@@ -6,14 +6,32 @@
     
     // Preparar las listas de selección
     var sensorTypesList = new List<SelectListItem>();
-    foreach (var type in (IEnumerable<SensorType>)ViewBag.SensorTypes)
+    if (ViewBag.SensorTypes != null)
     {
-        sensorTypesList.Add(new SelectListItem 
-        { 
-            Value = type.ToString(), 
-            Text = type.ToString() + " " + GetSensorIcon(type)
-        });
+        foreach (var type in (IEnumerable<SensorType>)ViewBag.SensorTypes)
+        {
+            sensorTypesList.Add(new SelectListItem 
+            { 
+                Value = type.ToString(), 
+                Text = type.ToString() + " " + GetSensorIcon(type)
+            });
+        }
     }
+    else
+    {
+        // Si no hay tipos de sensor, usar los valores por defecto del enum
+        foreach (var type in Enum.GetValues(typeof(SensorType)).Cast<SensorType>())
+        {
+            sensorTypesList.Add(new SelectListItem 
+            { 
+                Value = type.ToString(), 
+                Text = type.ToString() + " " + GetSensorIcon(type)
+            });
+        }
+    }
+
+    // Verificar si hay invernaderos
+    var hasGreenhouses = ViewBag.GreenHouses != null && ((IEnumerable<SelectListItem>)ViewBag.GreenHouses).Any();
 }
 
 <div class="index-container">
@@ -22,6 +40,14 @@
             <i class="fas fa-microchip me-2"></i>@ViewBag.Title
         </h2>
     </div>
+
+    @if (!hasGreenhouses)
+    {
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            No tienes ningún invernadero creado. Debes crear un invernadero antes de poder añadir sensores.
+        </div>
+    }
 
     @using (Html.BeginForm())
     {
@@ -72,20 +98,42 @@
                 <div class="form-group row mb-3">
                     @Html.LabelFor(model => model.GreenHouseID, "Invernadero", new { @class = "col-md-2 col-form-label" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.GreenHouseID, 
-                            new SelectList(ViewBag.GreenHouses, "Value", "Text"), 
-                            "Seleccione un invernadero", 
-                            new { @class = "form-select" })
+                        @if (hasGreenhouses)
+                        {
+                            @Html.DropDownListFor(model => model.GreenHouseID, 
+                                new SelectList(ViewBag.GreenHouses, "Value", "Text"), 
+                                "Seleccione un invernadero", 
+                                new { @class = "form-select" })
+                        }
+                        else
+                        {
+                            <select class="form-select" disabled>
+                                <option>No hay invernaderos disponibles</option>
+                            </select>
+                        }
                         @Html.ValidationMessageFor(model => model.GreenHouseID, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="offset-md-2 col-md-10">
-                        <button type="submit" class="btn btn-primary me-2">
-                            <i class="fas fa-save me-2"></i>Crear
-                        </button>
+                        @if (hasGreenhouses)
+                        {
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-save me-2"></i>Crear
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary me-2" disabled>
+                                <i class="fas fa-save me-2"></i>Crear
+                            </button>
+                        }
                         @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-secondary" })
+                        @if (!hasGreenhouses)
+                        {
+                            @Html.ActionLink("Crear Invernadero", "Create", "GreenHouse", null, new { @class = "btn btn-warning ms-2" })
+                        }
                     </div>
                 </div>
             </div>

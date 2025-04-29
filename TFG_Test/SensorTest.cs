@@ -211,12 +211,49 @@ namespace TFG_Test
             // Arrange
             int sensorId = 1;
 
-            // Mock para MapPath manteniendo la configuración existente del User
+            // Crear el sensor de prueba con su archivo de log
+            var testSensor = new Sensor
+            {
+                SensorID = sensorId,
+                SensorName = "Test Sensor",
+                GreenHouseID = _testGreenhouse.GreenHouseID,
+                GreenHouse = _testGreenhouse,
+                LogFile = new SensorLogFile 
+                { 
+                    FilePath = "test.log",
+                    SensorId = sensorId
+                }
+            };
+
+            // Configurar el mock del DbSet para Sensors
+            var sensors = new List<Sensor> { testSensor }.AsQueryable();
+            var mockSensorSet = new Mock<DbSet<Sensor>>();
+            mockSensorSet.As<IQueryable<Sensor>>().Setup(m => m.Provider).Returns(sensors.Provider);
+            mockSensorSet.As<IQueryable<Sensor>>().Setup(m => m.Expression).Returns(sensors.Expression);
+            mockSensorSet.As<IQueryable<Sensor>>().Setup(m => m.ElementType).Returns(sensors.ElementType);
+            mockSensorSet.As<IQueryable<Sensor>>().Setup(m => m.GetEnumerator()).Returns(() => sensors.GetEnumerator());
+            mockSensorSet.Setup(m => m.Find(It.IsAny<object[]>())).Returns(testSensor);
+            mockSensorSet.Setup(m => m.Include(It.IsAny<string>())).Returns(mockSensorSet.Object);
+
+            // Configurar el mock del DbSet para SensorLogFiles
+            var logFiles = new List<SensorLogFile> { testSensor.LogFile }.AsQueryable();
+            var mockLogFileSet = new Mock<DbSet<SensorLogFile>>();
+            mockLogFileSet.As<IQueryable<SensorLogFile>>().Setup(m => m.Provider).Returns(logFiles.Provider);
+            mockLogFileSet.As<IQueryable<SensorLogFile>>().Setup(m => m.Expression).Returns(logFiles.Expression);
+            mockLogFileSet.As<IQueryable<SensorLogFile>>().Setup(m => m.ElementType).Returns(logFiles.ElementType);
+            mockLogFileSet.As<IQueryable<SensorLogFile>>().Setup(m => m.GetEnumerator()).Returns(() => logFiles.GetEnumerator());
+
+            // Configurar el mock del contexto
+            _mockContext.Setup(c => c.Sensors).Returns(mockSensorSet.Object);
+            _mockContext.Setup(c => c.SensorLogFiles).Returns(mockLogFileSet.Object);
+            _mockContext.Setup(m => m.SaveChanges()).Returns(1);
+
+            // Configurar el mock del HttpContext y Server
             var mockHttpContext = new Mock<HttpContextBase>();
             var mockServer = new Mock<HttpServerUtilityBase>();
-            mockServer.Setup(x => x.MapPath("~/Logs")).Returns(@"C:\TestPath\Logs");
+            mockServer.Setup(x => x.MapPath(It.IsAny<string>()))
+                .Returns((string path) => $"C:\\TestPath{path}");
             
-            // Mantener la configuración del User
             var identity = new GenericIdentity(_userId);
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, _userId));
             var principal = new GenericPrincipal(identity, null);
@@ -236,6 +273,8 @@ namespace TFG_Test
             Assert.That(result, Is.Not.Null);
             Assert.That(result.RouteValues["action"], Is.EqualTo("Index"));
             _mockContext.Verify(m => m.Sensors.Remove(It.IsAny<Sensor>()), Times.Once());
+            _mockContext.Verify(m => m.SensorLogFiles.Remove(It.IsAny<SensorLogFile>()), Times.Once());
+            _mockContext.Verify(m => m.SaveChanges(), Times.Once());
         }
 
         [Test]

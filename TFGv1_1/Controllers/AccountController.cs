@@ -165,6 +165,22 @@ namespace TFGv1_1.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Verificar que el usuario sea mayor de edad (18 años)
+                var today = DateTime.Today;
+                var age = today.Year - model.BirthDate.Year;
+                
+                // Ajustar la edad si aún no ha cumplido años este año
+                if (model.BirthDate.Date > today.AddYears(-age))
+                {
+                    age--;
+                }
+                
+                if (age < 18)
+                {
+                    ModelState.AddModelError("BirthDate", "Debes ser mayor de edad (18 años) para registrarte.");
+                    return View(model);
+                }
+                
                 var user = new ApplicationUser 
                 { 
                     UserName = model.Email, 
@@ -184,8 +200,7 @@ namespace TFGv1_1.Controllers
 
                     await UserManager.SendEmailAsync(user.Id,
                        "Confirm your account",
-                       "Please confirm your account by clicking this link: <a href=\""
-                                                       + callbackUrl + "\">link</a>");
+                       callbackUrl);
                     // ViewBag.Link = callbackUrl;   // Used only for initial demo.
                     return View("DisplayEmail");
                 }

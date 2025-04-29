@@ -96,6 +96,7 @@ namespace TFGv1_1.Models
         [Compare("Password", ErrorMessage = "La contraseña y la contraseña de confirmación no coinciden.")]
         public string ConfirmPassword { get; set; }
 
+        [Required(ErrorMessage = "La fecha de nacimiento es obligatoria")]
         [DataType(DataType.DateTime)]
         [Display(Name = "Fecha Nacimiento")]
         public DateTime BirthDate { get; set; }
