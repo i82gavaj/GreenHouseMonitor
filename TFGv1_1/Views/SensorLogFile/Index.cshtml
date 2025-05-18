@@ -1,82 +1,162 @@
-﻿@model IEnumerable<TFGv1_1.Models.SensorLogFile>
+﻿@model PagedList.IPagedList<TFGv1_1.Models.SensorLogFile>
+@using PagedList.Mvc
 
 @{
-    ViewBag.Title = "Archivos de Log";
+    ViewBag.Title = "Gestión de Archivos de Log";
 }
 
-<div class="index-container">
-    <div class="index-header">
-        <h2 class="index-title">
-            <i class="fas fa-file-alt me-2"></i>@ViewBag.Title
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-file-alt text-success me-2"></i>@ViewBag.Title
         </h2>
     </div>
 
-    <table class="table table-responsive custom-table">
-        <thead>
-            <tr>
-                <th><i class="fas fa-microchip me-2"></i>Sensor</th>
-                <th><i class="fas fa-folder me-2"></i>Ruta</th>
-                <th><i class="far fa-calendar-alt me-2"></i>Fecha</th>
-                <th class="text-end"><i class="fas fa-cogs me-2"></i>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td class="truncate-text" data-full-text="@item.Sensor.SensorName">@item.Sensor.SensorName</td>
-                    <td class="truncate-text" data-full-text="@item.FilePath">
-                        @Path.GetFileName(item.FilePath)
-                    </td>
-                    <td>@item.CreationDate.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td class="text-end">
-                        <div class="table-actions">
-                            <a href="@Url.Action("ViewContent", new { id = item.SensorId })" class="btn btn-sm btn-primary" title="Ver">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="@Url.Action("Delete", new { id = item.LogFileId })" class="btn btn-sm btn-danger" title="Eliminar">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-file-alt text-primary me-2 text-white"></i>Archivos de Log
+                </h5>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" style="min-width: 800px;">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-3 py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-microchip text-success me-2"></i>
+                                    <span>Sensor</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-folder text-warning me-2"></i>
+                                    <span>Ruta</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="far fa-calendar-alt text-info me-2"></i>
+                                    <span>Fecha</span>
+                                </div>
+                            </th>
+                            <th class="text-center py-3">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-cogs text-secondary me-2"></i>
+                                    <span>Acciones</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-3 truncate-text" data-full-text="@item.Sensor.SensorName">@item.Sensor.SensorName</td>
+                                <td class="truncate-text" data-full-text="@item.FilePath">
+                                    @Path.GetFileName(item.FilePath)
+                                </td>
+                                <td>@item.CreationDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="@Url.Action("ViewContent", new { id = item.SensorId })" class="btn btn-sm btn-outline-primary rounded-pill px-3 mx-1" title="Ver Contenido">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = item.LogFileId })" class="btn btn-sm btn-outline-danger rounded-pill px-3 mx-1" title="Eliminar">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                
+                <!-- Paginación -->
+                <div class="pagination-container d-flex justify-content-center p-3">
+                    <ul class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal para texto completo -->
-<div class="text-modal" id="textModal">
-    <span class="text-modal-close">&times;</span>
-    <div class="text-modal-content"></div>
+<div class="modal fade" id="textModal" tabindex="-1" aria-labelledby="textModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="textModalLabel">Texto Completo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p id="textModalContent"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="modal-backdrop"></div>
 
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Configurar modal para texto completo
             const truncatedElements = document.querySelectorAll('.truncate-text');
-            const modal = document.getElementById('textModal');
-            const modalContent = modal.querySelector('.text-modal-content');
-            const modalBackdrop = document.querySelector('.modal-backdrop');
-            const closeBtn = modal.querySelector('.text-modal-close');
-
+            
             truncatedElements.forEach(element => {
                 element.addEventListener('click', function() {
                     const fullText = this.getAttribute('data-full-text');
-                    modalContent.textContent = fullText;
-                    modal.style.display = 'block';
-                    modalBackdrop.style.display = 'block';
+                    document.getElementById('textModalContent').textContent = fullText;
+                    var textModal = new bootstrap.Modal(document.getElementById('textModal'));
+                    textModal.show();
                 });
             });
-
-            function closeModal() {
-                modal.style.display = 'none';
-                modalBackdrop.style.display = 'none';
-            }
-
-            closeBtn.addEventListener('click', closeModal);
-            modalBackdrop.addEventListener('click', closeModal);
         });
     </script>
 }

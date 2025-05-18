@@ -130,3 +130,5 @@ C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\obj\Debu
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\obj\Debug\TFGv1_1..47364305.Up2Date
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\obj\Debug\TFGv1_1.MQTTLogger.exe
 C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\obj\Debug\TFGv1_1.MQTTLogger.pdb
+C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\PagedList.dll
+C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1.MQTTLogger\bin\Debug\PagedList.xml

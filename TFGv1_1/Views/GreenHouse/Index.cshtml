@@ -1,49 +1,148 @@
-﻿@model IEnumerable<TFGv1_1.Models.GreenHouse>
+﻿@model PagedList.IPagedList<TFGv1_1.Models.GreenHouse>
+@using PagedList.Mvc
 
 @{
-    ViewBag.Title = "Lista de Invernaderos";
+    ViewBag.Title = "Gestión de Invernaderos";
 }
-<div class="index-container">
-    <div class="index-header">
-        <h2 class="index-title">
-            <i class="bi bi-flower3 me-2"></i>@ViewBag.Title
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="bi bi-flower3 text-success me-2"></i>@ViewBag.Title
         </h2>
-         @Html.ActionLink("Crear Nuevo Invernadero", "Create", null, new { @class = "btn btn-primary" })
     </div>
-    <table class="table table-responsive table-hover">
-    <thead class="table-dark">
-            <tr>
-                <th><i class="fas fa-tag me-2"></i>Nombre</th>
-                <th><i class="fas fa-map-marker-alt me-2"></i>Ubicación</th>
-                <th><i class="fas fa-ruler-combined me-2"></i>Área</th>
-                <th><i class="fas fa-microchip me-2"></i>Sensores</th>
-                <th class="text-end"><i class="fas fa-cogs me-2"></i>Acciones</th>
-            </tr>
-    </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Location</td>
-                    <td>@item.Area m²</td>
-                    <td>@item.Sensors.Count dispositivos</td>
-                    <td class="text-end">
-                        <div class="table-actions">
-                            <a href="@Url.Action("Edit", new { id = item.GreenHouseID })" class="btn btn-sm btn-info" title="Editar">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="@Url.Action("Delete", new { id = item.GreenHouseID })" class="btn btn-sm btn-danger" title="Eliminar">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            }
-    </tbody>
-</table>
-    
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-warehouse text-primary me-2 text-white"></i>Invernaderos
+                </h5>
+                <a href="@Url.Action("Create")" class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i> Crear Nuevo Invernadero
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" style="min-width: 800px;">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-3 py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-tag text-success me-2"></i>
+                                    <span>Nombre</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                    <span>Ubicación</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-ruler-combined text-info me-2"></i>
+                                    <span>Área</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-microchip text-primary me-2"></i>
+                                    <span>Sensores</span>
+                                </div>
+                            </th>
+                            <th class="text-center py-3">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-cogs text-secondary me-2"></i>
+                                    <span>Acciones</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-3">@item.Name</td>
+                                <td>@item.Location</td>
+                                <td>@item.Area m²</td>
+                                <td>@item.Sensors.Count dispositivos</td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="@Url.Action("Edit", new { id = item.GreenHouseID })" class="btn btn-sm btn-outline-primary rounded-pill px-3 mx-1" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = item.GreenHouseID })" class="btn btn-sm btn-outline-danger rounded-pill px-3 mx-1" title="Eliminar">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                
+                <!-- Paginación -->
+                <div class="pagination-container d-flex justify-content-center p-3">
+                    <ul class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agregar clases de Bootstrap a los elementos de paginación
+            document.querySelectorAll('.pagination li a').forEach(function(item) {
+                item.classList.add('page-link');
+            });
+        });
+    </script>
+}
 
 
 

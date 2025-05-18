@@ -1,0 +1,101 @@
+/* Estilos mejorados para el menú de notificaciones */
+.notifications-dropdown {
+    position: relative;
+}
+
+#notificationsMenu {
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    border: none;
+    z-index: 1050;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    width: 350px;
+}
+
+.notification-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px 8px 0 0;
+}
+
+.notification-body {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 8px 8px;
+    padding: 10px;
+}
+
+.notification-footer .btn {
+    width: 100%;
+    font-weight: 500;
+}
+
+.notification-item {
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+    padding: 10px 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.notification-item .notification-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.05);
+    margin-right: 12px;
+}
+
+.notification-badge {
+    font-size: 0.7rem;
+    top: 5px !important;
+    padding: 0.25em 0.5em;
+}
+
+.new-notification {
+    animation: highlightNotification 2s ease;
+    border-left-color: #0d6efd;
+}
+
+@keyframes highlightNotification {
+    0% { background-color: rgba(13, 110, 253, 0.1); }
+    100% { background-color: transparent; }
+}
+
+#notificationsButton {
+    position: relative;
+}
+
+#notificationsButton:hover {
+    opacity: 0.8;
+}
+
+.dropdown-menu.show {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+#notificationsMenu.show {
+    display: block;
+} 

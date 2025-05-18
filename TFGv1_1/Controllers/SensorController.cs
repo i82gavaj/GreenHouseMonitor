@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using TFGv1_1.Models;
 using Microsoft.AspNet.Identity;
 using System.IO;
+using PagedList;
 
 namespace TFGv1_1.Controllers
 {
@@ -30,13 +31,26 @@ namespace TFGv1_1.Controllers
         }
 
         // GET: Sensor
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             var userId = User.Identity.GetUserId();
             var sensors = db.Sensors
                 .Include(s => s.GreenHouse)
-                .Where(s => s.GreenHouse.UserID == userId);
-            return View(sensors.ToList());
+                .Where(s => s.GreenHouse.UserID == userId)
+                .OrderBy(s => s.SensorName);
+                
+            int pageSize = 10; // Número de elementos por página
+            int pageNumber = (page ?? 1); // Si page es null, usar 1 como valor predeterminado
+            
+            // Configurar valores para la paginación manual
+            int totalItems = sensors.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.TotalPages = totalPages;
+            
+            // Usar PagedList para la paginación
+            return View(sensors.ToPagedList(pageNumber, pageSize));
         }
         
         public ActionResult Simulation(int? id) 
@@ -79,6 +93,14 @@ namespace TFGv1_1.Controllers
                 .Include(s => s.GreenHouse)
                 .Where(s => s.GreenHouse.UserID == userId)
                 .ToList();
+
+            // Crear un diccionario para mapear los IDs de invernadero a sus nombres
+            var greenhouseNames = userSensors
+                .Select(s => s.GreenHouse)
+                .Distinct()
+                .ToDictionary(g => g.GreenHouseID, g => g.Name);
+
+            ViewBag.GreenhouseNames = greenhouseNames;
             return View(userSensors);
         }
 

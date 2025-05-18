@@ -15,11 +15,11 @@ namespace TFGv1_1.Models
     }
     public enum Units
     {
-        GCelsius, Lumen, microgm3, gm3
+        GCelsius, Lumen, microgm3, porcentaje
     }
     public class Sensor
     {
-        [Required]
+        [Key]
         public int SensorID { get; set; }
 
         [Required]
@@ -39,9 +39,11 @@ namespace TFGv1_1.Models
         [Required]
         [ForeignKey("GreenHouse")]
         public string GreenHouseID { get; set; }
-        public virtual GreenHouse GreenHouse { get; set; }
 
-        // Relación 1:1 con SensorLogFile
+        // Relaciones
+        public virtual GreenHouse GreenHouse { get; set; }
         public virtual SensorLogFile LogFile { get; set; }
+        public virtual ICollection<SensorLogFile> SensorLogFiles { get; set; }
+        public virtual ICollection<Alert> Alerts { get; set; }
     }
 }

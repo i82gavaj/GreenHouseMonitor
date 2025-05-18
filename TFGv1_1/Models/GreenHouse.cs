@@ -38,5 +38,9 @@ namespace TFGv1_1.Models
         public virtual ApplicationUser User { get; set; }
 
         public virtual ICollection<Sensor> Sensors { get; set; }
+
+        public virtual ICollection<Alert> Alerts { get; set; }
+
+        public virtual ICollection<SensorLogFile> SensorLogFiles { get; set; }
     }
 }

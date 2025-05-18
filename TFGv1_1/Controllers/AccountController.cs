@@ -56,6 +56,10 @@ namespace TFGv1_1.Controllers
         }
         public ActionResult Index() 
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
         public ActionResult Connection()
@@ -70,8 +74,11 @@ namespace TFGv1_1.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Account");
+            }
             ViewBag.ReturnUrl = returnUrl;
-       
             return View();
         }
 
@@ -87,13 +94,11 @@ namespace TFGv1_1.Controllers
                 return View(model);
             }
 
-            // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
-            // Para permitir que los errores de contrase&ntildea desencadenen el bloqueo de la cuenta, cambie a shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", "Account");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:

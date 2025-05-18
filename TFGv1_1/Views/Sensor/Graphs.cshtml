@@ -4,8 +4,8 @@
     ViewBag.Title = "Gráficas de Sensores";
 }
 
-<br>
-    <div class="cards-row full-width">
+<div class="content-wrapper">
+    <div class="cards-row">
         <!-- Sección de Conexión -->
         <div class="connection-card">
             <div class="connection-card-content">
@@ -60,11 +60,18 @@
         </div>
     </div>
 
-    <!-- Graphs Grid -->
+    <!-- Graphs Grid - Ahora dentro del content-wrapper -->
     <div id="graficaContainer" class="grafica-container">
         <!-- Las gráficas se generarán aquí -->
     </div>
+</div>
 
+<!-- Animación de conexión -->
+<div id="connectionAnimation" class="connection-animation">
+    <div id="connectionSpinner" class="spinner"></div>
+    <div id="connectionIcon" style="display: none;"></div>
+    <div id="connectionMessage">Conectando al broker...</div>
+</div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -77,6 +84,7 @@
         var sensorData = {};
         var idUser = '@User.Identity.GetUserId()';
         var userTopics = [];
+        var timeLabels = {};
         @foreach (var sensor in Model) {
             @:userTopics.push({topic: '@sensor.Topic', units: '@sensor.Units'});
         }
@@ -102,19 +110,54 @@
             }
         });
 
+        function showConnectionAnimation(message, type = 'loading') {
+            const animation = document.getElementById('connectionAnimation');
+            const spinner = document.getElementById('connectionSpinner');
+            const icon = document.getElementById('connectionIcon');
+            const messageEl = document.getElementById('connectionMessage');
+
+            // Remover clases anteriores
+            animation.classList.remove('fade-out');
+            
+            // Mostrar la animación
+            animation.classList.add('active');
+            messageEl.textContent = message;
+
+            if (type === 'loading') {
+                spinner.style.display = 'block';
+                icon.style.display = 'none';
+            } else {
+                spinner.style.display = 'none';
+                icon.style.display = 'block';
+                icon.innerHTML = type === 'error' 
+                    ? '<i class="fas fa-times-circle error-icon"></i>'
+                    : '<i class="fas fa-check-circle success-icon"></i>';
+            }
+
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    animation.classList.add('fade-out');
+                    setTimeout(() => {
+                        animation.classList.remove('active');
+                    }, 300);
+                }, 3000);
+            }
+        }
+
         function connectClient() {
             var brokerUrl = document.getElementById("connection_broker").value;
             var brokerPort = document.getElementById("connection_port").value;
             var useSecure = document.getElementById("useSecureConnection").checked;
             
             if (!brokerUrl || !brokerPort) {
-                alert("Por favor, ingrese la información del broker");
+                showConnectionAnimation("Por favor, ingrese la información del broker", 'error');
                 return;
             }
 
+            showConnectionAnimation("Conectando al broker...", 'loading');
+
             var clientId = "ClienteSensores" + Math.floor(Math.random() * 200001);
             
-            // Usar el protocolo adecuado según la configuración
             client = new Paho.MQTT.Client(brokerUrl, Number(brokerPort), clientId);
 
             client.onConnectionLost = onConnectionLost;
@@ -126,7 +169,7 @@
                 onSuccess: onConnect,
                 onFailure: function(message) {
                     console.log("Error de conexión: " + message.errorMessage);
-                    alert("Error de conexión: " + message.errorMessage);
+                    showConnectionAnimation("Error de conexión: " + message.errorMessage, 'error');
                     isConnected = false;
                     document.getElementById('connectionStatus').textContent = 'Desconectado';
                 },
@@ -138,7 +181,7 @@
                 console.log("Intentando conectar usando " + (useSecure ? "WSS (seguro)" : "WS (no seguro)"));
             } catch (error) {
                 console.error("Error al intentar conectar:", error);
-                alert("Error al intentar conectar: " + error.message);
+                showConnectionAnimation("Error al intentar conectar: " + error.message, 'error');
             }
         }
 
@@ -146,13 +189,17 @@
             console.log("Conectado al broker");
             isConnected = true;
             document.getElementById('connectionStatus').textContent = 'Conectado';
+            showConnectionAnimation("¡Conexión establecida con éxito!", 'success');
             updateSensorCount();
         }
 
         function onConnectionLost(responseObject) {
             if (responseObject.errorCode !== 0) {
                 console.log("Conexión perdida:" + responseObject.errorMessage);
-                alert("Conexión perdida: " + responseObject.errorMessage);
+                // Solo mostrar el mensaje si no es una recarga de página
+                if (!document.hidden && !window.performance.navigation.type === window.performance.navigation.TYPE_RELOAD) {
+                    showConnectionAnimation("Conexión perdida: " + responseObject.errorMessage, 'error');
+                }
                 isConnected = false;
                 document.getElementById('connectionStatus').textContent = 'Desconectado';
             }
@@ -167,17 +214,34 @@
                 return;
             }
 
-            // Extraer el topic después de la barra
-            var displayTopic = sensor.topic.split('/').slice(1).join('/');
+            // Extraer el nombre del invernadero y el sensor del topic
+            var topicParts = sensor.topic.split('/');
+            var greenhouseId = topicParts[0];
+            var sensorName = topicParts.slice(1).join('/') || 'Sensor';
+
+            // Obtener el nombre del invernadero desde el diccionario
+            var greenhouseNames = @Html.Raw(Json.Encode(ViewBag.GreenhouseNames));
+            var greenhouseName = greenhouseNames[greenhouseId] || 'Invernadero';
 
             var wrapper = document.createElement('div');
             wrapper.className = 'chart-wrapper';
+            
+            // Crear el encabezado de la gráfica
+            var header = document.createElement('div');
+            header.className = 'chart-header';
+            header.innerHTML = `
+                <h3 class="chart-title">${greenhouseName}</h3>
+                <p class="chart-subtitle">${sensorName}</p>
+            `;
+            wrapper.appendChild(header);
+
             var canvas = document.createElement('canvas');
             canvas.id = chartId;
             wrapper.appendChild(canvas);
             document.getElementById('graficaContainer').appendChild(wrapper);
 
             sensorData[sensor.topic] = [];
+            timeLabels[sensor.topic] = [];
 
             // Comenzar la lógica de creación de la gráfica según las unidades
             if (sensor.units === "GCelsius") {
@@ -186,10 +250,11 @@
                     data: {
                         labels: Array(15).fill(''),
                         datasets: [{
-                            label: displayTopic + " (°C)",
+                            label: `${sensorName} (°C)`,
                             data: [],
                             borderColor: getRandomColor(),
-                            tension: 0.4
+                            tension: 0.4,
+                            fill: false
                         }]
                     },
                     options: {
@@ -208,6 +273,13 @@
                                 }
                             },
                             x: {
+                                title: {
+                                    display: true,
+                                    text: 'Tiempo',
+                                    font: {
+                                        size: 14
+                                    }
+                                },
                                 ticks: {
                                     font: {
                                         size: 14
@@ -235,10 +307,11 @@
                     data: {
                         labels: Array(15).fill(''),
                         datasets: [{
-                            label: displayTopic + " (µg/m³)",
+                            label: `${sensorName} (µg/m³)`,
                             data: [],
                             borderColor: getRandomColor(),
-                            tension: 0.4
+                            tension: 0.4,
+                            fill: false
                         }]
                     },
                     options: {
@@ -257,6 +330,13 @@
                                 }
                             },
                             x: {
+                                title: {
+                                    display: true,
+                                    text: 'Tiempo',
+                                    font: {
+                                        size: 14
+                                    }
+                                },
                                 ticks: {
                                     font: {
                                         size: 14
@@ -278,16 +358,17 @@
                         }
                     }
                 });
-            } else if (sensor.units === "gm3") {
+            } else if (sensor.units === "porcentaje") {
                 new Chart(canvas, {
                     type: 'line',
                     data: {
                         labels: Array(15).fill(''),
                         datasets: [{
-                            label: displayTopic + " (g/m³)",
+                            label: `${sensorName} (%)`,
                             data: [],
                             borderColor: getRandomColor(),
-                            tension: 0.4
+                            tension: 0.4,
+                            fill: false
                         }]
                     },
                     options: {
@@ -297,15 +378,22 @@
                             y: {
                                 beginAtZero: true,
                                 min: 0,
-                                max: 40,
+                                max: 100,
                                 ticks: {
-                                    stepSize: 5,
+                                    stepSize: 10,
                                     font: {
                                         size: 14
                                     }
                                 }
                             },
                             x: {
+                                title: {
+                                    display: true,
+                                    text: 'Tiempo',
+                                    font: {
+                                        size: 14
+                                    }
+                                },
                                 ticks: {
                                     font: {
                                         size: 14
@@ -328,16 +416,16 @@
                     }
                 });
             } else {
-                // Para cualquier otra unidad, se puede establecer un valor por defecto
                 new Chart(canvas, {
                     type: 'line',
                     data: {
                         labels: Array(15).fill(''),
                         datasets: [{
-                            label: displayTopic + " (Lumen)",
+                            label: `${sensorName} (Lumen)`,
                             data: [],
                             borderColor: getRandomColor(),
-                            tension: 0.4
+                            tension: 0.4,
+                            fill: false
                         }]
                     },
                     options: {
@@ -356,6 +444,13 @@
                                 }
                             },
                             x: {
+                                title: {
+                                    display: true,
+                                    text: 'Tiempo',
+                                    font: {
+                                        size: 14
+                                    }
+                                },
                                 ticks: {
                                     font: {
                                         size: 14
@@ -391,16 +486,52 @@
             
             if (!sensorData[topic]) {
                 sensorData[topic] = [];
+                timeLabels[topic] = [];
             }
             
             // Mantener solo los últimos 15 valores
             if (sensorData[topic].length > 15) {
                 sensorData[topic].shift();
+                timeLabels[topic].shift();
             }
+
+            // Agregar el nuevo valor y su timestamp
             sensorData[topic].push(value);
+            timeLabels[topic].push(new Date().toLocaleTimeString());
+            
             updateChart(topic);
             updateSensorCount();
+
+            // Verificar alertas
+            checkAlertConditions(topic, value);
+            
             console.log("Mensaje recibido:", value, "en el topic:", topic);
+        }
+
+        function checkAlertConditions(topic, value) {
+            // Extraer el ID del sensor del topic
+            var topicParts = topic.split('/');
+            var sensorId = topicParts[topicParts.length - 1];
+
+            // Llamar al controlador para verificar y crear alertas
+            $.ajax({
+                url: '/Alert/CheckAndCreateAlerts',
+                type: 'POST',
+                data: {
+                    sensorTopic: topic,
+                    value: value
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log('Verificación de alerta completada:', response.message);
+                    } else {
+                        console.error('Error al verificar alerta:', response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error en la llamada AJAX:', error);
+                }
+            });
         }
 
         function updateChart(topic) {
@@ -408,6 +539,7 @@
             var chart = Chart.getChart(chartId);
             if (chart) {
                 chart.data.datasets[0].data = sensorData[topic];
+                chart.data.labels = timeLabels[topic];
                 chart.update();
             } else {
                 console.log("No se encontró la gráfica para el topic:", topic);

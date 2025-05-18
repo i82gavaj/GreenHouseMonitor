@@ -29,10 +29,73 @@
 
         <div class="log-content-wrapper">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0 text-black">Contenido del Log</h5>
+                <h5 class="mb-0 text-black">Registro de Valores</h5>
                 <small class="text-muted">Última actualización: <span id="lastUpdate">@DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</span></small>
             </div>
-            <pre id="logContent" class="log-content">@ViewBag.LogContent</pre>
+            
+            <div id="logContent" class="log-entries-container">
+                @if (ViewBag.LogContent != null)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover log-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th width="60%">Timestamp</th>
+                                    <th width="40%" class="text-end">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    string logContent = ViewBag.LogContent.ToString();
+                                    string[] entries = logContent.Split(new[] { "════════════════════════════════════════" }, StringSplitOptions.RemoveEmptyEntries);
+                                    
+                                    foreach (var entry in entries)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(entry))
+                                        {
+                                            var lines = entry.Trim().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                                            string timestamp = "", sensor = "", conversionFactor = "", convertedValue = "", originalValue = "";
+                                            
+                                            foreach (var line in lines)
+                                            {
+                                                if (line.StartsWith("Timestamp:"))
+                                                {
+                                                    timestamp = FormatTimestamp(line.Replace("Timestamp:", "").Trim());
+                                                }
+                                                else if (line.StartsWith("Sensor:"))
+                                                {
+                                                    sensor = line.Replace("Sensor:", "").Trim();
+                                                }
+                                                else if (line.StartsWith("Factor de conversión:"))
+                                                {
+                                                    conversionFactor = line.Replace("Factor de conversión:", "").Trim();
+                                                }
+                                                else if (line.StartsWith("Valor convertido:"))
+                                                {
+                                                    convertedValue = line.Replace("Valor convertido:", "").Trim();
+                                                }
+                                                else if (line.StartsWith("Valor original:"))
+                                                {
+                                                    originalValue = line.Replace("Valor original:", "").Trim();
+                                                }
+                                            }
+                                            
+                                            <tr>
+                                                <td class="timestamp-cell">@Html.Raw(timestamp)</td>
+                                                <td class="value-cell">@originalValue</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">No hay datos de log disponibles.</div>
+                }
+            </div>
         </div>
 
         <div class="log-actions">
@@ -41,25 +104,248 @@
                 <button class="btn btn-primary" onclick="window.location.reload()">
                     <i class="fas fa-sync-alt me-2"></i>Actualizar
                 </button>
+                <button class="btn btn-outline-success" id="toggleViewBtn">
+                    <i class="fas fa-file-alt me-2"></i>Ver Texto Original
+                </button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Vista de texto original (oculto por defecto) -->
+<div class="log-viewer-container mt-3 d-none" id="rawTextView">
+    <div class="log-header">
+        <h2 class="text-white">Vista de Texto Original</h2>
+    </div>
+    <div class="log-content-wrapper">
+        <pre class="log-content">@ViewBag.LogContent</pre>
+    </div>
+</div>
+
 @section Scripts {
     <script type="text/javascript">
+        function formatTimestampJS(originalTimestamp) {
+            try {
+                // Crear objeto de fecha a partir del timestamp
+                const dt = new Date(originalTimestamp);
+                
+                // Obtener los componentes de fecha
+                const day = dt.getDate().toString().padStart(2, '0');
+                const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                const month = monthNames[dt.getMonth()];
+                const year = dt.getFullYear();
+                
+                // Obtener los componentes de hora
+                const hours = dt.getHours().toString().padStart(2, '0');
+                const minutes = dt.getMinutes().toString().padStart(2, '0');
+                const seconds = dt.getSeconds().toString().padStart(2, '0');
+                
+                // Devolver formato HTML para estilizar mejor
+                return `<div class='timestamp-date'>${day} ${month} ${year}</div><div class='timestamp-time'>${hours}:${minutes}:${seconds}</div>`;
+            } catch (e) {
+                // Si hay algún problema al parsear, devolver el timestamp original
+                return originalTimestamp;
+            }
+        }
+
         function updateLogContent() {
             $.get('@Url.Action("GetLogContent", "SensorLogFile", new { id = Model.SensorId })', function(data) {
-                $('#logContent').html(data);
+                // Guarda los datos en bruto para la vista de texto
+                $('#rawTextView .log-content').html(data);
+                
+                // Procesa los datos para la vista estructurada
+                var entries = data.split('════════════════════════════════════════');
+                var tableHtml = '<div class="table-responsive"><table class="table table-striped table-hover log-table">' +
+                    '<thead class="table-dark"><tr><th width="60%">Timestamp</th><th width="40%" class="text-end">Valor</th></tr></thead><tbody>';
+                
+                for (var i = 0; i < entries.length; i++) {
+                    var entry = entries[i].trim();
+                    if (entry) {
+                        var lines = entry.split('\n');
+                        var timestamp = '', sensor = '', conversionFactor = '', convertedValue = '', originalValue = '';
+                        
+                        for (var j = 0; j < lines.length; j++) {
+                            var line = lines[j].trim();
+                            if (line.startsWith('Timestamp:'))
+                            {
+                                timestamp = formatTimestampJS(line.replace('Timestamp:', '').trim());
+                            }
+                            else if (line.startsWith('Sensor:'))
+                            {
+                                sensor = line.replace('Sensor:', '').trim();
+                            }
+                            else if (line.startsWith('Factor de conversión:'))
+                            {
+                                conversionFactor = line.replace('Factor de conversión:', '').trim();
+                            }
+                            else if (line.startsWith('Valor convertido:'))
+                            {
+                                convertedValue = line.replace('Valor convertido:', '').trim();
+                            }
+                            else if (line.startsWith('Valor original:'))
+                            {
+                                originalValue = line.replace('Valor original:', '').trim();
+                            }
+                        }
+                        
+                        tableHtml += '<tr>' +
+                            '<td class="timestamp-cell">' + timestamp + '</td>' +
+                            '<td class="value-cell">' + originalValue + '</td>' +
+                            '</tr>';
+                    }
+                }
+                
+                tableHtml += '</tbody></table></div>';
+                $('#logContent').html(tableHtml);
                 $('#lastUpdate').text(new Date().toLocaleString());
             });
         }
-
-        // Actualizar cada 3 segundos
+        
         $(document).ready(function() {
+            // Actualización periódica
             setInterval(updateLogContent, 3000);
+            
+            // Alternar entre vista de tabla y texto
+            $('#toggleViewBtn').click(function() {
+                var $tableView = $('#logContent').closest('.log-viewer-container');
+                var $textView = $('#rawTextView');
+                
+                if ($textView.hasClass('d-none')) {
+                    // Cambiar a vista de texto
+                    $textView.removeClass('d-none');
+                    $tableView.addClass('d-none');
+                    $(this).html('<i class="fas fa-table me-2"></i>Ver Tabla Estructurada');
+                } else {
+                    // Cambiar a vista de tabla
+                    $textView.addClass('d-none');
+                    $tableView.removeClass('d-none');
+                    $(this).html('<i class="fas fa-file-alt me-2"></i>Ver Texto Original');
+                }
+            });
         });
     </script>
+    
+    <style>
+        .log-table {
+            font-size: 1.1rem;
+            border-collapse: collapse;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .log-table th, .log-table td {
+            vertical-align: middle;
+            padding: 1rem 1.25rem;
+        }
+        
+        .log-table th {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        
+        .timestamp-cell {
+            padding: 0.7rem 1.25rem;
+        }
+        
+        .timestamp-date {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.15rem;
+        }
+        
+        .timestamp-time {
+            font-size: 1rem;
+            color: #7f8c8d;
+        }
+        
+        .value-cell {
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-align: right;
+            color: #00897B;
+        }
+        
+        .log-entries-container {
+            max-height: 650px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            background-color: white;
+        }
+        
+        .log-entries-container .table {
+            margin-bottom: 0;
+        }
+        
+        .log-viewer-container {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 0;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .log-header {
+            background: linear-gradient(135deg, #006064, #00897B);
+            padding: 1.5rem;
+            color: white;
+        }
+        
+        .log-content-wrapper {
+            padding: 1.5rem;
+        }
+        
+        .log-info {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .log-actions {
+            padding: 1rem 1.5rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .log-content {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            max-height: 650px;
+            overflow-y: auto;
+        }
+    </style>
+}
+
+@{
+    // Función auxiliar para formatear el timestamp
+    string FormatTimestamp(string originalTimestamp)
+    {
+        try
+        {
+            // Analiza el formato original (asumiendo formato ISO)
+            DateTime dt = DateTime.Parse(originalTimestamp);
+            
+            // Formatea la fecha y hora de manera más amigable
+            string date = dt.ToString("dd MMMM yyyy");
+            string time = dt.ToString("HH:mm:ss");
+            
+            // Devuelve formato HTML para estilizar mejor
+            return $"<div class='timestamp-date'>{date}</div><div class='timestamp-time'>{time}</div>";
+        }
+        catch
+        {
+            // Si hay algún problema al parsear, devuelve el timestamp original
+            return originalTimestamp;
+        }
+    }
 }
 
 

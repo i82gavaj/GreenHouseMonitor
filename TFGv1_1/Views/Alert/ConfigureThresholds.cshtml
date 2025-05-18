@@ -1,0 +1,60 @@
+@model TFGv1_1.Models.Alert
+
+@{
+    ViewBag.Title = "Configurar Alertas";
+}
+
+<div class="index-container">
+    <div class="index-header">
+        <h2 class="index-title">
+            <i class="fas fa-bell me-2"></i>@ViewBag.Title
+        </h2>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.SensorID)
+                @Html.HiddenFor(model => model.GreenHouseID)
+
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.ThresholdRange, "Rango Umbral", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ThresholdRange, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: 10-35" } })
+                        @Html.ValidationMessageFor(model => model.ThresholdRange, "", new { @class = "text-danger" })
+                        <small class="form-text text-muted">Formato: mínimo-máximo (ej: 10-35)</small>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 col-form-label">Notificaciones</label>
+                    <div class="col-md-10">
+                        <div class="form-check mb-2">
+                            @Html.CheckBoxFor(model => model.NotifyByEmail, new { @class = "form-check-input" })
+                            @Html.LabelFor(model => model.NotifyByEmail, "Notificar por Email", new { @class = "form-check-label" })
+                        </div>
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.NotifyByPush, new { @class = "form-check-input" })
+                            @Html.LabelFor(model => model.NotifyByPush, "Notificar por Push", new { @class = "form-check-label" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="offset-md-2 col-md-10">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-save me-2"></i>Guardar
+                        </button>
+                        @Html.ActionLink("Volver a la lista", "Index", "Sensor", null, new { @class = "btn btn-secondary" })
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

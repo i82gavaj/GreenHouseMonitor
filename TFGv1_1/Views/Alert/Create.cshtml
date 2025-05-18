@@ -1,0 +1,387 @@
+@model TFGv1_1.Models.Alert
+@using TFGv1_1.Models
+
+@{
+    ViewBag.Title = "Crear Alerta";
+    
+    // Preparar las listas de selección
+    var alertTypesList = new List<SelectListItem>();
+    if (ViewBag.AlertType != null)
+    {
+        foreach (var type in Enum.GetValues(typeof(AlertType)))
+        {
+            alertTypesList.Add(new SelectListItem 
+            { 
+                Value = type.ToString(), 
+                Text = type.ToString() + " " + GetAlertIcon(type)
+            });
+        }
+    }
+    else
+    {
+        // Si no hay tipos de alerta, usar los valores por defecto del enum
+        foreach (var type in Enum.GetValues(typeof(AlertType)).Cast<AlertType>())
+        {
+            alertTypesList.Add(new SelectListItem 
+            { 
+                Value = type.ToString(), 
+                Text = type.ToString() + " " + GetAlertIcon(type)
+            });
+        }
+    }
+
+    // Verificar si hay sensores
+    var hasSensors = ViewBag.SensorID != null && ((IEnumerable<SelectListItem>)ViewBag.SensorID).Any();
+}
+
+<div class="index-container">
+    <div class="index-header">
+        <h2 class="index-title">
+            <i class="fas fa-bell me-2"></i>@ViewBag.Title
+        </h2>
+    </div>
+
+    @if (!hasSensors)
+    {
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            No tienes ningún sensor creado. Debes crear un sensor antes de poder añadir alertas.
+        </div>
+    }
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="card">
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.GreenHouseID, "Invernadero", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.GreenHouseID, 
+                            new SelectList(ViewBag.GreenHouseID, "Value", "Text"), 
+                            "Seleccione un invernadero", 
+                            new { @class = "form-select", id = "greenhouseSelect" })
+                        @Html.ValidationMessageFor(model => model.GreenHouseID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.SensorID, "Sensor", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @if (hasSensors)
+                        {
+                            @Html.DropDownListFor(model => model.SensorID, 
+                                new SelectList(ViewBag.SensorID, "Value", "Text"), 
+                                "Seleccione un sensor", 
+                                new { @class = "form-select", id = "sensorSelect" })
+                        }
+                        else
+                        {
+                            <select class="form-select" disabled id="sensorSelect">
+                                <option>No hay sensores disponibles</option>
+                            </select>
+                        }
+                        @Html.ValidationMessageFor(model => model.SensorID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <!-- Cuadro de información del sensor -->
+                <div class="form-group row mb-3">
+                    <div class="col-md-12">
+                        <div id="sensorInfoContainer" class="alert alert-info" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.Severity, "Severidad", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.Severity, 
+                            new SelectList(Enum.GetValues(typeof(AlertSeverity))), 
+                            "Seleccione severidad", 
+                            new { @class = "form-select", id = "severity" })
+                        @Html.ValidationMessageFor(model => model.Severity, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.Message, "Mensaje de Alerta", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: Temperatura demasiado alta" } })
+                        @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.ThresholdRange, "Rango Umbral", new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ThresholdRange, new { htmlAttributes = new { @class = "form-control", placeholder = "Ej: 10-30" } })
+                        @Html.ValidationMessageFor(model => model.ThresholdRange, "", new { @class = "text-danger" })
+                        <small class="form-text text-muted">El formato debe ser 'min-max', por ejemplo: 10-30</small>
+                    </div>
+                </div>
+
+                <!-- Campos ocultos para las notificaciones -->
+                <input type="hidden" name="NotifyByEmail" id="NotifyByEmail" value="false" />
+                <input type="hidden" name="NotifyByPush" id="NotifyByPush" value="true" />
+
+                <div class="form-group row">
+                    <div class="offset-md-2 col-md-10">
+                        @if (hasSensors)
+                        {
+                            <button type="submit" class="btn btn-success me-2">
+                                <i class="fas fa-save me-2"></i>Crear
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-success me-2" disabled>
+                                <i class="fas fa-save me-2"></i>Crear
+                            </button>
+                        }
+                        <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Volver a la lista
+                        </a>
+                        @if (!hasSensors)
+                        {
+                            @Html.ActionLink("Crear Sensor", "Create", "Sensor", null, new { @class = "btn btn-warning ms-2" })
+                        }
+                    </div>
+                </div>
+                
+                <!-- Campo oculto para el tipo de alerta -->
+                <input type="hidden" id="AlertTypeHidden" name="AlertType" value="0" />
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .bg-teal {
+        background-color: #008080 !important;
+    }
+    
+    .bg-light {
+        background-color: #f5f9f8 !important;
+    }
+    
+    label {
+        font-weight: normal;
+    }
+    
+    .form-select, .form-control {
+        background-color: #f5f9f8;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+    }
+    
+    .alert-info {
+        background-color: #e8f4fc;
+        border-color: #b8daff;
+        color: #004085;
+        padding: 0.75rem;
+    }
+    
+    .btn-success {
+        background-color: #009688;
+        border-color: #009688;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+    
+    .card {
+        border-radius: 0.25rem;
+    }
+    
+    .card-header {
+        border-top-left-radius: 0.25rem !important;
+        border-top-right-radius: 0.25rem !important;
+    }
+    
+    .form-check-input:checked {
+        background-color: #008080;
+        border-color: #008080;
+    }
+</style>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function() {
+            // Variables globales
+            var sensorSelect = $('#sensorSelect');
+            
+            // Función para cargar los sensores según el invernadero
+            function cargarSensoresPorInvernadero(greenhouseId) {
+                if (greenhouseId) {
+                    $.ajax({
+                        url: '@Url.Action("GetSensoresPorInvernadero", "Alert")',
+                        type: 'GET',
+                        data: { greenhouseId: greenhouseId },
+                        success: function(data) {
+                            sensorSelect.empty();
+                            sensorSelect.append($('<option>', {
+                                value: '',
+                                text: 'Seleccione un sensor'
+                            }));
+                            
+                            if (data && data.length > 0) {
+                                $.each(data, function(i, item) {
+                                    sensorSelect.append($('<option>', {
+                                        value: item.SensorID,
+                                        text: item.SensorName
+                                    }));
+                                });
+                                sensorSelect.prop('disabled', false);
+                            } else {
+                                sensorSelect.append($('<option>', {
+                                    value: '',
+                                    text: 'No hay sensores para este invernadero'
+                                }));
+                                sensorSelect.prop('disabled', true);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error al cargar los sensores: " + error);
+                            console.log(xhr.responseText);
+                            sensorSelect.empty();
+                            sensorSelect.append($('<option>', {
+                                value: '',
+                                text: 'Error al cargar sensores'
+                            }));
+                            sensorSelect.prop('disabled', true);
+                        }
+                    });
+                } else {
+                    sensorSelect.empty();
+                    sensorSelect.append($('<option>', {
+                        value: '',
+                        text: 'Seleccione un invernadero primero'
+                    }));
+                    sensorSelect.prop('disabled', true);
+                }
+                
+                // Ocultar siempre el contenedor de información cuando cambia el invernadero
+                $('#sensorInfoContainer').hide();
+            }
+            
+            // Inicialización al cargar la página
+            var invernaderoInicial = $('#greenhouseSelect').val();
+            if (invernaderoInicial) {
+                cargarSensoresPorInvernadero(invernaderoInicial);
+            } else {
+                sensorSelect.empty();
+                sensorSelect.append($('<option>', {
+                    value: '',
+                    text: 'Seleccione un invernadero primero'
+                }));
+                sensorSelect.prop('disabled', true);
+            }
+            
+            // Evento change para el invernadero
+            $('#greenhouseSelect').change(function() {
+                var greenhouseId = $(this).val();
+                cargarSensoresPorInvernadero(greenhouseId);
+            });
+            
+            // Cuando cambia el sensor, obtener toda la información del sensor
+            sensorSelect.change(function() {
+                var sensorId = $(this).val();
+                
+                if (sensorId) {
+                    $.ajax({
+                        url: '@Url.Action("GetSensorInfo", "Alert")',
+                        type: 'GET',
+                        data: { sensorId: sensorId },
+                        success: function(data) {
+                            if (data) {
+                                // Establecer el tipo de alerta basado en el tipo de sensor
+                                // Mapeo de SensorType a AlertType
+                                var alertType;
+                                switch(parseInt(data.SensorType)) {
+                                    case 0: // Temperature
+                                        alertType = 0; // AlertType.Temperature
+                                        break;
+                                    case 1: // CO2
+                                        alertType = 2; // AlertType.CO2
+                                        break;
+                                    case 2: // Brightness
+                                        alertType = 3; // AlertType.Brightness
+                                        break;
+                                    case 3: // Humidity
+                                        alertType = 1; // AlertType.Humidity
+                                        break;
+                                    default:
+                                        alertType = 0;
+                                }
+                                $('#AlertTypeHidden').val(alertType);
+                                
+                                // Obtener textos según el tipo de sensor
+                                var sensorTypeText = getSensorTypeText(data.SensorType);
+                                
+                                // Obtener el nombre del tipo de alerta según el mapeo
+                                var alertTypeText;
+                                switch(parseInt(alertType)) {
+                                    case 0: alertTypeText = "Temperatura"; break;
+                                    case 1: alertTypeText = "Humedad"; break;
+                                    case 2: alertTypeText = "CO2"; break;
+                                    case 3: alertTypeText = "Luminosidad"; break;
+                                    default: alertTypeText = "Desconocido";
+                                }
+                                
+                                // Construir el mensaje en formato como en la imagen
+                                var mensaje = 'Tipo de sensor: ' + sensorTypeText + '&nbsp;&nbsp;&nbsp;Unidades: ' + data.Units + '&nbsp;&nbsp;&nbsp;La alerta será de tipo: ' + alertTypeText;
+                                $('#sensorInfoContainer').html(mensaje);
+                                
+                                // Mostrar el cuadro de información
+                                $('#sensorInfoContainer').show();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error al obtener información del sensor: " + error);
+                            console.log(xhr.responseText);
+                            $('#sensorInfoContainer').hide();
+                        }
+                    });
+                } else {
+                    $('#sensorInfoContainer').hide();
+                }
+            });
+            
+            // Función para obtener el texto del tipo de sensor
+            function getSensorTypeText(sensorType) {
+                switch(parseInt(sensorType)) {
+                    case 0: return 'Temperatura';
+                    case 1: return 'CO2';
+                    case 2: return 'Luminosidad';
+                    case 3: return 'Humedad';
+                    default: return 'Desconocido';
+                }
+            }
+        });
+    </script>
+}
+
+@functions {
+    public string GetAlertIcon(object alertType)
+    {
+        switch (alertType.ToString())
+        {
+            case "Temperature":
+                return "🌡️";
+            case "Humidity":
+                return "💧";
+            case "Brightness":
+                return "☀️";
+            case "CO2":
+                return "🌫️";
+            default:
+                return "⚠️";
+        }
+    }
+} 

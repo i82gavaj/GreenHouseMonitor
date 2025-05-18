@@ -1,0 +1,590 @@
+@model IEnumerable<TFGv1_1.Models.Alert>
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Gestión de Alertas";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-bell text-success me-2"></i>@ViewBag.Title
+        </h2>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 d-flex flex-wrap justify-content-between">
+            <div class="mb-2">
+                <a href="@Url.Action("Create")" class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i> Crear Nueva Alerta
+                </a>
+            </div>
+            <div class="d-flex flex-wrap">
+                <div class="btn-group me-2 mb-2">
+                    <a href="@Url.Action("Index", new { sortOrder = ViewBag.CurrentSort, showResolved = false })" 
+                       class="btn @(!(ViewBag.ShowResolved ?? false) ? "btn-success" : "btn-outline-success")">
+                        <i class="fas fa-exclamation-circle me-1"></i>Pendientes
+                    </a>
+                    <a href="@Url.Action("Index", new { sortOrder = ViewBag.CurrentSort, showResolved = true })" 
+                       class="btn @((ViewBag.ShowResolved ?? false) ? "btn-success" : "btn-outline-success")">
+                        <i class="fas fa-check-circle me-1"></i>Todas
+                    </a>
+                </div>
+                <div class="btn-group mb-2">
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#cleanupModal">
+                        <i class="fas fa-broom me-1"></i>Limpiar
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
+                        <i class="fas fa-trash-alt me-1"></i>Eliminar Notificaciones
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">
+                <i class="fas fa-exclamation-triangle text-warning me-2"></i>Alertas
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" style="min-width: 1000px;">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-3 py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-leaf text-success me-2"></i>
+                                    <span>Invernadero</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-microchip text-primary me-2"></i>
+                                    <span>Sensor</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <a href="@Url.Action("Index", new { sortOrder = ViewBag.CurrentSort == "type" ? "type_desc" : "type", showResolved = ViewBag.ShowResolved })" class="text-decoration-none text-dark d-flex align-items-center">
+                                        <i class="fas fa-tag text-info me-2"></i>
+                                        <span>Tipo</span>
+                                        @if (ViewBag.CurrentSort == "type")
+                                        {
+                                            <i class="fas fa-sort-up ms-1"></i>
+                                        }
+                                        else if (ViewBag.CurrentSort == "type_desc")
+                                        {
+                                            <i class="fas fa-sort-down ms-1"></i>
+                                        }
+                                    </a>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <a href="@Url.Action("Index", new { sortOrder = ViewBag.CurrentSort == "severity" ? "severity_desc" : "severity", showResolved = ViewBag.ShowResolved })" class="text-decoration-none text-dark d-flex align-items-center">
+                                        <i class="fas fa-exclamation-circle text-warning me-2"></i>
+                                        <span>Severidad</span>
+                                        @if (ViewBag.CurrentSort == "severity")
+                                        {
+                                            <i class="fas fa-sort-up ms-1"></i>
+                                        }
+                                        else if (ViewBag.CurrentSort == "severity_desc")
+                                        {
+                                            <i class="fas fa-sort-down ms-1"></i>
+                                        }
+                                    </a>
+                                </div>
+                            </th>
+                            <th class="py-3" style="max-width: 200px; width: 20%;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-comment text-secondary me-2"></i>
+                                    <span>Mensaje</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <a href="@Url.Action("Index", new { sortOrder = ViewBag.CurrentSort == "date" ? "date_desc" : "date", showResolved = ViewBag.ShowResolved })" class="text-decoration-none text-dark d-flex align-items-center">
+                                        <i class="fas fa-calendar-alt text-primary me-2"></i>
+                                        <span>Fecha</span>
+                                        @if (ViewBag.CurrentSort == "date")
+                                        {
+                                            <i class="fas fa-sort-up ms-1"></i>
+                                        }
+                                        else if (ViewBag.CurrentSort == "date_desc")
+                                        {
+                                            <i class="fas fa-sort-down ms-1"></i>
+                                        }
+                                    </a>
+                                </div>
+                            </th>
+                            <th class="text-center py-3">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-cogs text-secondary me-2"></i>
+                                    <span>Acciones</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Where(a => !a.IsNotification).Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4">No hay alertas disponibles</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var alert in Model.Where(a => !a.IsNotification))
+                            {
+                                <tr class="@(alert.IsResolved ? "table-success" : "")">
+                                    <td class="ps-3 py-3">@alert.GreenHouse.Name</td>
+                                    <td class="py-3">@alert.Sensor.SensorName</td>
+                                    <td class="py-3">
+                                        <span class="badge rounded-pill bg-info">
+                                            @Html.Raw(GetAlertTypeIcon(alert.AlertType)) @alert.AlertType
+                                        </span>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="badge rounded-pill @GetSeverityClass(alert.Severity)">
+                                            @alert.Severity
+                                        </span>
+                                    </td>
+                                    <td class="py-3 truncate-text" data-full-text="@alert.Message" style="max-width: 200px; width: 20%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        @(alert.Message.Length > 30 ? alert.Message.Substring(0, 27) + "..." : alert.Message)
+                                    </td>
+                                    <td class="py-3">@alert.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="text-center py-3">
+                                        <div class="btn-group">
+                                            <a href="@Url.Action("Details", new { id = alert.AlertID })" class="btn btn-sm btn-outline-info rounded-pill px-3 mx-1" title="Detalles" data-bs-toggle="tooltip">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                            @if (!alert.IsResolved)
+                                            {
+                                                <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 mx-1" title="Resolver" 
+                                                        data-bs-toggle="modal" data-bs-target="#resolveModal" 
+                                                        data-alert-id="@alert.AlertID" data-alert-type="@alert.AlertType">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            }
+                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 mx-1" title="Eliminar" 
+                                                    data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                                                    data-alert-id="@alert.AlertID" data-alert-type="@alert.AlertType">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                
+                <!-- Paginación -->
+                <div class="pagination-container d-flex justify-content-center p-3">
+                    <ul class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, sortOrder = ViewBag.CurrentSort, showResolved = ViewBag.ShowResolved })" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i, sortOrder = ViewBag.CurrentSort, showResolved = ViewBag.ShowResolved })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, sortOrder = ViewBag.CurrentSort, showResolved = ViewBag.ShowResolved })" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm" id="notificationsTableContainer">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">
+                <i class="fas fa-bell text-primary me-2 text-white"></i>Notificaciones
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" style="min-width: 1000px;">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-3 py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-leaf text-success me-2"></i>
+                                    <span>Invernadero</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-microchip text-primary me-2"></i>
+                                    <span>Sensor</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-tag text-info me-2"></i>
+                                    <span>Tipo</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-circle text-warning me-2"></i>
+                                    <span>Severidad</span>
+                                </div>
+                            </th>
+                            <th class="py-3" style="max-width: 200px; width: 20%;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-comment text-secondary me-2"></i>
+                                    <span>Mensaje</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-calendar-alt text-primary me-2"></i>
+                                    <span>Fecha</span>
+                                </div>
+                            </th>
+                            <th class="text-center py-3">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-cogs text-secondary me-2"></i>
+                                    <span>Acciones</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Where(a => a.IsNotification).Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4">No hay notificaciones disponibles</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var notification in Model.Where(a => a.IsNotification))
+                            {
+                                <tr class="@(notification.IsResolved ? "table-success" : "")">
+                                    <td class="ps-3 py-3">@notification.GreenHouse.Name</td>
+                                    <td class="py-3">@notification.Sensor.SensorName</td>
+                                    <td class="py-3">
+                                        <span class="badge rounded-pill bg-info">
+                                            @Html.Raw(GetAlertTypeIcon(notification.AlertType)) @notification.AlertType
+                                        </span>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="badge rounded-pill @GetSeverityClass(notification.Severity)">
+                                            @notification.Severity
+                                        </span>
+                                    </td>
+                                    <td class="py-3 truncate-text" data-full-text="@notification.Message" style="max-width: 200px; width: 20%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        @(notification.Message.Length > 30 ? notification.Message.Substring(0, 27) + "..." : notification.Message)
+                                    </td>
+                                    <td class="py-3">@notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="text-center py-3">
+                                        <div class="btn-group">
+                                            <a href="@Url.Action("Details", new { id = notification.AlertID })" class="btn btn-sm btn-outline-info rounded-pill px-3 mx-1" title="Detalles" data-bs-toggle="tooltip">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                            @if (!notification.IsResolved)
+                                            {
+                                                <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 mx-1" title="Resolver" 
+                                                        data-bs-toggle="modal" data-bs-target="#resolveModal" 
+                                                        data-alert-id="@notification.AlertID" data-alert-type="@notification.AlertType">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            }
+                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 mx-1" title="Eliminar" 
+                                                    data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                                                    data-alert-id="@notification.AlertID" data-alert-type="@notification.AlertType">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                
+                <!-- Paginación de notificaciones -->
+                <div class="pagination-container d-flex justify-content-center p-3">
+                    <ul class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, sortOrder = ViewBag.CurrentSort, showResolved = ViewBag.ShowResolved })" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i, sortOrder = ViewBag.CurrentSort, showResolved = ViewBag.ShowResolved })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, sortOrder = ViewBag.CurrentSort, showResolved = ViewBag.ShowResolved })" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para texto completo -->
+<div class="modal fade" id="textModal" tabindex="-1" aria-labelledby="textModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="textModalLabel">Mensaje completo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p id="textModalContent"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para confirmar eliminación -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel"><i class="fas fa-exclamation-triangle me-2"></i>Confirmar eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar esta alerta? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para confirmar resolver -->
+<div class="modal fade" id="resolveModal" tabindex="-1" aria-labelledby="resolveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="resolveModalLabel"><i class="fas fa-check-circle me-2"></i>Confirmar resolución</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Confirmas que esta alerta ha sido resuelta?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="resolveForm" method="post" action="">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-success">Confirmar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para confirmar limpieza -->
+<div class="modal fade" id="cleanupModal" tabindex="-1" aria-labelledby="cleanupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="cleanupModalLabel"><i class="fas fa-broom me-2"></i>Confirmar limpieza</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas limpiar las alertas resueltas con más de 30 días?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="@Url.Action("CleanupAlerts")" class="btn btn-warning">Confirmar limpieza</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para confirmar eliminación de todas las notificaciones -->
+<div class="modal fade" id="deleteAllModal" tabindex="-1" aria-labelledby="deleteAllModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteAllModalLabel"><i class="fas fa-trash-alt me-2"></i>Eliminar todas las notificaciones</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar todas las notificaciones? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="@Url.Action("DeleteAllNotifications")" class="btn btn-danger">Eliminar todas</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tooltips de Bootstrap
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // Inicializar los manejadores para textos truncados
+            initTruncatedTextHandlers();
+            
+            // Función para inicializar manejadores de textos truncados
+            function initTruncatedTextHandlers() {
+                const truncatedElements = document.querySelectorAll('.truncate-text');
+                const textModal = new bootstrap.Modal(document.getElementById('textModal'));
+                const modalContent = document.getElementById('textModalContent');
+                
+                truncatedElements.forEach(element => {
+                    element.addEventListener('click', function() {
+                        const fullText = this.getAttribute('data-full-text');
+                        modalContent.textContent = fullText;
+                        textModal.show();
+                    });
+                });
+            }
+            
+            // Configurar modal de eliminar
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var alertId = button.data('alert-id');
+                var alertType = button.data('alert-type');
+                
+                var modal = $(this);
+                modal.find('.modal-title').html('<i class="fas fa-exclamation-triangle me-2"></i>Confirmar eliminación');
+                modal.find('.modal-body p').text(`¿Estás seguro de que deseas eliminar esta alerta de tipo ${alertType}?`);
+                modal.find('#confirmDeleteBtn').attr('href', '@Url.Action("Delete", "Alert")/' + alertId);
+            });
+            
+            // Configurar modal de resolver
+            $('#resolveModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var alertId = button.data('alert-id');
+                var alertType = button.data('alert-type');
+                
+                var modal = $(this);
+                modal.find('.modal-title').html('<i class="fas fa-check-circle me-2"></i>Confirmar resolución');
+                modal.find('.modal-body p').text(`¿Confirmas que esta alerta de tipo ${alertType} ha sido resuelta?`);
+                modal.find('#resolveForm').attr('action', '@Url.Action("Resolve", "Alert")/' + alertId);
+            });
+            
+            // Volver a adjuntar los controladores de eventos después de las actualizaciones AJAX
+            $(document).on('DOMNodeInserted', '#notificationsTableContainer', function() {
+                setTimeout(function() {
+                    initTruncatedTextHandlers();
+                    
+                    // Reinicializar tooltips en el contenedor actualizado
+                    var newTooltipTriggerList = [].slice.call(document.querySelectorAll('#notificationsTableContainer [data-bs-toggle="tooltip"]'));
+                    var newTooltipList = newTooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl);
+                    });
+                }, 100);
+            });
+        });
+    </script>
+}
+
+@functions {
+    private string GetSeverityClass(TFGv1_1.Models.AlertSeverity severity)
+    {
+        switch (severity)
+        {
+            case TFGv1_1.Models.AlertSeverity.Low:
+                return "bg-info text-white";
+            case TFGv1_1.Models.AlertSeverity.Medium:
+                return "bg-warning text-dark";
+            case TFGv1_1.Models.AlertSeverity.High:
+                return "bg-danger text-white";
+            case TFGv1_1.Models.AlertSeverity.Critical:
+                return "bg-dark text-white";
+            default:
+                return "bg-secondary";
+        }
+    }
+
+    private string GetAlertTypeIcon(TFGv1_1.Models.AlertType type)
+    {
+        switch (type)
+        {
+            case TFGv1_1.Models.AlertType.Temperature:
+                return "<i class=\"fas fa-thermometer-half\"></i>";
+            case TFGv1_1.Models.AlertType.Humidity:
+                return "<i class=\"fas fa-tint\"></i>";
+            case TFGv1_1.Models.AlertType.CO2:
+                return "<i class=\"fas fa-cloud\"></i>";
+            case TFGv1_1.Models.AlertType.Brightness:
+                return "<i class=\"fas fa-sun\"></i>";
+            default:
+                return "<i class=\"fas fa-question-circle\"></i>";
+        }
+    }
+} 

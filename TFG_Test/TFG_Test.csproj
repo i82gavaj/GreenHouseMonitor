@@ -5,9 +5,18 @@
     <LangVersion>7.3</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
-
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <Platforms>AnyCPU</Platforms>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin\Debug\net481\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>bin\Release\net481\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +33,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TFGv1_1.MQTTLogger\TFGv1_1.MQTTLogger.csproj" />
+    <ProjectReference Include="..\TFGv1_1.MQTTLogger\TFGv1_1.MQTTLogger.csproj">
+      <Private>True</Private>
+      <CopyLocal>True</CopyLocal>
+    </ProjectReference>
     <ProjectReference Include="..\TFGv1_1\TFGv1_1.csproj" />
   </ItemGroup>
 

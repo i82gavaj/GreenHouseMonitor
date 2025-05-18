@@ -12,7 +12,7 @@ $(document).ready(function () {
         } else if (selectedType === 'Brightness') {
             unitsDropdown.append($('<option></option>').val('Lumen').html('Lumen'));
         } else if (selectedType === 'Humidity') {
-            unitsDropdown.append($('<option></option>').val('gm3').html('gm3'));
+            unitsDropdown.append($('<option></option>').val('porcentaje').html('%'));
         }
     });
 });

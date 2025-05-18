@@ -1,0 +1,94 @@
+@model TFGv1_1.Models.Alert
+
+@{
+    ViewBag.Title = "Eliminar Alerta";
+}
+
+<div class="container mt-4">
+    <div class="card border-danger shadow">
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Eliminar Alerta</h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning delete-warning">
+                <h4 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>¿Está seguro que desea eliminar esta alerta?</h4>
+                <p>Esta acción no se puede deshacer y eliminará permanentemente la configuración de alerta para este sensor.</p>
+            </div>
+            
+            <div class="details-card mb-4">
+                <div class="details-header bg-light">
+                    <h5 class="mb-0">Detalles de la Alerta</h5>
+                </div>
+                <div class="details-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Sensor:</dt>
+                                <dd class="col-sm-8">@Model.Sensor.SensorName</dd>
+
+                                <dt class="col-sm-4">Tipo:</dt>
+                                <dd class="col-sm-8">@Model.AlertType</dd>
+
+                                <dt class="col-sm-4">Umbral:</dt>
+                                <dd class="col-sm-8">@Model.ThresholdRange</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Invernadero:</dt>
+                                <dd class="col-sm-8">@Model.GreenHouse.Name</dd>
+
+                                <dt class="col-sm-4">Notificaciones:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.NotifyByEmail)
+                                    {
+                                        <span class="badge bg-info me-1">Email</span>
+                                    }
+                                    @if (Model.NotifyByPush)
+                                    {
+                                        <span class="badge bg-info">Push</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-secondary" })
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                    <i class="fas fa-trash-alt me-2"></i>Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para confirmar eliminación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirmar eliminación
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Está completamente seguro de que desea eliminar esta alerta de tipo <strong>@Model.AlertType</strong>?</p>
+                <p class="text-danger"><strong>Advertencia:</strong> Esta acción eliminará permanentemente la configuración de alerta para el sensor <strong>@Model.Sensor.SensorName</strong> y no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-2"></i>Eliminar definitivamente
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div> 

@@ -9,6 +9,7 @@ using TFGv1_1.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace TFGv1_1.Models
 {
@@ -87,23 +88,36 @@ namespace TFGv1_1.Models
         public virtual DbSet<GreenHouse> GreenHouses { get; set; }
         public virtual DbSet<Sensor> Sensors { get; set; }
         public virtual DbSet<SensorLogFile> SensorLogFiles { get; set; }
+        public virtual DbSet<Alert> Alerts { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configurar relaciones para evitar cascada
+            modelBuilder.Entity<Alert>()
+                .HasRequired(a => a.Sensor)
+                .WithMany(s => s.Alerts)
+                .HasForeignKey(a => a.SensorID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Alert>()
+                .HasRequired(a => a.GreenHouse)
+                .WithMany(g => g.Alerts)
+                .HasForeignKey(a => a.GreenHouseID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Sensor>()
+                .HasRequired(s => s.GreenHouse)
+                .WithMany(g => g.Sensors)
+                .HasForeignKey(s => s.GreenHouseID)
+                .WillCascadeOnDelete(false);
+
             // Configuración de la relación Sensor - SensorLogFile
             modelBuilder.Entity<Sensor>()
                 .HasOptional(s => s.LogFile)
                 .WithRequired(l => l.Sensor)
-                .WillCascadeOnDelete(true);
-
-            // Configuración de la relación GreenHouse - Sensor
-            modelBuilder.Entity<GreenHouse>()
-                .HasMany(g => g.Sensors)
-                .WithRequired(s => s.GreenHouse)
-                .HasForeignKey(s => s.GreenHouseID)
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
         }
     }
 }

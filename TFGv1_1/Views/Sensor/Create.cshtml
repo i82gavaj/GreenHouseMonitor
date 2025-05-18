@@ -175,8 +175,8 @@
                         break;
                     case 'Humidity':
                         unitsSelect.append($('<option>', {
-                            value: 'gm3',
-                            text: 'g/m³ - Gramos por metro cúbico'
+                            value: 'porcentaje',
+                            text: '% - Porcentaje'
                         }));
                         break;
                 }
@@ -216,8 +216,8 @@
                 return "L - Lumen";
             case "microgm3":
                 return "µg/m³ - Microgramos por metro cúbico";
-            case "gm3":
-                return "g/m³ - Gramos por metro cúbico";
+            case "porcentaje":
+                return "% - Porcentaje";
             default:
                 return unit.ToString();
         }

@@ -1,89 +1,179 @@
-﻿@model IEnumerable<TFGv1_1.Models.Sensor>
+﻿@model PagedList.IPagedList<TFGv1_1.Models.Sensor>
 @using Microsoft.AspNet.Identity
+@using PagedList.Mvc
 
 @{
-    ViewBag.Title = "Lista de Sensores";
+    ViewBag.Title = "Gestión de Sensores";
 }
 
-<div class="index-container">
-    <div class="index-header">
-        <h2 class="index-title">
-            <i class="fas fa-microchip me-2"></i>@ViewBag.Title
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-microchip text-success me-2"></i>@ViewBag.Title
         </h2>
-        @Html.ActionLink("Crear Nuevo Sensor", "Create", null, new { @class = "btn btn-primary" })
     </div>
 
-    <table class="table table-responsive custom-table">
-        <thead>
-            <tr>
-                <th><i class="fas fa-tag me-2"></i>Nombre</th>
-                <th><i class="fas fa-thermometer-half me-2"></i>Tipo</th>
-                <th><i class="fas fa-ruler me-2"></i>Unidades</th>
-                <th><i class="fas fa-broadcast-tower me-2"></i>Topic</th>
-                <th><i class="fas fa-cogs me-2"></i>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var sensor in Model)
-            {
-                <tr>
-                    <td class="truncate-text" data-full-text="@sensor.SensorName">@sensor.SensorName</td>
-                    <td class="truncate-text" data-full-text="@sensor.SensorType">@sensor.SensorType</td>
-                    <td class="truncate-text" data-full-text="@sensor.Units">@sensor.Units</td>
-                    <td class="truncate-text" data-full-text="@sensor.Topic">
-                        @(sensor.Topic.Length > 30 ? sensor.Topic.Substring(0, 27) + "..." : sensor.Topic)
-                    </td>
-                    <td class="text-end">
-                        <div class="table-actions">
-                            <a href="@Url.Action("Edit", new { id = sensor.SensorID })" class="btn btn-sm btn-info" title="Editar">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="@Url.Action("Delete", new { id = sensor.SensorID })" class="btn btn-sm btn-danger" title="Eliminar">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                            <a href="@Url.Action("ViewContent", "SensorLogFile", new { id = sensor.SensorID })" class="btn btn-sm btn-success" title="Log">
-                                <i class="fas fa-file-alt"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-microchip text-primary me-2 text-white"></i>Sensores
+                </h5>
+                <a href="@Url.Action("Create")" class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i> Crear Nuevo Sensor
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" style="min-width: 800px;">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-3 py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-tag text-success me-2"></i>
+                                    <span>Nombre</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-thermometer-half text-danger me-2"></i>
+                                    <span>Tipo</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-ruler text-info me-2"></i>
+                                    <span>Unidades</span>
+                                </div>
+                            </th>
+                            <th class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-broadcast-tower text-warning me-2"></i>
+                                    <span>Topic</span>
+                                </div>
+                            </th>
+                            <th class="text-center py-3">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-cogs text-secondary me-2"></i>
+                                    <span>Acciones</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sensor in Model)
+                        {
+                            <tr>
+                                <td class="ps-3 truncate-text" data-full-text="@sensor.SensorName">@sensor.SensorName</td>
+                                <td class="truncate-text" data-full-text="@sensor.SensorType">@sensor.SensorType</td>
+                                <td class="truncate-text" data-full-text="@sensor.Units">@sensor.Units</td>
+                                <td class="truncate-text" data-full-text="@sensor.Topic">
+                                    @(sensor.Topic.Length > 30 ? sensor.Topic.Substring(0, 27) + "..." : sensor.Topic)
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="@Url.Action("Edit", new { id = sensor.SensorID })" class="btn btn-sm btn-outline-primary rounded-pill px-3 mx-1" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="@Url.Action("Create", "Alert", new { sensorId = sensor.SensorID })" class="btn btn-sm btn-outline-warning rounded-pill px-3 mx-1" title="Configurar Alertas">
+                                            <i class="fas fa-bell"></i>
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = sensor.SensorID })" class="btn btn-sm btn-outline-danger rounded-pill px-3 mx-1" title="Eliminar">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                        <a href="@Url.Action("ViewContent", "SensorLogFile", new { id = sensor.SensorID })" class="btn btn-sm btn-outline-success rounded-pill px-3 mx-1" title="Ver Log">
+                                            <i class="fas fa-file-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Paginación -->
+                <div class="pagination-container d-flex justify-content-center p-3">
+                    <ul class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Anterior">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Siguiente">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal para texto completo -->
-<div class="text-modal" id="textModal">
-    <span class="text-modal-close">&times;</span>
-    <div class="text-modal-content"></div>
+<div class="modal fade" id="textModal" tabindex="-1" aria-labelledby="textModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="textModalLabel">Texto Completo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p id="textModalContent"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="modal-backdrop"></div>
 
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Configurar modal para texto completo
             const truncatedElements = document.querySelectorAll('.truncate-text');
-            const modal = document.getElementById('textModal');
-            const modalContent = modal.querySelector('.text-modal-content');
-            const modalBackdrop = document.querySelector('.modal-backdrop');
-            const closeBtn = modal.querySelector('.text-modal-close');
-
+            
             truncatedElements.forEach(element => {
                 element.addEventListener('click', function() {
                     const fullText = this.getAttribute('data-full-text');
-                    modalContent.textContent = fullText;
-                    modal.style.display = 'block';
-                    modalBackdrop.style.display = 'block';
+                    document.getElementById('textModalContent').textContent = fullText;
+                    var textModal = new bootstrap.Modal(document.getElementById('textModal'));
+                    textModal.show();
                 });
             });
-
-            function closeModal() {
-                modal.style.display = 'none';
-                modalBackdrop.style.display = 'none';
-            }
-
-            closeBtn.addEventListener('click', closeModal);
-            modalBackdrop.addEventListener('click', closeModal);
         });
     </script>
 }

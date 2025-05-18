@@ -10,6 +10,7 @@ using TFGv1_1.Models;
 using System.IO;
 using Microsoft.AspNet.Identity;
 using System.Text;
+using PagedList;
 
 namespace TFGv1_1.Controllers
 {
@@ -19,7 +20,7 @@ namespace TFGv1_1.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: SensorLogFile
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             // Obtener el ID del usuario actual
             var userId = User.Identity.GetUserId();
@@ -29,9 +30,19 @@ namespace TFGv1_1.Controllers
                 .Include(s => s.Sensor)
                 .Include(s => s.Sensor.GreenHouse)
                 .Where(s => s.Sensor.GreenHouse.UserID == userId)
-                .ToList();
+                .OrderByDescending(s => s.CreationDate);
                 
-            return View(sensorLogFiles);
+            int pageSize = 10; // Número de elementos por página
+            int pageNumber = (page ?? 1); // Si page es null, usar 1 como valor predeterminado
+            
+            // Configurar valores para la paginación manual
+            int totalItems = sensorLogFiles.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.TotalPages = totalPages;
+            
+            return View(sensorLogFiles.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: SensorLogFile/Details/5

@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using TFGv1_1.Models;
 using Microsoft.AspNet.Identity;
 using System.IO;
+using PagedList;
 
 namespace TFGv1_1.Controllers
 {
@@ -18,11 +19,24 @@ namespace TFGv1_1.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: GreenHouse
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             var userId = User.Identity.GetUserId();
-            var greenHouses = db.GreenHouses.Where(g => g.UserID == userId);
-            return View(greenHouses.ToList());
+            var greenHouses = db.GreenHouses
+                .Where(g => g.UserID == userId)
+                .OrderBy(g => g.Name);
+                
+            int pageSize = 10; // Número de elementos por página
+            int pageNumber = (page ?? 1); // Si page es null, usar 1 como valor predeterminado
+            
+            // Configurar valores para la paginación manual
+            int totalItems = greenHouses.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.TotalPages = totalPages;
+            
+            return View(greenHouses.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: GreenHouse/Details/5

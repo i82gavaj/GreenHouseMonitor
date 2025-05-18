@@ -317,7 +317,7 @@
 
         const sensorRanges = {
             temperature: { min: 19, max: 50, units: '°C' },
-            humidity: { min: 5, max: 35, units: 'g/m³' },
+            humidity: { min: 5, max: 95, units: '%' },
             co2: { min: 300, max: 2200, units: 'µg/m³' },
             brightness: { min: 0, max: 1000, units: 'lux' }
         };
@@ -389,7 +389,7 @@
                     mensaje.destinationName = topic;
                     client.send(mensaje);
                 }
-            }, 2000);
+            }, 5000);
         }
 
         function detenerSimulacion() {

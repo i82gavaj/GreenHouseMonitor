@@ -1,0 +1,113 @@
+@model IEnumerable<TFGv1_1.Models.Alert>
+@using Microsoft.AspNet.Identity
+
+<div class="card-header bg-white py-3">
+    <h5 class="mb-0">
+        <i class="fas fa-bell text-primary me-2"></i>Notificaciones
+    </h5>
+</div>
+<div class="card-body p-0">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th class="ps-3 py-3"><i class="fas fa-leaf text-success me-2"></i>Invernadero</th>
+                    <th class="py-3"><i class="fas fa-microchip text-primary me-2"></i>Sensor</th>
+                    <th class="py-3"><i class="fas fa-tag text-info me-2"></i>Tipo</th>
+                    <th class="py-3"><i class="fas fa-exclamation-circle text-warning me-2"></i>Severidad</th>
+                    <th class="py-3" style="max-width: 200px; width: 20%;"><i class="fas fa-comment text-secondary me-2"></i>Mensaje</th>
+                    <th class="py-3"><i class="fas fa-calendar-alt text-primary me-2"></i>Fecha</th>
+                    <th class="text-center py-3"><i class="fas fa-cogs text-secondary me-2"></i>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-4">No hay notificaciones disponibles</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var notification in Model)
+                    {
+                        <tr class="@(notification.IsResolved ? "table-success" : "")">
+                            <td class="ps-3 py-3">@notification.GreenHouse.Name</td>
+                            <td class="py-3">@notification.Sensor.SensorName</td>
+                            <td class="py-3">
+                                <span class="badge rounded-pill bg-info">
+                                    @Html.Raw(GetAlertTypeIcon(notification.AlertType)) @notification.AlertType
+                                </span>
+                            </td>
+                            <td class="py-3">
+                                <span class="badge rounded-pill @GetSeverityClass(notification.Severity)">
+                                    @notification.Severity
+                                </span>
+                            </td>
+                            <td class="py-3 truncate-text" data-full-text="@notification.Message" style="max-width: 200px; width: 20%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                @(notification.Message.Length > 30 ? notification.Message.Substring(0, 27) + "..." : notification.Message)
+                            </td>
+                            <td class="py-3">@notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-center py-3">
+                                <div class="btn-group">
+                                    <a href="@Url.Action("Details", new { id = notification.AlertID })" class="btn btn-sm btn-outline-info rounded-pill px-3 mx-1" title="Detalles" data-bs-toggle="tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                    @if (!notification.IsResolved)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 mx-1" title="Resolver" 
+                                                data-bs-toggle="modal" data-bs-target="#resolveModal" 
+                                                data-alert-id="@notification.AlertID" data-alert-type="@notification.AlertType">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    }
+                                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 mx-1" title="Eliminar" 
+                                            data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                                            data-alert-id="@notification.AlertID" data-alert-type="@notification.AlertType">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@functions {
+    private string GetSeverityClass(TFGv1_1.Models.AlertSeverity severity)
+    {
+        switch (severity)
+        {
+            case TFGv1_1.Models.AlertSeverity.Low:
+                return "bg-info text-white";
+            case TFGv1_1.Models.AlertSeverity.Medium:
+                return "bg-warning text-dark";
+            case TFGv1_1.Models.AlertSeverity.High:
+                return "bg-danger text-white";
+            case TFGv1_1.Models.AlertSeverity.Critical:
+                return "bg-dark text-white";
+            default:
+                return "bg-secondary";
+        }
+    }
+
+    private string GetAlertTypeIcon(TFGv1_1.Models.AlertType type)
+    {
+        switch (type)
+        {
+            case TFGv1_1.Models.AlertType.Temperature:
+                return "<i class=\"fas fa-thermometer-half\"></i>";
+            case TFGv1_1.Models.AlertType.Humidity:
+                return "<i class=\"fas fa-tint\"></i>";
+            case TFGv1_1.Models.AlertType.CO2:
+                return "<i class=\"fas fa-cloud\"></i>";
+            case TFGv1_1.Models.AlertType.Brightness:
+                return "<i class=\"fas fa-sun\"></i>";
+            default:
+                return "<i class=\"fas fa-question-circle\"></i>";
+        }
+    }
+} 

@@ -1,0 +1,284 @@
+﻿@model TFGv1_1.Models.Alert
+
+@{
+    ViewBag.Title = "Detalles de Alerta";
+}
+
+<style>
+    .alerta-card-header {
+        background: linear-gradient(to right, #00695C, #4DB6AC);
+        color: white;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .alerta-icono {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+        background: white;
+        color: #11998e;
+        border-radius: 50%;
+        padding: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .alerta-icono i {
+        display: block;
+    }
+    .alerta-tarjeta {
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .alerta-titulo-seccion {
+        font-weight: bold;
+        color: #11998e;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .alerta-dato {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 1rem;
+    }
+    .alerta-dato-icono {
+        font-size: 1.5rem;
+        color: #11998e;
+        min-width: 2rem;
+        text-align: center;
+    }
+    .alerta-dato-label {
+        font-weight: 500;
+        color: #11998e;
+        min-width: 110px;
+    }
+    .alerta-dato-valor {
+        font-weight: 400;
+        color: #222;
+    }
+    .alerta-botones {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow rounded">
+                <div class="alerta-card-header">
+                    <span class="alerta-icono"><i class="@GetAlertTypeIconFA(Model.AlertType)"></i></span>
+                    <div>
+                        <h2 class="mb-0">@Model.AlertType</h2>
+                        @if (Model.IsResolved)
+                        {
+                            <span class="badge bg-success mt-2">Resuelta</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark mt-2">Pendiente</span>
+                        }
+                    </div>
+                </div>
+                <div class="card-body" style="background: #f8fdfc; border-bottom-left-radius: 1rem; border-bottom-right-radius: 1rem;">
+                    <div class="alerta-tarjeta mb-4">
+                        <div class="alerta-titulo-seccion"><i class="fas fa-comment-dots"></i> Mensaje de la alerta</div>
+                        <div>@Model.Message</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="alerta-tarjeta">
+                                <div class="alerta-titulo-seccion"><i class="fas fa-warehouse"></i> Invernadero</div>
+                                <div class="alerta-dato">
+                                    <span class="alerta-dato-icono"><i class="fas fa-warehouse"></i></span>
+                                    <span class="alerta-dato-label">Nombre:</span>
+                                    <span class="alerta-dato-valor">@Model.GreenHouse.Name</span>
+                                </div>
+                                <div class="alerta-dato">
+                                    <span class="alerta-dato-icono"><i class="fas fa-map-marker-alt"></i></span>
+                                    <span class="alerta-dato-label">Ubicación:</span>
+                                    <span class="alerta-dato-valor">@Model.GreenHouse.Location</span>
+                                </div>
+                            </div>
+                            <div class="alerta-tarjeta">
+                                <div class="alerta-titulo-seccion"><i class="fas fa-microchip"></i> Sensor</div>
+                                <div class="alerta-dato">
+                                    <span class="alerta-dato-icono"><i class="fas fa-microchip"></i></span>
+                                    <span class="alerta-dato-label">Nombre:</span>
+                                    <span class="alerta-dato-valor">@Model.Sensor.SensorName</span>
+                                </div>
+                                <div class="alerta-dato">
+                                    <span class="alerta-dato-icono"><i class="fas fa-thermometer-half"></i></span>
+                                    <span class="alerta-dato-label">Tipo:</span>
+                                    <span class="alerta-dato-valor">@Model.Sensor.SensorType</span>
+                                </div>
+                                <div class="alerta-dato">
+                                    <span class="alerta-dato-icono"><i class="fas fa-ruler"></i></span>
+                                    <span class="alerta-dato-label">Unidades:</span>
+                                    <span class="alerta-dato-valor">@Model.Sensor.Units</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alerta-tarjeta">
+                                <div class="alerta-titulo-seccion"><i class="fas fa-exclamation-triangle"></i> Detalles de la Alerta</div>
+                                <div class="alerta-dato">
+                                    <span class="alerta-dato-icono"><i class="@GetSeverityIconFA(Model.Severity)"></i></span>
+                                    <span class="alerta-dato-label">Severidad:</span>
+                                    <span class="alerta-dato-valor">@Model.Severity</span>
+                                </div>
+                                <div class="alerta-dato">
+                                    <span class="alerta-dato-icono"><i class="fas fa-bullseye"></i></span>
+                                    <span class="alerta-dato-label">Valor Actual:</span>
+                                    <span class="alerta-dato-valor">@Model.CurrentValue @Model.Sensor.Units</span>
+                                </div>
+                                <div class="alerta-dato">
+                                    <span class="alerta-dato-icono"><i class="fas fa-arrows-alt-h"></i></span>
+                                    <span class="alerta-dato-label">Rango Umbral:</span>
+                                    <span class="alerta-dato-valor">@Model.ThresholdRange</span>
+                                </div>
+                            </div>
+                            <div class="alerta-tarjeta">
+                                <div class="alerta-titulo-seccion"><i class="fas fa-clock"></i> Información Temporal</div>
+                                <div class="alerta-dato">
+                                    <span class="alerta-dato-icono"><i class="fas fa-calendar-plus"></i></span>
+                                    <span class="alerta-dato-label">Creada:</span>
+                                    <span class="alerta-dato-valor">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</span>
+                                </div>
+                                @if (Model.IsResolved)
+                                {
+                                    <div class="alerta-dato">
+                                        <span class="alerta-dato-icono"><i class="fas fa-calendar-check"></i></span>
+                                        <span class="alerta-dato-label">Resuelta:</span>
+                                        <span class="alerta-dato-valor">@(Model.ResolvedAt.HasValue ? Model.ResolvedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "N/A")</span>
+                                    </div>
+                                    <div class="alerta-dato">
+                                        <span class="alerta-dato-icono"><i class="fas fa-hourglass-half"></i></span>
+                                        <span class="alerta-dato-label">Duración:</span>
+                                        <span class="alerta-dato-valor">
+                                            @{
+                                                var duration = Model.ResolvedAt - Model.CreatedAt;
+                                                if (duration.HasValue)
+                                                {
+                                                    if (duration.Value.TotalHours >= 24)
+                                                    {
+                                                        @($"{duration.Value.Days} días, {duration.Value.Hours} horas")
+                                                    }
+                                                    else if (duration.Value.TotalMinutes >= 60)
+                                                    {
+                                                        @($"{duration.Value.Hours} horas, {duration.Value.Minutes} minutos")
+                                                    }
+                                                    else
+                                                    {
+                                                        @($"{duration.Value.Minutes} minutos, {duration.Value.Seconds} segundos")
+                                                    }
+                                                }
+                                            }
+                                        </span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alerta-botones">
+                        @if (!Model.IsResolved)
+                        {
+                            <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#resolveDetailModal">
+                                <i class="fas fa-check me-2"></i>Marcar como Resuelta
+                            </button>
+                        }
+                        @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-secondary btn-lg" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para confirmar resolución -->
+<div class="modal fade" id="resolveDetailModal" tabindex="-1" aria-labelledby="resolveDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="resolveDetailModalLabel">
+                    <i class="fas fa-check-circle me-2"></i>Confirmar resolución
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Confirmas que esta alerta de tipo <strong>@Model.AlertType</strong> ha sido resuelta?</p>
+                <p class="text-muted small">Una vez marcada como resuelta, la alerta ya no aparecerá en la lista de alertas pendientes.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                @using (Html.BeginForm("Resolve", "Alert", new { id = Model.AlertID }, FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-success">Confirmar</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tooltips de Bootstrap
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+}
+
+@functions {
+    // Íconos FontAwesome para tipo de alerta
+    public string GetAlertTypeIconFA(TFGv1_1.Models.AlertType type)
+    {
+        switch (type)
+        {
+            case TFGv1_1.Models.AlertType.Temperature:
+                return "fas fa-thermometer-half";
+            case TFGv1_1.Models.AlertType.Humidity:
+                return "fas fa-tint";
+            case TFGv1_1.Models.AlertType.CO2:
+                return "fas fa-wind";
+            case TFGv1_1.Models.AlertType.Brightness:
+                return "fas fa-sun";
+            default:
+                return "fas fa-bell";
+        }
+    }
+    // Íconos FontAwesome para severidad
+    public string GetSeverityIconFA(TFGv1_1.Models.AlertSeverity severity)
+    {
+        switch (severity)
+        {
+            case TFGv1_1.Models.AlertSeverity.Critical:
+                return "fas fa-exclamation-circle text-danger";
+            case TFGv1_1.Models.AlertSeverity.High:
+                return "fas fa-exclamation-triangle text-warning";
+            case TFGv1_1.Models.AlertSeverity.Medium:
+                return "fas fa-info-circle text-info";
+            case TFGv1_1.Models.AlertSeverity.Low:
+                return "fas fa-circle text-secondary";
+            default:
+                return "fas fa-circle text-muted";
+        }
+    }
+}

@@ -145,7 +145,7 @@
             var sensorTypes = new[]
             {
                 (SensorType.Temperature, Units.GCelsius, "Temperatura"),
-                (SensorType.Humidity, Units.gm3, "Humedad"),
+                (SensorType.Humidity, Units.porcentaje, "Humedad"),
                 (SensorType.CO2, Units.microgm3, "CO2"),
                 (SensorType.Brightness, Units.Lumen, "Luminosidad")
             };
