@@ -24,7 +24,6 @@ namespace TFGv1_1.MQTTLogger
         private Dictionary<string, DateTime> lastMessageTimes = new Dictionary<string, DateTime>();
         private const int INACTIVITY_THRESHOLD_SECONDS = 30; // Tiempo sin mensajes para considerar inactividad
         
-        // Añadimos las definiciones que faltaban
         private Dictionary<int, SensorCalibrationInfo> sensorCalibrations = new Dictionary<int, SensorCalibrationInfo>();
         private Dictionary<int, AlertConfigurationInfo> alertConfigurations = new Dictionary<int, AlertConfigurationInfo>();
         private DateTime lastConfigRefresh = DateTime.MinValue;

@@ -1,4 +1,10 @@
 ════════════════════════════════════════
+[2025-05-27 18:48:59.395] FIN DE SESIÓN
+════════════════════════════════════════
+════════════════════════════════════════
+[2025-05-20 23:58:43.127] FIN DE SESIÓN
+════════════════════════════════════════
+════════════════════════════════════════
 [2025-05-13 22:12:12.838] FIN DE SESIÓN
 ════════════════════════════════════════
 ════════════════════════════════════════
@@ -155,3 +161,7 @@ ERROR DETAILS:
 [2025-05-13 21:28:55.271] Error escribiendo en C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log: El proceso no puede obtener acceso al archivo 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log' porque está siendo utilizado en otro proceso.
 [2025-05-13 22:12:13.306] Error escribiendo en C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\alerts.log: El proceso no puede obtener acceso al archivo 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\alerts.log' porque está siendo utilizado en otro proceso.
 [2025-05-13 22:12:16.860] Error escribiendo en C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log: El proceso no puede obtener acceso al archivo 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log' porque está siendo utilizado en otro proceso.
+[2025-05-27 18:48:59.954] Error escribiendo en C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\alerts.log: El proceso no puede obtener acceso al archivo 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\alerts.log' porque está siendo utilizado en otro proceso.
+[2025-05-27 18:49:00.682] Error escribiendo en C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log: El proceso no puede obtener acceso al archivo 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log' porque está siendo utilizado en otro proceso.
+[2025-05-27 18:49:03.495] Error escribiendo en C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log: El proceso no puede obtener acceso al archivo 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log' porque está siendo utilizado en otro proceso.
+[2025-05-27 18:49:03.524] Error escribiendo en C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log: El proceso no puede obtener acceso al archivo 'C:\Users\josem\Desktop\Universidad\GreenHouseMonitor\TFGv1_1\Logs\service.log' porque está siendo utilizado en otro proceso.

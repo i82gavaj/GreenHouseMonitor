@@ -77,6 +77,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
 
+    <style>
+        .chart-wrapper {
+            position: relative;
+        }
+    </style>
+
     <script>
         // Variables para el cliente MQTT
         var client;
@@ -234,6 +240,17 @@
                 <p class="chart-subtitle">${sensorName}</p>
             `;
             wrapper.appendChild(header);
+
+            // Añadir el mensaje de "Sin datos"
+            var noDataMessage = document.createElement('div');
+            noDataMessage.className = 'no-data-message';
+            noDataMessage.innerHTML = `
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>Esperando datos del sensor...
+                </div>
+            `;
+            noDataMessage.id = `no-data-${sensor.topic}`;
+            wrapper.appendChild(noDataMessage);
 
             var canvas = document.createElement('canvas');
             canvas.id = chartId;
@@ -541,6 +558,12 @@
                 chart.data.datasets[0].data = sensorData[topic];
                 chart.data.labels = timeLabels[topic];
                 chart.update();
+                
+                // Ocultar el mensaje de "Sin datos" cuando hay datos disponibles
+                var noDataMessage = document.getElementById(`no-data-${topic}`);
+                if (noDataMessage && sensorData[topic].length > 0) {
+                    noDataMessage.style.display = 'none';
+                }
             } else {
                 console.log("No se encontró la gráfica para el topic:", topic);
             }

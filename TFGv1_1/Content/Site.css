@@ -4461,3 +4461,30 @@ body.modal-open .pagination,
     padding-left: 0.85rem !important;
     padding-right: 0.85rem !important;
 }
+
+.no-data-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 80%;
+}
+
+.no-data-message .alert {
+    padding: 15px;
+    margin-bottom: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.no-data-message .alert i {
+    font-size: 1.2em;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
