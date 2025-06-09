@@ -41,17 +41,6 @@ SMGreen es un sistema avanzado de monitorización para invernaderos que permite 
 - SQL Server 2016 o superior
 - Navegador web moderno (Chrome, Firefox, Edge)
 
-## 👥 Contribución
-Las contribuciones son bienvenidas. Por favor, sigue estos pasos:
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
-
 ## 📞 Soporte
 Para soporte, por favor abre un issue en el repositorio o contacta al equipo de desarrollo.
 
