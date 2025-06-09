@@ -1,4 +1,4 @@
-# 🌱 SMGreen - MOnitorización de Invernaderos Inteligentes
+# 🌱 SMGreen - Monitorización de Invernaderos Inteligentes
 
 ## 📝 Descripción
 SMGreen es un sistema avanzado de monitorización para invernaderos que permite el seguimiento en tiempo real de diversos parámetros ambientales. El sistema está diseñado para ayudar a agricultores y gestores de invernaderos a mantener condiciones óptimas para el cultivo mediante la recopilación y análisis de datos de sensores.
