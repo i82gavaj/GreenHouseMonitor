@@ -43,6 +43,3 @@ SMGreen es un sistema avanzado de monitorización para invernaderos que permite 
 
 ## 📞 Soporte
 Para soporte, por favor abre un issue en el repositorio o contacta al equipo de desarrollo.
-
----
-Desarrollado con ❤️ para la agricultura inteligente
