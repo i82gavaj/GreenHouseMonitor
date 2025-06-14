@@ -16,7 +16,6 @@ SMGreen es un sistema avanzado de monitorización para invernaderos que permite 
 - Configuración personalizada de umbrales para cada sensor
 - Notificaciones en tiempo real cuando los valores exceden los límites establecidos
 - Diferentes niveles de severidad para las alertas
-- Opciones de notificación por email y push
 
 ### 📈 Visualización de Datos
 - Gráficos interactivos para análisis de tendencias
